@@ -276,6 +276,17 @@ private:
 	void opc_or_a_n(); //0xF6
 	void opc_or_a_p_hl(); //0xB6
 
+	// logical XOR
+	void opc_xor_a_a(); //0xAF
+	void opc_xor_a_b(); //0xA8
+	void opc_xor_a_c(); //0xA9
+	void opc_xor_a_d(); //0xAA
+	void opc_xor_a_e(); //0xAB
+	void opc_xor_a_h(); //0xAC
+	void opc_xor_a_l(); //0xAD
+	void opc_xor_a_n(); //0xF6
+	void opc_xor_a_p_hl(); //0xAE
+
 
 	// setting and unsetting flags
 	void set_flag(u8 flag);
@@ -294,6 +305,7 @@ private:
 	void sbc(u8 &a, u8 b); // subtract with carry
 	void logical_and(u8 &a, u8 b); // logical AND, save in a
 	void logical_or(u8 &a, u8 b); // logical OR, save in a
+	void logical_xor(u8 &a, u8 b); // logical XOR, save in a
 
 public:
 	void emulate_cycle();

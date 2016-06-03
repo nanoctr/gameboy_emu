@@ -712,6 +712,43 @@ void Gameboy_Cpu::opc_or_a_p_hl() {
 	++pc;
 }
 
+// logical XOR
+void Gameboy_Cpu::opc_xor_a_a() {
+	logical_or(reg.a, reg.a);
+	++pc;
+}
+void Gameboy_Cpu::opc_xor_a_b() {
+	logical_or(reg.a, reg.b);
+	++pc;
+}
+void Gameboy_Cpu::opc_xor_a_c() {
+	logical_or(reg.a, reg.c);
+	++pc;
+}
+void Gameboy_Cpu::opc_xor_a_d() {
+	logical_or(reg.a, reg.d);
+	++pc;
+}
+void Gameboy_Cpu::opc_xor_a_e() {
+	logical_or(reg.a, reg.e);
+	++pc;
+}
+void Gameboy_Cpu::opc_xor_a_h() {
+	logical_or(reg.a, reg.h);
+	++pc;
+}
+void Gameboy_Cpu::opc_xor_a_l() {
+	logical_or(reg.a, reg.l);
+	++pc;
+}
+void Gameboy_Cpu::opc_xor_a_n() {
+	logical_or(reg.a, memory[pc+1]);
+	pc += 2;
+}
+void Gameboy_Cpu::opc_xor_a_p_hl() {
+	logical_or(reg.a, memory[reg.hl]);
+	++pc;
+}
 
 
 // helper functions
@@ -947,6 +984,19 @@ void Gameboy_Cpu::logical_or(u8 &a, u8 b) {
 	unset_flag(SUBTRACT);
 
 	a |= b;
+	if (a == 0) {
+		set_flag(ZERO);
+	}
+	else {
+		unset_flag(ZERO);
+	}
+}
+void Gameboy_Cpu::logical_xor(u8 &a, u8 b) {
+	unset_flag(CARRY);
+	unset_flag(HALF_CARRY);
+	unset_flag(SUBTRACT);
+
+	a ^= b;
 	if (a == 0) {
 		set_flag(ZERO);
 	}

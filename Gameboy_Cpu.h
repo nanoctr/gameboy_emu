@@ -331,6 +331,152 @@ private:
 	void opc_rst_28(); //0xEF
 	void opc_rst_38(); //0xFF
 
+	// 2 byte opcodes:
+	void opc_bit_a_0();//0x47
+	void opc_bit_a_1();//0x4F
+	void opc_bit_a_2();//0x57
+	void opc_bit_a_3();//0x5F
+	void opc_bit_a_4();//0x67
+	void opc_bit_a_5();//0x6F
+	void opc_bit_a_6();//0x77
+	void opc_bit_a_7();//0x7F
+
+	void opc_bit_b_0();//0x40
+	void opc_bit_b_1();//0x48
+	void opc_bit_b_2();//0x50
+	void opc_bit_b_3();//0x58
+	void opc_bit_b_4();//0x60
+	void opc_bit_b_5();//0x68
+	void opc_bit_b_6();//0x70
+	void opc_bit_b_7();//0x78
+
+	void opc_bit_c_0();//0x41
+	void opc_bit_c_1();//0x49
+	void opc_bit_c_2();//0x51
+	void opc_bit_c_3();//0x59
+	void opc_bit_c_4();//0x61
+	void opc_bit_c_5();//0x69
+	void opc_bit_c_6();//0x71
+	void opc_bit_c_7();//0x79
+
+	void opc_bit_d_0();//0x42
+	void opc_bit_d_1();//0x4A
+	void opc_bit_d_2();//0x52
+	void opc_bit_d_3();//0x5A
+	void opc_bit_d_4();//0x62
+	void opc_bit_d_5();//0x6A
+	void opc_bit_d_6();//0x72
+	void opc_bit_d_7();//0x7A
+
+	void opc_bit_e_0();//0x43
+	void opc_bit_e_1();//0x4B
+	void opc_bit_e_2();//0x53
+	void opc_bit_e_3();//0x5B
+	void opc_bit_e_4();//0x63
+	void opc_bit_e_5();//0x6B
+	void opc_bit_e_6();//0x73
+	void opc_bit_e_7();//0x7B
+
+	void opc_bit_h_0();//0x44
+	void opc_bit_h_1();//0x4C
+	void opc_bit_h_2();//0x54
+	void opc_bit_h_3();//0x5C
+	void opc_bit_h_4();//0x64
+	void opc_bit_h_5();//0x6C
+	void opc_bit_h_6();//0x74
+	void opc_bit_h_7();//0x7C
+
+	void opc_bit_l_0();//0x45
+	void opc_bit_l_1();//0x4D
+	void opc_bit_l_2();//0x55
+	void opc_bit_l_3();//0x5D
+	void opc_bit_l_4();//0x65
+	void opc_bit_l_5();//0x6D
+	void opc_bit_l_6();//0x75
+	void opc_bit_l_7();//0x7D
+
+	void opc_bit_hl_0();//0x46
+	void opc_bit_hl_1();//0x4E
+	void opc_bit_hl_2();//0x56
+	void opc_bit_hl_3();//0x5E
+	void opc_bit_hl_4();//0x66
+	void opc_bit_hl_5();//0x6E
+	void opc_bit_hl_6();//0x76
+	void opc_bit_hl_7();//0x7E
+
+	// setting bits
+	void opc_set_a_0(); //0xC7
+	void opc_set_a_1(); //0xCF
+	void opc_set_a_2(); //0xD7
+	void opc_set_a_3(); //0xDF
+	void opc_set_a_4(); //0xE7
+	void opc_set_a_5(); //0xEF
+	void opc_set_a_6(); //0xF7
+	void opc_set_a_7(); //0xFF
+
+	void opc_set_b_0(); //0xC0
+	void opc_set_b_1(); //0xC8
+	void opc_set_b_2(); //0xD0
+	void opc_set_b_3(); //0xD8
+	void opc_set_b_4(); //0xE0
+	void opc_set_b_5(); //0xE8
+	void opc_set_b_6(); //0xF0
+	void opc_set_b_7(); //0xF8
+
+	void opc_set_c_0(); //0xC1
+	void opc_set_c_1(); //0xC9
+	void opc_set_c_2(); //0xD1
+	void opc_set_c_3(); //0xD9
+	void opc_set_c_4(); //0xE1
+	void opc_set_c_5(); //0xE9
+	void opc_set_c_6(); //0xF1
+	void opc_set_c_7(); //0xF9
+
+	void opc_set_d_0(); //0xC2
+	void opc_set_d_1(); //0xCA
+	void opc_set_d_2(); //0xD2
+	void opc_set_d_3(); //0xDA
+	void opc_set_d_4(); //0xE2
+	void opc_set_d_5(); //0xEA
+	void opc_set_d_6(); //0xF2
+	void opc_set_d_7(); //0xFA
+
+	void opc_set_e_0(); //0xC3
+	void opc_set_e_1(); //0xCB
+	void opc_set_e_2(); //0xD3
+	void opc_set_e_3(); //0xDB
+	void opc_set_e_4(); //0xE3
+	void opc_set_e_5(); //0xEB
+	void opc_set_e_6(); //0xF3
+	void opc_set_e_7(); //0xFB
+
+	void opc_set_h_0(); //0xC4
+	void opc_set_h_1(); //0xCC
+	void opc_set_h_2(); //0xD4
+	void opc_set_h_3(); //0xDC
+	void opc_set_h_4(); //0xE4
+	void opc_set_h_5(); //0xEC
+	void opc_set_h_6(); //0xF4
+	void opc_set_h_7(); //0xFC
+
+	void opc_set_l_0(); //0xC5
+	void opc_set_l_1(); //0xCD
+	void opc_set_l_2(); //0xD5
+	void opc_set_l_3(); //0xDD
+	void opc_set_l_4(); //0xE5
+	void opc_set_l_5(); //0xED
+	void opc_set_l_6(); //0xF5
+	void opc_set_l_7(); //0xFD
+
+	void opc_set_hl_0(); //0xC6
+	void opc_set_hl_1(); //0xCE
+	void opc_set_hl_2(); //0xD6
+	void opc_set_hl_3(); //0xDE
+	void opc_set_hl_4(); //0xE6
+	void opc_set_hl_5(); //0xEE
+	void opc_set_hl_6(); //0xF6
+	void opc_set_hl_7(); //0xFE
+
 
 	// setting and unsetting flags
 	void set_flag(u8 flag);
@@ -353,7 +499,10 @@ private:
 	void compare(u8 a, u8 b); // compare, set flags accordingly
 	void call_subroutine(u16 address); // call subroutine at address
 	void return_subroutine(); // return from subroutine
-
+	void reset_bit(u8 &reg, u8 bit); // reset bit at position bit in register
+	void test_bit(u8 &reg, u8 bit); // test bit at position bit in register
+	void test_bit16(u16 &reg, u8 bit); // test, 16 bit version
+	void set_bit(u8 &reg, u8 bit); // set bit at position bit in register
 public:
 	void emulate_cycle();
 	void startup();

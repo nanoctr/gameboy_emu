@@ -898,6 +898,159 @@ void Gameboy_Cpu::opc_rst_38() {
 
 
 
+// 2 byte codes:
+// test bit
+
+void Gameboy_Cpu::opc_bit_a_0() { test_bit(reg.a, 0); }
+void Gameboy_Cpu::opc_bit_a_1() { test_bit(reg.a, 1); }
+void Gameboy_Cpu::opc_bit_a_2() { test_bit(reg.a, 2); }
+void Gameboy_Cpu::opc_bit_a_3() { test_bit(reg.a, 3); }
+void Gameboy_Cpu::opc_bit_a_4() { test_bit(reg.a, 4); }
+void Gameboy_Cpu::opc_bit_a_5() { test_bit(reg.a, 5); }
+void Gameboy_Cpu::opc_bit_a_6() { test_bit(reg.a, 6); }
+void Gameboy_Cpu::opc_bit_a_7() { test_bit(reg.a, 7); }
+
+void Gameboy_Cpu::opc_bit_b_0() { test_bit(reg.b, 0); }
+void Gameboy_Cpu::opc_bit_b_1() { test_bit(reg.b, 1); }
+void Gameboy_Cpu::opc_bit_b_2() { test_bit(reg.b, 2); }
+void Gameboy_Cpu::opc_bit_b_3() { test_bit(reg.b, 3); }
+void Gameboy_Cpu::opc_bit_b_4() { test_bit(reg.b, 4); }
+void Gameboy_Cpu::opc_bit_b_5() { test_bit(reg.b, 5); }
+void Gameboy_Cpu::opc_bit_b_6() { test_bit(reg.b, 6); }
+void Gameboy_Cpu::opc_bit_b_7() { test_bit(reg.b, 7); }
+
+void Gameboy_Cpu::opc_bit_c_0() { test_bit(reg.c, 0); }
+void Gameboy_Cpu::opc_bit_c_1() { test_bit(reg.c, 1); }
+void Gameboy_Cpu::opc_bit_c_2() { test_bit(reg.c, 2); }
+void Gameboy_Cpu::opc_bit_c_3() { test_bit(reg.c, 3); }
+void Gameboy_Cpu::opc_bit_c_4() { test_bit(reg.c, 4); }
+void Gameboy_Cpu::opc_bit_c_5() { test_bit(reg.c, 5); }
+void Gameboy_Cpu::opc_bit_c_6() { test_bit(reg.c, 6); }
+void Gameboy_Cpu::opc_bit_c_7() { test_bit(reg.c, 7); }
+
+void Gameboy_Cpu::opc_bit_d_0() { test_bit(reg.d, 0); }
+void Gameboy_Cpu::opc_bit_d_1() { test_bit(reg.d, 1); }
+void Gameboy_Cpu::opc_bit_d_2() { test_bit(reg.d, 2); }
+void Gameboy_Cpu::opc_bit_d_3() { test_bit(reg.d, 3); }
+void Gameboy_Cpu::opc_bit_d_4() { test_bit(reg.d, 4); }
+void Gameboy_Cpu::opc_bit_d_5() { test_bit(reg.d, 5); }
+void Gameboy_Cpu::opc_bit_d_6() { test_bit(reg.d, 6); }
+void Gameboy_Cpu::opc_bit_d_7() { test_bit(reg.d, 7); }
+
+void Gameboy_Cpu::opc_bit_e_0() { test_bit(reg.e, 0); }
+void Gameboy_Cpu::opc_bit_e_1() { test_bit(reg.e, 1); }
+void Gameboy_Cpu::opc_bit_e_2() { test_bit(reg.e, 2); }
+void Gameboy_Cpu::opc_bit_e_3() { test_bit(reg.e, 3); }
+void Gameboy_Cpu::opc_bit_e_4() { test_bit(reg.e, 4); }
+void Gameboy_Cpu::opc_bit_e_5() { test_bit(reg.e, 5); }
+void Gameboy_Cpu::opc_bit_e_6() { test_bit(reg.e, 6); }
+void Gameboy_Cpu::opc_bit_e_7() { test_bit(reg.e, 7); }
+
+void Gameboy_Cpu::opc_bit_h_0() { test_bit(reg.h, 0); }
+void Gameboy_Cpu::opc_bit_h_1() { test_bit(reg.h, 1); }
+void Gameboy_Cpu::opc_bit_h_2() { test_bit(reg.h, 2); }
+void Gameboy_Cpu::opc_bit_h_3() { test_bit(reg.h, 3); }
+void Gameboy_Cpu::opc_bit_h_4() { test_bit(reg.h, 4); }
+void Gameboy_Cpu::opc_bit_h_5() { test_bit(reg.h, 5); }
+void Gameboy_Cpu::opc_bit_h_6() { test_bit(reg.h, 6); }
+void Gameboy_Cpu::opc_bit_h_7() { test_bit(reg.h, 7); }
+
+void Gameboy_Cpu::opc_bit_l_0() { test_bit(reg.l, 0); }
+void Gameboy_Cpu::opc_bit_l_1() { test_bit(reg.l, 1); }
+void Gameboy_Cpu::opc_bit_l_2() { test_bit(reg.l, 2); }
+void Gameboy_Cpu::opc_bit_l_3() { test_bit(reg.l, 3); }
+void Gameboy_Cpu::opc_bit_l_4() { test_bit(reg.l, 4); }
+void Gameboy_Cpu::opc_bit_l_5() { test_bit(reg.l, 5); }
+void Gameboy_Cpu::opc_bit_l_6() { test_bit(reg.l, 6); }
+void Gameboy_Cpu::opc_bit_l_7() { test_bit(reg.l, 7); }
+
+void Gameboy_Cpu::opc_bit_hl_0() { test_bit16(reg.hl, 0); }
+void Gameboy_Cpu::opc_bit_hl_1() { test_bit16(reg.hl, 1); }
+void Gameboy_Cpu::opc_bit_hl_2() { test_bit16(reg.hl, 2); }
+void Gameboy_Cpu::opc_bit_hl_3() { test_bit16(reg.hl, 3); }
+void Gameboy_Cpu::opc_bit_hl_4() { test_bit16(reg.hl, 4); }
+void Gameboy_Cpu::opc_bit_hl_5() { test_bit16(reg.hl, 5); }
+void Gameboy_Cpu::opc_bit_hl_6() { test_bit16(reg.hl, 6); }
+void Gameboy_Cpu::opc_bit_hl_7() { test_bit16(reg.hl, 7); }
+
+
+// set bits
+
+void Gameboy_Cpu::opc_set_a_0() { set_bit(reg.a, 0); }
+void Gameboy_Cpu::opc_set_a_1() { set_bit(reg.a, 1); }
+void Gameboy_Cpu::opc_set_a_2() { set_bit(reg.a, 2); }
+void Gameboy_Cpu::opc_set_a_3() { set_bit(reg.a, 3); }
+void Gameboy_Cpu::opc_set_a_4() { set_bit(reg.a, 4); }
+void Gameboy_Cpu::opc_set_a_5() { set_bit(reg.a, 5); }
+void Gameboy_Cpu::opc_set_a_6() { set_bit(reg.a, 6); }
+void Gameboy_Cpu::opc_set_a_7() { set_bit(reg.a, 7); }
+
+void Gameboy_Cpu::opc_set_b_0() { set_bit(reg.b, 0); }
+void Gameboy_Cpu::opc_set_b_1() { set_bit(reg.b, 1); }
+void Gameboy_Cpu::opc_set_b_2() { set_bit(reg.b, 2); }
+void Gameboy_Cpu::opc_set_b_3() { set_bit(reg.b, 3); }
+void Gameboy_Cpu::opc_set_b_4() { set_bit(reg.b, 4); }
+void Gameboy_Cpu::opc_set_b_5() { set_bit(reg.b, 5); }
+void Gameboy_Cpu::opc_set_b_6() { set_bit(reg.b, 6); }
+void Gameboy_Cpu::opc_set_b_7() { set_bit(reg.b, 7); }
+
+void Gameboy_Cpu::opc_set_c_0() { set_bit(reg.c, 0); }
+void Gameboy_Cpu::opc_set_c_1() { set_bit(reg.c, 1); }
+void Gameboy_Cpu::opc_set_c_2() { set_bit(reg.c, 2); }
+void Gameboy_Cpu::opc_set_c_3() { set_bit(reg.c, 3); }
+void Gameboy_Cpu::opc_set_c_4() { set_bit(reg.c, 4); }
+void Gameboy_Cpu::opc_set_c_5() { set_bit(reg.c, 5); }
+void Gameboy_Cpu::opc_set_c_6() { set_bit(reg.c, 6); }
+void Gameboy_Cpu::opc_set_c_7() { set_bit(reg.c, 7); }
+
+void Gameboy_Cpu::opc_set_d_0() { set_bit(reg.d, 0); }
+void Gameboy_Cpu::opc_set_d_1() { set_bit(reg.d, 1); }
+void Gameboy_Cpu::opc_set_d_2() { set_bit(reg.d, 2); }
+void Gameboy_Cpu::opc_set_d_3() { set_bit(reg.d, 3); }
+void Gameboy_Cpu::opc_set_d_4() { set_bit(reg.d, 4); }
+void Gameboy_Cpu::opc_set_d_5() { set_bit(reg.d, 5); }
+void Gameboy_Cpu::opc_set_d_6() { set_bit(reg.d, 6); }
+void Gameboy_Cpu::opc_set_d_7() { set_bit(reg.d, 7); }
+
+void Gameboy_Cpu::opc_set_e_0() { set_bit(reg.e, 0); }
+void Gameboy_Cpu::opc_set_e_1() { set_bit(reg.e, 1); }
+void Gameboy_Cpu::opc_set_e_2() { set_bit(reg.e, 2); }
+void Gameboy_Cpu::opc_set_e_3() { set_bit(reg.e, 3); }
+void Gameboy_Cpu::opc_set_e_4() { set_bit(reg.e, 4); }
+void Gameboy_Cpu::opc_set_e_5() { set_bit(reg.e, 5); }
+void Gameboy_Cpu::opc_set_e_6() { set_bit(reg.e, 6); }
+void Gameboy_Cpu::opc_set_e_7() { set_bit(reg.e, 7); }
+
+void Gameboy_Cpu::opc_set_h_0() { set_bit(reg.h, 0); }
+void Gameboy_Cpu::opc_set_h_1() { set_bit(reg.h, 1); }
+void Gameboy_Cpu::opc_set_h_2() { set_bit(reg.h, 2); }
+void Gameboy_Cpu::opc_set_h_3() { set_bit(reg.h, 3); }
+void Gameboy_Cpu::opc_set_h_4() { set_bit(reg.h, 4); }
+void Gameboy_Cpu::opc_set_h_5() { set_bit(reg.h, 5); }
+void Gameboy_Cpu::opc_set_h_6() { set_bit(reg.h, 6); }
+void Gameboy_Cpu::opc_set_h_7() { set_bit(reg.h, 7); }
+
+void Gameboy_Cpu::opc_set_l_0() { set_bit(reg.l, 0); }
+void Gameboy_Cpu::opc_set_l_1() { set_bit(reg.l, 1); }
+void Gameboy_Cpu::opc_set_l_2() { set_bit(reg.l, 2); }
+void Gameboy_Cpu::opc_set_l_3() { set_bit(reg.l, 3); }
+void Gameboy_Cpu::opc_set_l_4() { set_bit(reg.l, 4); }
+void Gameboy_Cpu::opc_set_l_5() { set_bit(reg.l, 5); }
+void Gameboy_Cpu::opc_set_l_6() { set_bit(reg.l, 6); }
+void Gameboy_Cpu::opc_set_l_7() { set_bit(reg.l, 7); }
+
+void Gameboy_Cpu::opc_set_hl_0() { set_bit((u8) reg.hl, 0); }
+void Gameboy_Cpu::opc_set_hl_1() { set_bit((u8) reg.hl, 1); }
+void Gameboy_Cpu::opc_set_hl_2() { set_bit((u8) reg.hl, 2); }
+void Gameboy_Cpu::opc_set_hl_3() { set_bit((u8) reg.hl, 3); }
+void Gameboy_Cpu::opc_set_hl_4() { set_bit((u8) reg.hl, 4); }
+void Gameboy_Cpu::opc_set_hl_5() { set_bit((u8) reg.hl, 5); }
+void Gameboy_Cpu::opc_set_hl_6() { set_bit((u8) reg.hl, 6); }
+void Gameboy_Cpu::opc_set_hl_7() { set_bit((u8) reg.hl, 7); }
+
+
+
+
 
 
 // helper functions
@@ -1195,4 +1348,37 @@ void Gameboy_Cpu::return_subroutine() {
 	sp += 2;
 	//TODO: cinoop doesn't do this...check this
 	pc += 3;
+}
+void Gameboy_Cpu::reset_bit(u8 &reg, u8 bit) {
+	reg &= ~(1 << bit);
+}
+void Gameboy_Cpu::test_bit(u8 &reg, u8 bit) {
+	bool result = reg & (1 << bit);
+
+	if (!result) {
+		set_flag(ZERO);
+	}
+	else {
+		unset_flag(ZERO);
+	}
+
+	unset_flag(SUBTRACT);
+	set_flag(HALF_CARRY);
+}
+void Gameboy_Cpu::test_bit16(u16 &reg, u8 bit) {
+	bool result = reg & (1 << bit);
+
+	if (!result) {
+		set_flag(ZERO);
+	}
+	else {
+		unset_flag(ZERO);
+	}
+
+	unset_flag(SUBTRACT);
+	set_flag(HALF_CARRY);
+}
+
+void Gameboy_Cpu::set_bit(u8 &reg, u8 bit) {
+	reg |= 1 << bit;
 }

@@ -265,6 +265,17 @@ private:
 	void opc_and_a_n(); //0xE6
 	void opc_and_a_p_hl(); //0xA6
 
+	// logical OR
+	void opc_or_a_a(); //0xB7
+	void opc_or_a_b(); //0xB0
+	void opc_or_a_c(); //0xB1
+	void opc_or_a_d(); //0xB2
+	void opc_or_a_e(); //0xB3
+	void opc_or_a_h(); //0xB4
+	void opc_or_a_l(); //0xB5
+	void opc_or_a_n(); //0xF6
+	void opc_or_a_p_hl(); //0xB6
+
 
 	// setting and unsetting flags
 	void set_flag(u8 flag);
@@ -282,6 +293,7 @@ private:
 	void sub(u8 &a, u8 b); // subtracting b from a, save in a
 	void sbc(u8 &a, u8 b); // subtract with carry
 	void logical_and(u8 &a, u8 b); // logical AND, save in a
+	void logical_or(u8 &a, u8 b); // logical OR, save in a
 
 public:
 	void emulate_cycle();

@@ -635,6 +635,45 @@ void Gameboy_Cpu::opc_add_hl_sp() {
 	++pc;
 }
 
+// logical AND
+void Gameboy_Cpu::opc_and_a_a() {
+	logical_and(reg.a, reg.a);
+	++pc;
+}
+void Gameboy_Cpu::opc_and_a_b() {
+	logical_and(reg.a, reg.b);
+	++pc;
+}
+void Gameboy_Cpu::opc_and_a_c() {
+	logical_and(reg.a, reg.c);
+	++pc;
+}
+void Gameboy_Cpu::opc_and_a_d() {
+	logical_and(reg.a, reg.d);
+	++pc;
+}
+void Gameboy_Cpu::opc_and_a_e() {
+	logical_and(reg.a, reg.e);
+	++pc;
+}
+void Gameboy_Cpu::opc_and_a_h() {
+	logical_and(reg.a, reg.h);
+	++pc;
+}
+void Gameboy_Cpu::opc_and_a_l() {
+	logical_and(reg.a, reg.l);
+	++pc;
+}
+void Gameboy_Cpu::opc_and_a_n() {
+	logical_and(reg.a, memory[pc+1]);
+	pc += 2;
+}
+void Gameboy_Cpu::opc_and_a_p_hl() {
+	logical_and(reg.a, memory[reg.hl]);
+	pc += 2;
+}
+
+
 
 
 // helper functions
@@ -848,4 +887,18 @@ void Gameboy_Cpu::sub(u8 &a, u8 b) {
 
 void Gameboy_Cpu::sbc(u8 &a, u8 b) {
 	 sub(a, b+get_flag(CARRY));
+}
+
+void Gameboy_Cpu::logical_and(u8 &a, u8 b) {
+	unset_flag(CARRY);
+	unset_flag(SUBTRACT);
+	set_flag(HALF_CARRY);
+
+	a &= b;
+	if (a == 0) {
+		set_flag(ZERO);
+	}
+	else {
+		unset_flag(ZERO);
+	}
 }

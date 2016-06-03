@@ -254,6 +254,17 @@ private:
 	void opc_sbc_a_n(); //0xDE
 	void opc_sbc_a_p_hl(); //0x9E
 
+	// logical AND
+	void opc_and_a_a(); //0xA7
+	void opc_and_a_b(); //0xA0
+	void opc_and_a_c(); //0xA1
+	void opc_and_a_d(); //0xA2
+	void opc_and_a_e(); //0xA3
+	void opc_and_a_h(); //0xA4
+	void opc_and_a_l(); //0xA5
+	void opc_and_a_n(); //0xE6
+	void opc_and_a_p_hl(); //0xA6
+
 
 	// setting and unsetting flags
 	void set_flag(u8 flag);
@@ -270,6 +281,7 @@ private:
 	void adc(u8 &a, u8 b); // adding two 8bit values + carry flag
 	void sub(u8 &a, u8 b); // subtracting b from a, save in a
 	void sbc(u8 &a, u8 b); // subtract with carry
+	void logical_and(u8 &a, u8 b); // logical AND, save in a
 
 public:
 	void emulate_cycle();

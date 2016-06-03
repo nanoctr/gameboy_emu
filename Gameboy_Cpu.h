@@ -214,6 +214,7 @@ private:
 	void opc_add_a_l(); //0x85
 	void opc_add_a_p_hl(); //0x86
 	void opc_add_a_n(); //0xC6
+	void opc_add_sp_d(); //0xE8
 
 	// add 16 bits
 	void opc_add_hl_hl(); //0x29
@@ -306,7 +307,29 @@ private:
 	void opc_call_c_nn(); //0xDC - call subroutine if CARRY flag is set
 
 	// returning from subroutine
-	void opc_ret(); //C9
+	void opc_ret(); //0xC9
+	void opc_ret_nz(); //0xC0 - return if ZERO flag is not set
+	void opc_ret_nc(); //0xD0
+	void opc_ret_z(); //0xC8
+	void opc_ret_n(); //0xD8
+
+	// jumping to address
+	void opc_jump_nn(); //0xC3
+	void opc_jump_nz_nn(); //0xC2
+	void opc_jump_nc_nn(); //0xD2
+	void opc_jump_z_nn(); //0xCA
+	void opc_jump_c_nn(); //0xDA
+	void opc_jump_hl(); //0xE9
+
+	// calling specific address
+	void opc_rst_0(); //0xC7
+	void opc_rst_10(); //0xD7
+	void opc_rst_20(); //0xE7
+	void opc_rst_30(); //0xF7
+	void opc_rst_8(); //0xCF
+	void opc_rst_18(); //0xDF
+	void opc_rst_28(); //0xEF
+	void opc_rst_38(); //0xFF
 
 
 	// setting and unsetting flags

@@ -12,6 +12,11 @@ typedef unsigned short u16;
  *  stolen from https://cturt.github.io/cinoop.html
  *  allows accessing registers like: register.a, register.af
  *  a, b, c, d, e, f, h, l = 8bit registers, often combined to form 16 bit
+ *  F = flag register. flags:
+ *  4th bit -> CARRY flag
+ *  5th bit -> half-carry flag; set if carry from bit 3
+ *  6th bit -> subtract flag; if instruction is subtract -> set; otherwise unset
+ *  7th bit -> zero flag; if result is 0 -> set; otherwise -> unset
  */
 struct registers {
 	struct {
@@ -93,7 +98,7 @@ private:
 	void opc_ld_de_nn(); //0x11
 	void opc_ld_hl_nn(); //0x21
 	void opc_ld_sp_nn(); //0x31
-	void opc_ld_hl_n(); //0x36
+	void opc_ld_p_hl_n(); //0x36
 
 	// load r2 into r1:
 	void opc_ld_a_b(); //0x78
@@ -102,11 +107,11 @@ private:
 	void opc_ld_a_e(); //0x7B
 	void opc_ld_a_h(); //0x7C
 	void opc_ld_a_l(); //0x7D
-	void opc_ld_a_hl(); //0x7E
+	void opc_ld_a_p_hl(); //0x7E
 	void opc_ld_a_a(); //0x7F -> NOP
-	void opc_ld_a_bc(); //0x0A
-	void opc_ld_a_de(); //0x1A
-	void opc_ld_a_nn(); //0xFA
+	void opc_ld_a_p_bc(); //0x0A
+	void opc_ld_a_p_de(); //0x1A
+	void opc_ld_a_p_nn(); //0xFA
 	void opc_ld_b_a(); //0x47
 	void opc_ld_b_b(); //0x40 -> NOP
 	void opc_ld_b_c(); //0x41
@@ -155,32 +160,116 @@ private:
 	void opc_ld_l_h(); //0x6C
 	void opc_ld_l_l(); //0x6D -> NOP
 	void opc_ld_l_hl(); //0x6E
-	void opc_ld_hl_a(); //0x77
-	void opc_ld_hl_b(); //0x70
-	void opc_ld_hl_c(); //0x71
-	void opc_ld_hl_d(); //0x72
-	void opc_ld_hl_e(); //0x73
-	void opc_ld_hl_h(); //0x74
-	void opc_ld_hl_l(); //0x75
-	void opc_ld_bc_a(); //0x02
-	void opc_ld_de_a(); //0x12
+	void opc_ld_p_hl_a(); //0x77
+	void opc_ld_p_hl_b(); //0x70
+	void opc_ld_p_hl_c(); //0x71
+	void opc_ld_p_hl_d(); //0x72
+	void opc_ld_p_hl_e(); //0x73
+	void opc_ld_p_hl_h(); //0x74
+	void opc_ld_p_hl_l(); //0x75
+	void opc_ld_p_bc_a(); //0x02
+	void opc_ld_p_de_a(); //0x12
 
-	// other load stuff
+	// load + increment
 	void opc_ldi_hl_a(); //0x22; save A to memory pointed to by HL, HL += 1
 	void opc_ldd_hl_a(); //0x32; save A to memory pointed to by HL, HL -= 1
+	void opc_ldi_a_hl(); //0x2A
+	void opc_ldd_a_hl(); //0x3A
 
 	// increment registers
 	void opc_inc_a(); //0x3C
 	void opc_inc_b(); //0x04
 	void opc_inc_c(); //0x0C
 	void opc_inc_d(); //0x14
-	void opc_inc_e(); //0x
+	void opc_inc_e(); //0x1C
 	void opc_inc_h(); //0x24
-	void opc_inc_l(); //0x
-	void opc_inc_hl(); //0x24
-	void opc_inc_bc(); //0x
+	void opc_inc_l(); //0x2C
+	void opc_inc_bc(); //0x03
 	void opc_inc_de(); //0x13
-	void opc_inc_sp(); //0x
+	void opc_inc_hl(); //0x23
+	void opc_inc_sp(); //0x34
+	void opc_inc_p_hl(); //0x34
+
+	// decrement registers
+	void opc_dec_a(); //0x3D
+	void opc_dec_b(); //0x05
+	void opc_dec_c(); //0x0C
+	void opc_dec_d(); //0x15
+	void opc_dec_e(); //0x1D
+	void opc_dec_h(); //0x25
+	void opc_dec_l(); //0x2D
+	void opc_dec_bc(); //0x0B
+	void opc_dec_de(); //0x1B
+	void opc_dec_hl(); //0x2B
+	void opc_dec_sp(); //0x3B
+	void opc_dec_p_hl(); //0x35
+
+	// add registers
+	void opc_add_a_a(); //0x87
+	void opc_add_a_b(); //0x80
+	void opc_add_a_c(); //0x81
+	void opc_add_a_d(); //0x82
+	void opc_add_a_e(); //0x83
+	void opc_add_a_h(); //0x84
+	void opc_add_a_l(); //0x85
+	void opc_add_a_p_hl(); //0x86
+	void opc_add_a_n(); //0xC6
+
+	// add 16 bits
+	void opc_add_hl_hl(); //0x29
+	void opc_add_hl_bc(); //0x09
+	void opc_add_hl_de(); //0x19
+	void opc_add_hl_sp(); //0x39
+
+	// add with carry
+	void opc_adc_a_a(); //0x8F
+	void opc_adc_a_b(); //0x88
+	void opc_adc_a_c(); //0x89
+	void opc_adc_a_d(); //0x8A
+	void opc_adc_a_e(); //0x8B
+	void opc_adc_a_h(); //0x8C
+	void opc_adc_a_l(); //0x8D
+	void opc_adc_a_p_hl(); //0x8E
+	void opc_adc_a_n(); //0xCE
+
+	// sub registers
+	void opc_sub_a_a(); //0x97
+	void opc_sub_a_b(); //0x90
+	void opc_sub_a_c(); //0x91
+	void opc_sub_a_d(); //0x92
+	void opc_sub_a_e(); //0x93
+	void opc_sub_a_h(); //0x94
+	void opc_sub_a_l(); //0x95
+	void opc_sub_a_p_hl(); //0x96
+	void opc_sub_a_n(); //0xD6
+
+	// sub with carry
+	void opc_sbc_a_a(); //0x9F
+	void opc_sbc_a_b(); //0x98
+	void opc_sbc_a_c(); //0x99
+	void opc_sbc_a_d(); //0x9A
+	void opc_sbc_a_e(); //0x9B
+	void opc_sbc_a_h(); //0x9C
+	void opc_sbc_a_l(); //0x9D
+	void opc_sbc_a_n(); //0xDE
+	void opc_sbc_a_p_hl(); //0x9E
+
+
+	// setting and unsetting flags
+	void set_flag(u8 flag);
+	void unset_flag(u8 flag);
+	bool get_flag(u8 flag);
+
+	// helper functions
+	void add(u8 &a, u8 b); // adding two 8bit values
+	void inc(u8 &val); // incrementing 8bit value
+	void dec(u8 &val); // decrementing 8bit value
+	void add16(u16 &a, u16 b); // adding two 16bit values
+	void inc16(u16 &val); // incrementing 16bit value
+	void dec16(u16 &val); // decrementing 16bit value
+	void adc(u8 &a, u8 b); // adding two 8bit values + carry flag
+	void sub(u8 &a, u8 b); // subtracting b from a, save in a
+	void sbc(u8 &a, u8 b); // subtract with carry
 
 public:
 	void emulate_cycle();

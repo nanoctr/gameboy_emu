@@ -284,8 +284,19 @@ private:
 	void opc_xor_a_e(); //0xAB
 	void opc_xor_a_h(); //0xAC
 	void opc_xor_a_l(); //0xAD
-	void opc_xor_a_n(); //0xF6
+	void opc_xor_a_n(); //0xEE
 	void opc_xor_a_p_hl(); //0xAE
+
+	// compare against a
+	void opc_cp_a_a(); //0xBF
+	void opc_cp_a_b(); //0xB8
+	void opc_cp_a_c(); //0xB9
+	void opc_cp_a_d(); //0xBA
+	void opc_cp_a_e(); //0xBB
+	void opc_cp_a_h(); //0xBC
+	void opc_cp_a_l(); //0xBD
+	void opc_cp_a_p_hl(); //0xBE
+	void opc_cp_a_n(); //0xFE
 
 
 	// setting and unsetting flags
@@ -306,6 +317,7 @@ private:
 	void logical_and(u8 &a, u8 b); // logical AND, save in a
 	void logical_or(u8 &a, u8 b); // logical OR, save in a
 	void logical_xor(u8 &a, u8 b); // logical XOR, save in a
+	void compare(u8 a, u8 b); // compare, set flags accordingly
 
 public:
 	void emulate_cycle();

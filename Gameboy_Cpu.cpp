@@ -750,6 +750,46 @@ void Gameboy_Cpu::opc_xor_a_p_hl() {
 	++pc;
 }
 
+// compare against a
+void Gameboy_Cpu::opc_cp_a_a() {
+	compare(reg.a, reg.a);
+	++pc;
+}
+void Gameboy_Cpu::opc_cp_a_b() {
+	compare(reg.a, reg.b);
+	++pc;
+}
+void Gameboy_Cpu::opc_cp_a_c() {
+	compare(reg.a, reg.c);
+	++pc;
+}
+void Gameboy_Cpu::opc_cp_a_d() {
+	compare(reg.a, reg.d);
+	++pc;
+}
+void Gameboy_Cpu::opc_cp_a_e() {
+	compare(reg.a, reg.e);
+	++pc;
+}
+void Gameboy_Cpu::opc_cp_a_h() {
+	compare(reg.a, reg.h);
+	++pc;
+}
+void Gameboy_Cpu::opc_cp_a_l() {
+	compare(reg.a, reg.l);
+	++pc;
+}
+void Gameboy_Cpu::opc_cp_a_n() {
+	compare(reg.a, memory[pc+1]);
+	pc += 2;
+}
+void Gameboy_Cpu::opc_cp_a_p_hl() {
+	compare(reg.a, memory[reg.hl]);
+	pc += 2;
+}
+
+
+
 
 // helper functions
 
@@ -1003,4 +1043,31 @@ void Gameboy_Cpu::logical_xor(u8 &a, u8 b) {
 	else {
 		unset_flag(ZERO);
 	}
+}
+
+void Gameboy_Cpu::compare(u8 a, u8 b) {
+	// zero flag, equality?
+	if (a == b) {
+		set_flag(ZERO);
+	}
+	else {
+		unset_flag(ZERO);
+	}
+
+	if (b > a) {
+		set_flag(CARRY);
+	}
+	else {
+		unset_flag(CARRY);
+	}
+
+	// half carry flag
+	if ((b & 0x0f) > (a & 0x0f)) {
+		set_flag(HALF_CARRY);
+	}
+	else {
+		unset_flag(HALF_CARRY);
+	}
+	// subtract flag (why the fuck...)
+	set_flag(SUBTRACT);
 }

@@ -788,6 +788,37 @@ void Gameboy_Cpu::opc_cp_a_p_hl() {
 	pc += 2;
 }
 
+// calling subroutine
+void Gameboy_Cpu::opc_call_nn() {
+	call_subroutine((memory[pc+1] << 8) | memory[pc+2]);
+}
+void Gameboy_Cpu::opc_call_nz_nn() {
+	if (!get_flag(ZERO)) {
+		call_subroutine((memory[pc+1] << 8) | memory[pc+2]);
+	}
+}
+void Gameboy_Cpu::opc_call_nc_nn() {
+	if (!get_flag(CARRY)) {
+		call_subroutine((memory[pc+1] << 8) | memory[pc+2]);
+	}
+}
+void Gameboy_Cpu::opc_call_z_nn() {
+	if (get_flag(ZERO)) {
+		call_subroutine((memory[pc+1] << 8) | memory[pc+2]);
+	}
+}
+void Gameboy_Cpu::opc_call_c_nn() {
+	if (get_flag(CARRY)) {
+		call_subroutine((memory[pc+1] << 8) | memory[pc+2]);
+	}
+}
+
+void Gameboy_Cpu::opc_ret() {
+	return_subroutine();
+}
+
+
+
 
 
 
@@ -1070,4 +1101,20 @@ void Gameboy_Cpu::compare(u8 a, u8 b) {
 	}
 	// subtract flag (why the fuck...)
 	set_flag(SUBTRACT);
+}
+
+void Gameboy_Cpu::call_subroutine(u16 address) {
+	// save position in stack
+	sp -= 2;
+	memory[sp] = pc >> 8;
+	memory[sp+1] = pc;
+
+	pc = address;
+}
+
+void Gameboy_Cpu::return_subroutine() {
+	pc = (memory[sp] << 8) | memory[sp+1];
+	sp += 2;
+	//TODO: cinoop doesn't do this...check this
+	pc += 3;
 }

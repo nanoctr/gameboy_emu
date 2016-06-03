@@ -298,6 +298,16 @@ private:
 	void opc_cp_a_p_hl(); //0xBE
 	void opc_cp_a_n(); //0xFE
 
+	// calling subroutine
+	void opc_call_nn(); // 0xCD - call subroutine at nn
+	void opc_call_nz_nn(); //0xC4 - call subroutine if ZERO flag is not set
+	void opc_call_nc_nn(); //0xD4 - call subroutine if CARRY flag ist not set
+	void opc_call_z_nn(); //0xCC - call subroutine if ZERO flag is set
+	void opc_call_c_nn(); //0xDC - call subroutine if CARRY flag is set
+
+	// returning from subroutine
+	void opc_ret(); //C9
+
 
 	// setting and unsetting flags
 	void set_flag(u8 flag);
@@ -318,6 +328,8 @@ private:
 	void logical_or(u8 &a, u8 b); // logical OR, save in a
 	void logical_xor(u8 &a, u8 b); // logical XOR, save in a
 	void compare(u8 a, u8 b); // compare, set flags accordingly
+	void call_subroutine(u16 address); // call subroutine at address
+	void return_subroutine(); // return from subroutine
 
 public:
 	void emulate_cycle();

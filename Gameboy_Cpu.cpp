@@ -1048,6 +1048,80 @@ void Gameboy_Cpu::opc_set_hl_5() { set_bit((u8) reg.hl, 5); }
 void Gameboy_Cpu::opc_set_hl_6() { set_bit((u8) reg.hl, 6); }
 void Gameboy_Cpu::opc_set_hl_7() { set_bit((u8) reg.hl, 7); }
 
+// reset bits
+
+void Gameboy_Cpu::opc_reset_a_0() { reset_bit(reg.a, 0); }
+void Gameboy_Cpu::opc_reset_a_1() { reset_bit(reg.a, 1); }
+void Gameboy_Cpu::opc_reset_a_2() { reset_bit(reg.a, 2); }
+void Gameboy_Cpu::opc_reset_a_3() { reset_bit(reg.a, 3); }
+void Gameboy_Cpu::opc_reset_a_4() { reset_bit(reg.a, 4); }
+void Gameboy_Cpu::opc_reset_a_5() { reset_bit(reg.a, 5); }
+void Gameboy_Cpu::opc_reset_a_6() { reset_bit(reg.a, 6); }
+void Gameboy_Cpu::opc_reset_a_7() { reset_bit(reg.a, 7); }
+
+void Gameboy_Cpu::opc_reset_b_0() { reset_bit(reg.b, 0); }
+void Gameboy_Cpu::opc_reset_b_1() { reset_bit(reg.b, 1); }
+void Gameboy_Cpu::opc_reset_b_2() { reset_bit(reg.b, 2); }
+void Gameboy_Cpu::opc_reset_b_3() { reset_bit(reg.b, 3); }
+void Gameboy_Cpu::opc_reset_b_4() { reset_bit(reg.b, 4); }
+void Gameboy_Cpu::opc_reset_b_5() { reset_bit(reg.b, 5); }
+void Gameboy_Cpu::opc_reset_b_6() { reset_bit(reg.b, 6); }
+void Gameboy_Cpu::opc_reset_b_7() { reset_bit(reg.b, 7); }
+
+void Gameboy_Cpu::opc_reset_c_0() { reset_bit(reg.c, 0); }
+void Gameboy_Cpu::opc_reset_c_1() { reset_bit(reg.c, 1); }
+void Gameboy_Cpu::opc_reset_c_2() { reset_bit(reg.c, 2); }
+void Gameboy_Cpu::opc_reset_c_3() { reset_bit(reg.c, 3); }
+void Gameboy_Cpu::opc_reset_c_4() { reset_bit(reg.c, 4); }
+void Gameboy_Cpu::opc_reset_c_5() { reset_bit(reg.c, 5); }
+void Gameboy_Cpu::opc_reset_c_6() { reset_bit(reg.c, 6); }
+void Gameboy_Cpu::opc_reset_c_7() { reset_bit(reg.c, 7); }
+
+void Gameboy_Cpu::opc_reset_d_0() { reset_bit(reg.d, 0); }
+void Gameboy_Cpu::opc_reset_d_1() { reset_bit(reg.d, 1); }
+void Gameboy_Cpu::opc_reset_d_2() { reset_bit(reg.d, 2); }
+void Gameboy_Cpu::opc_reset_d_3() { reset_bit(reg.d, 3); }
+void Gameboy_Cpu::opc_reset_d_4() { reset_bit(reg.d, 4); }
+void Gameboy_Cpu::opc_reset_d_5() { reset_bit(reg.d, 5); }
+void Gameboy_Cpu::opc_reset_d_6() { reset_bit(reg.d, 6); }
+void Gameboy_Cpu::opc_reset_d_7() { reset_bit(reg.d, 7); }
+
+void Gameboy_Cpu::opc_reset_e_0() { reset_bit(reg.e, 0); }
+void Gameboy_Cpu::opc_reset_e_1() { reset_bit(reg.e, 1); }
+void Gameboy_Cpu::opc_reset_e_2() { reset_bit(reg.e, 2); }
+void Gameboy_Cpu::opc_reset_e_3() { reset_bit(reg.e, 3); }
+void Gameboy_Cpu::opc_reset_e_4() { reset_bit(reg.e, 4); }
+void Gameboy_Cpu::opc_reset_e_5() { reset_bit(reg.e, 5); }
+void Gameboy_Cpu::opc_reset_e_6() { reset_bit(reg.e, 6); }
+void Gameboy_Cpu::opc_reset_e_7() { reset_bit(reg.e, 7); }
+
+void Gameboy_Cpu::opc_reset_h_0() { reset_bit(reg.h, 0); }
+void Gameboy_Cpu::opc_reset_h_1() { reset_bit(reg.h, 1); }
+void Gameboy_Cpu::opc_reset_h_2() { reset_bit(reg.h, 2); }
+void Gameboy_Cpu::opc_reset_h_3() { reset_bit(reg.h, 3); }
+void Gameboy_Cpu::opc_reset_h_4() { reset_bit(reg.h, 4); }
+void Gameboy_Cpu::opc_reset_h_5() { reset_bit(reg.h, 5); }
+void Gameboy_Cpu::opc_reset_h_6() { reset_bit(reg.h, 6); }
+void Gameboy_Cpu::opc_reset_h_7() { reset_bit(reg.h, 7); }
+
+void Gameboy_Cpu::opc_reset_l_0() { reset_bit(reg.l, 0); }
+void Gameboy_Cpu::opc_reset_l_1() { reset_bit(reg.l, 1); }
+void Gameboy_Cpu::opc_reset_l_2() { reset_bit(reg.l, 2); }
+void Gameboy_Cpu::opc_reset_l_3() { reset_bit(reg.l, 3); }
+void Gameboy_Cpu::opc_reset_l_4() { reset_bit(reg.l, 4); }
+void Gameboy_Cpu::opc_reset_l_5() { reset_bit(reg.l, 5); }
+void Gameboy_Cpu::opc_reset_l_6() { reset_bit(reg.l, 6); }
+void Gameboy_Cpu::opc_reset_l_7() { reset_bit(reg.l, 7); }
+
+void Gameboy_Cpu::opc_reset_hl_0() { reset_bit((u8) reg.hl, 0); }
+void Gameboy_Cpu::opc_reset_hl_1() { reset_bit((u8) reg.hl, 1); }
+void Gameboy_Cpu::opc_reset_hl_2() { reset_bit((u8) reg.hl, 2); }
+void Gameboy_Cpu::opc_reset_hl_3() { reset_bit((u8) reg.hl, 3); }
+void Gameboy_Cpu::opc_reset_hl_4() { reset_bit((u8) reg.hl, 4); }
+void Gameboy_Cpu::opc_reset_hl_5() { reset_bit((u8) reg.hl, 5); }
+void Gameboy_Cpu::opc_reset_hl_6() { reset_bit((u8) reg.hl, 6); }
+void Gameboy_Cpu::opc_reset_hl_7() { reset_bit((u8) reg.hl, 7); }
+
 
 
 
@@ -1349,9 +1423,6 @@ void Gameboy_Cpu::return_subroutine() {
 	//TODO: cinoop doesn't do this...check this
 	pc += 3;
 }
-void Gameboy_Cpu::reset_bit(u8 &reg, u8 bit) {
-	reg &= ~(1 << bit);
-}
 void Gameboy_Cpu::test_bit(u8 &reg, u8 bit) {
 	bool result = reg & (1 << bit);
 
@@ -1381,4 +1452,7 @@ void Gameboy_Cpu::test_bit16(u16 &reg, u8 bit) {
 
 void Gameboy_Cpu::set_bit(u8 &reg, u8 bit) {
 	reg |= 1 << bit;
+}
+void Gameboy_Cpu::reset_bit(u8 &reg, u8 bit) {
+	reg &= ~(1 << bit);
 }

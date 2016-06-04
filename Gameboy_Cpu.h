@@ -477,6 +477,79 @@ private:
 	void opc_set_hl_6(); //0xF6
 	void opc_set_hl_7(); //0xFE
 
+	// resetting bits
+	void opc_reset_a_0(); //0xC7
+	void opc_reset_a_1(); //0xCF
+	void opc_reset_a_2(); //0xD7
+	void opc_reset_a_3(); //0xDF
+	void opc_reset_a_4(); //0xE7
+	void opc_reset_a_5(); //0xEF
+	void opc_reset_a_6(); //0xF7
+	void opc_reset_a_7(); //0xFF
+
+	void opc_reset_b_0(); //0xC0
+	void opc_reset_b_1(); //0xC8
+	void opc_reset_b_2(); //0xD0
+	void opc_reset_b_3(); //0xD8
+	void opc_reset_b_4(); //0xE0
+	void opc_reset_b_5(); //0xE8
+	void opc_reset_b_6(); //0xF0
+	void opc_reset_b_7(); //0xF8
+
+	void opc_reset_c_0(); //0xC1
+	void opc_reset_c_1(); //0xC9
+	void opc_reset_c_2(); //0xD1
+	void opc_reset_c_3(); //0xD9
+	void opc_reset_c_4(); //0xE1
+	void opc_reset_c_5(); //0xE9
+	void opc_reset_c_6(); //0xF1
+	void opc_reset_c_7(); //0xF9
+
+	void opc_reset_d_0(); //0xC2
+	void opc_reset_d_1(); //0xCA
+	void opc_reset_d_2(); //0xD2
+	void opc_reset_d_3(); //0xDA
+	void opc_reset_d_4(); //0xE2
+	void opc_reset_d_5(); //0xEA
+	void opc_reset_d_6(); //0xF2
+	void opc_reset_d_7(); //0xFA
+
+	void opc_reset_e_0(); //0xC3
+	void opc_reset_e_1(); //0xCB
+	void opc_reset_e_2(); //0xD3
+	void opc_reset_e_3(); //0xDB
+	void opc_reset_e_4(); //0xE3
+	void opc_reset_e_5(); //0xEB
+	void opc_reset_e_6(); //0xF3
+	void opc_reset_e_7(); //0xFB
+
+	void opc_reset_h_0(); //0xC4
+	void opc_reset_h_1(); //0xCC
+	void opc_reset_h_2(); //0xD4
+	void opc_reset_h_3(); //0xDC
+	void opc_reset_h_4(); //0xE4
+	void opc_reset_h_5(); //0xEC
+	void opc_reset_h_6(); //0xF4
+	void opc_reset_h_7(); //0xFC
+
+	void opc_reset_l_0(); //0xC5
+	void opc_reset_l_1(); //0xCD
+	void opc_reset_l_2(); //0xD5
+	void opc_reset_l_3(); //0xDD
+	void opc_reset_l_4(); //0xE5
+	void opc_reset_l_5(); //0xED
+	void opc_reset_l_6(); //0xF5
+	void opc_reset_l_7(); //0xFD
+
+	void opc_reset_hl_0(); //0xC6
+	void opc_reset_hl_1(); //0xCE
+	void opc_reset_hl_2(); //0xD6
+	void opc_reset_hl_3(); //0xDE
+	void opc_reset_hl_4(); //0xE6
+	void opc_reset_hl_5(); //0xEE
+	void opc_reset_hl_6(); //0xF6
+	void opc_reset_hl_7(); //0xFE
+
 
 	// setting and unsetting flags
 	void set_flag(u8 flag);

@@ -719,39 +719,39 @@ void Gameboy_Cpu::opc_or_a_p_hl() {
 
 // logical XOR
 void Gameboy_Cpu::opc_xor_a_a() {
-	logical_or(reg.a, reg.a);
+	logical_xor(reg.a, reg.a);
 	++pc;
 }
 void Gameboy_Cpu::opc_xor_a_b() {
-	logical_or(reg.a, reg.b);
+	logical_xor(reg.a, reg.b);
 	++pc;
 }
 void Gameboy_Cpu::opc_xor_a_c() {
-	logical_or(reg.a, reg.c);
+	logical_xor(reg.a, reg.c);
 	++pc;
 }
 void Gameboy_Cpu::opc_xor_a_d() {
-	logical_or(reg.a, reg.d);
+	logical_xor(reg.a, reg.d);
 	++pc;
 }
 void Gameboy_Cpu::opc_xor_a_e() {
-	logical_or(reg.a, reg.e);
+	logical_xor(reg.a, reg.e);
 	++pc;
 }
 void Gameboy_Cpu::opc_xor_a_h() {
-	logical_or(reg.a, reg.h);
+	logical_xor(reg.a, reg.h);
 	++pc;
 }
 void Gameboy_Cpu::opc_xor_a_l() {
-	logical_or(reg.a, reg.l);
+	logical_xor(reg.a, reg.l);
 	++pc;
 }
 void Gameboy_Cpu::opc_xor_a_n() {
-	logical_or(reg.a, memory[pc+1]);
+	logical_xor(reg.a, memory[pc+1]);
 	pc += 2;
 }
 void Gameboy_Cpu::opc_xor_a_p_hl() {
-	logical_or(reg.a, memory[reg.hl]);
+	logical_xor(reg.a, memory[reg.hl]);
 	++pc;
 }
 
@@ -973,7 +973,6 @@ void Gameboy_Cpu::opc_bit_hl_5() { test_bit16(reg.hl, 5); }
 void Gameboy_Cpu::opc_bit_hl_6() { test_bit16(reg.hl, 6); }
 void Gameboy_Cpu::opc_bit_hl_7() { test_bit16(reg.hl, 7); }
 
-
 // set bits
 
 void Gameboy_Cpu::opc_set_a_0() { set_bit(reg.a, 0); }
@@ -1123,7 +1122,145 @@ void Gameboy_Cpu::opc_reset_hl_6() { reset_bit((u8) reg.hl, 6); }
 void Gameboy_Cpu::opc_reset_hl_7() { reset_bit((u8) reg.hl, 7); }
 
 
+// bitshift right
 
+void Gameboy_Cpu::opc_srl_a() {
+	shift_right(reg.a);
+	++pc;
+}
+void Gameboy_Cpu::opc_srl_b() {
+	shift_right(reg.b);
+	++pc;
+}
+void Gameboy_Cpu::opc_srl_c() {
+	shift_right(reg.c);
+	++pc;
+}
+void Gameboy_Cpu::opc_srl_d() {
+	shift_right(reg.d);
+	++pc;
+}
+void Gameboy_Cpu::opc_srl_e() {
+	shift_right(reg.e);
+	++pc;
+}
+void Gameboy_Cpu::opc_srl_h() {
+	shift_right(reg.h);
+	++pc;
+}
+void Gameboy_Cpu::opc_srl_l() {
+	shift_right(reg.l);
+	++pc;
+}
+void Gameboy_Cpu::opc_srl_p_hl() {
+	shift_right(memory[reg.hl]);
+	++pc;
+}
+
+// bitshift right, preserve sign
+
+void Gameboy_Cpu::opc_sra_a() {
+	shift_right_preserve_sign(reg.a);
+	++pc;
+}
+void Gameboy_Cpu::opc_sra_b() {
+	shift_right_preserve_sign(reg.b);
+	++pc;
+}
+void Gameboy_Cpu::opc_sra_c() {
+	shift_right_preserve_sign(reg.c);
+	++pc;
+}
+void Gameboy_Cpu::opc_sra_d() {
+	shift_right_preserve_sign(reg.d);
+	++pc;
+}
+void Gameboy_Cpu::opc_sra_e() {
+	shift_right_preserve_sign(reg.e);
+	++pc;
+}
+void Gameboy_Cpu::opc_sra_h() {
+	shift_right_preserve_sign(reg.h);
+	++pc;
+}
+void Gameboy_Cpu::opc_sra_l() {
+	shift_right_preserve_sign(reg.l);
+	++pc;
+}
+void Gameboy_Cpu::opc_sra_p_hl() {
+	shift_right_preserve_sign(memory[reg.hl]);
+	++pc;
+}
+
+// bitshift left, preserve sign
+
+void Gameboy_Cpu::opc_sla_a() {
+	shift_left_preserve_sign(reg.a);
+	++pc;
+}
+void Gameboy_Cpu::opc_sla_b() {
+	shift_left_preserve_sign(reg.b);
+	++pc;
+}
+void Gameboy_Cpu::opc_sla_c() {
+	shift_left_preserve_sign(reg.c);
+	++pc;
+}
+void Gameboy_Cpu::opc_sla_d() {
+	shift_left_preserve_sign(reg.d);
+	++pc;
+}
+void Gameboy_Cpu::opc_sla_e() {
+	shift_left_preserve_sign(reg.e);
+	++pc;
+}
+void Gameboy_Cpu::opc_sla_h() {
+	shift_left_preserve_sign(reg.h);
+	++pc;
+}
+void Gameboy_Cpu::opc_sla_l() {
+	shift_left_preserve_sign(reg.l);
+	++pc;
+}
+void Gameboy_Cpu::opc_sla_p_hl() {
+	shift_left_preserve_sign(memory[reg.hl]);
+	++pc;
+}
+
+// swap nybbles
+
+void Gameboy_Cpu::swap_a() {
+	swap(reg.a);
+	++pc;
+}
+void Gameboy_Cpu::swap_b() {
+	swap(reg.b);
+	++pc;
+}
+void Gameboy_Cpu::swap_c() {
+	swap(reg.c);
+	++pc;
+}
+void Gameboy_Cpu::swap_d() {
+	swap(reg.d);
+	++pc;
+}
+void Gameboy_Cpu::swap_e() {
+	swap(reg.e);
+	++pc;
+}
+void Gameboy_Cpu::swap_h() {
+	swap(reg.h);
+	++pc;
+}
+void Gameboy_Cpu::swap_l() {
+	swap(reg.l);
+	++pc;
+}
+void Gameboy_Cpu::swap_p_hl() {
+	swap(memory[reg.hl]);
+	++pc;
+}
 
 
 
@@ -1139,7 +1276,7 @@ void Gameboy_Cpu::set_flag(u8 flag) {
 		default: std::cout << "ERROR: invalid value for flag to be set.";
 	}
 }
-void Gameboy_Cpu::unset_flag(u8 flag) {
+void Gameboy_Cpu::reset_flag(u8 flag) {
 	switch (flag)
 	{
 		case 4: reg.f &= ~(1 << 4); break;
@@ -1167,7 +1304,7 @@ void Gameboy_Cpu::add(u8 &a, u8 b) {
 		set_flag(CARRY);
 	}
 	else {
-		unset_flag(CARRY);
+		reset_flag(CARRY);
 	}
 
 	a = (u8) (result & 0xff);
@@ -1182,11 +1319,11 @@ void Gameboy_Cpu::add(u8 &a, u8 b) {
 		set_flag(ZERO);
 	}
 	else {
-		unset_flag(ZERO);
+		reset_flag(ZERO);
 	}
 
 	// unset subtraction flag
-	unset_flag(SUBTRACT);
+	reset_flag(SUBTRACT);
 
 	++pc;
 }
@@ -1197,7 +1334,7 @@ void Gameboy_Cpu::add16(u16 &a, u16 b) {
 		set_flag(CARRY);
 	}
 	else {
-		unset_flag(CARRY);
+		reset_flag(CARRY);
 	}
 
 	a = (u16) (result & 0xFFFF);
@@ -1207,17 +1344,17 @@ void Gameboy_Cpu::add16(u16 &a, u16 b) {
 		set_flag(HALF_CARRY);
 	}
 	else {
-		unset_flag(HALF_CARRY);
+		reset_flag(HALF_CARRY);
 	}
 
 	if (result == 0) {
 		set_flag(ZERO);
 	}
 	else {
-		unset_flag(ZERO);
+		reset_flag(ZERO);
 	}
 
-	unset_flag(SUBTRACT);
+	reset_flag(SUBTRACT);
 }
 
 //TODO: pass this shit by value
@@ -1226,23 +1363,23 @@ void Gameboy_Cpu::inc(u8 &val) {
 		set_flag(HALF_CARRY);
 	}
 	else {
-		unset_flag(HALF_CARRY);
+		reset_flag(HALF_CARRY);
 	}
 
 	++val;
 
 	if (val) {
-		unset_flag(ZERO);
+		reset_flag(ZERO);
 	}
 	else {
 		set_flag(ZERO);
 	}
 
-	unset_flag(SUBTRACT);
+	reset_flag(SUBTRACT);
 }
 void Gameboy_Cpu::dec(u8 &val) {
 	if (val & 0x0f) {
-		unset_flag(HALF_CARRY);
+		reset_flag(HALF_CARRY);
 	}
 	else {
 		set_flag(HALF_CARRY);
@@ -1251,7 +1388,7 @@ void Gameboy_Cpu::dec(u8 &val) {
 	--val;
 
 	if (val) {
-		unset_flag(ZERO);
+		reset_flag(ZERO);
 	}
 	else {
 		set_flag(ZERO);
@@ -1262,7 +1399,7 @@ void Gameboy_Cpu::dec(u8 &val) {
 // TODO: check this, not sure about the way this is supposed to work
 void Gameboy_Cpu::dec16(u16 &val) {
 	if (val & 0x000f) {
-		unset_flag(HALF_CARRY);
+		reset_flag(HALF_CARRY);
 	}
 	else {
 		set_flag(HALF_CARRY);
@@ -1271,7 +1408,7 @@ void Gameboy_Cpu::dec16(u16 &val) {
 	--val;
 
 	if (val) {
-		unset_flag(ZERO);
+		reset_flag(ZERO);
 	}
 	else {
 		set_flag(ZERO);
@@ -1284,19 +1421,19 @@ void Gameboy_Cpu::inc16(u16 &val) {
 		set_flag(HALF_CARRY);
 	}
 	else {
-		unset_flag(HALF_CARRY);
+		reset_flag(HALF_CARRY);
 	}
 
 	++val;
 
 	if (val) {
-		unset_flag(ZERO);
+		reset_flag(ZERO);
 	}
 	else {
 		set_flag(ZERO);
 	}
 
-	unset_flag(ZERO);
+	reset_flag(ZERO);
 }
 
 void Gameboy_Cpu::adc(u8 &a, u8 b) {
@@ -1310,7 +1447,7 @@ void Gameboy_Cpu::sub(u8 &a, u8 b) {
 		set_flag(CARRY);
 	}
 	else {
-		unset_flag(CARRY);
+		reset_flag(CARRY);
 	}
 
 	// set half carry flag
@@ -1318,7 +1455,7 @@ void Gameboy_Cpu::sub(u8 &a, u8 b) {
 		set_flag(HALF_CARRY);
 	}
 	else {
-		unset_flag(HALF_CARRY);
+		reset_flag(HALF_CARRY);
 	}
 
 	// compute and store result
@@ -1329,7 +1466,7 @@ void Gameboy_Cpu::sub(u8 &a, u8 b) {
 		set_flag(ZERO);
 	}
 	else {
-		unset_flag(ZERO);
+		reset_flag(ZERO);
 	}
 
 	// set subtract flag
@@ -1341,8 +1478,8 @@ void Gameboy_Cpu::sbc(u8 &a, u8 b) {
 }
 
 void Gameboy_Cpu::logical_and(u8 &a, u8 b) {
-	unset_flag(CARRY);
-	unset_flag(SUBTRACT);
+	reset_flag(CARRY);
+	reset_flag(SUBTRACT);
 	set_flag(HALF_CARRY);
 
 	a &= b;
@@ -1350,34 +1487,34 @@ void Gameboy_Cpu::logical_and(u8 &a, u8 b) {
 		set_flag(ZERO);
 	}
 	else {
-		unset_flag(ZERO);
+		reset_flag(ZERO);
 	}
 }
 
 void Gameboy_Cpu::logical_or(u8 &a, u8 b) {
-	unset_flag(CARRY);
-	unset_flag(HALF_CARRY);
-	unset_flag(SUBTRACT);
+	reset_flag(CARRY);
+	reset_flag(HALF_CARRY);
+	reset_flag(SUBTRACT);
 
 	a |= b;
 	if (a == 0) {
 		set_flag(ZERO);
 	}
 	else {
-		unset_flag(ZERO);
+		reset_flag(ZERO);
 	}
 }
 void Gameboy_Cpu::logical_xor(u8 &a, u8 b) {
-	unset_flag(CARRY);
-	unset_flag(HALF_CARRY);
-	unset_flag(SUBTRACT);
+	reset_flag(CARRY);
+	reset_flag(HALF_CARRY);
+	reset_flag(SUBTRACT);
 
 	a ^= b;
 	if (a == 0) {
 		set_flag(ZERO);
 	}
 	else {
-		unset_flag(ZERO);
+		reset_flag(ZERO);
 	}
 }
 
@@ -1387,14 +1524,14 @@ void Gameboy_Cpu::compare(u8 a, u8 b) {
 		set_flag(ZERO);
 	}
 	else {
-		unset_flag(ZERO);
+		reset_flag(ZERO);
 	}
 
 	if (b > a) {
 		set_flag(CARRY);
 	}
 	else {
-		unset_flag(CARRY);
+		reset_flag(CARRY);
 	}
 
 	// half carry flag
@@ -1402,7 +1539,7 @@ void Gameboy_Cpu::compare(u8 a, u8 b) {
 		set_flag(HALF_CARRY);
 	}
 	else {
-		unset_flag(HALF_CARRY);
+		reset_flag(HALF_CARRY);
 	}
 	// subtract flag (why the fuck...)
 	set_flag(SUBTRACT);
@@ -1430,10 +1567,10 @@ void Gameboy_Cpu::test_bit(u8 &reg, u8 bit) {
 		set_flag(ZERO);
 	}
 	else {
-		unset_flag(ZERO);
+		reset_flag(ZERO);
 	}
 
-	unset_flag(SUBTRACT);
+	reset_flag(SUBTRACT);
 	set_flag(HALF_CARRY);
 }
 void Gameboy_Cpu::test_bit16(u16 &reg, u8 bit) {
@@ -1443,10 +1580,10 @@ void Gameboy_Cpu::test_bit16(u16 &reg, u8 bit) {
 		set_flag(ZERO);
 	}
 	else {
-		unset_flag(ZERO);
+		reset_flag(ZERO);
 	}
 
-	unset_flag(SUBTRACT);
+	reset_flag(SUBTRACT);
 	set_flag(HALF_CARRY);
 }
 
@@ -1455,4 +1592,92 @@ void Gameboy_Cpu::set_bit(u8 &reg, u8 bit) {
 }
 void Gameboy_Cpu::reset_bit(u8 &reg, u8 bit) {
 	reg &= ~(1 << bit);
+}
+
+void Gameboy_Cpu::shift_right(u8 &reg) {
+	reset_flag(HALF_CARRY);
+	reset_flag(SUBTRACT);
+
+	// if least bit is 1 - set carry flag
+	if (reg & 0x01) {
+		set_flag(CARRY);
+	}
+	else {
+		reset_flag(CARRY);
+	}
+
+	reg >>= 1;
+
+	if (!reg) {
+		set_flag(ZERO);
+	}
+	else {
+		reset_flag(ZERO);
+	}
+}
+void Gameboy_Cpu::shift_right_preserve_sign(u8 &reg) {
+	reset_flag(HALF_CARRY);
+	reset_flag(SUBTRACT);
+
+	// if least bit is 1 - set carry flag
+	if (reg & 0x01) {
+		set_flag(CARRY);
+	}
+	else {
+		reset_flag(CARRY);
+	}
+
+	reg = (reg & 0x80) | (reg >> 1);
+	reg >>= 1;
+
+	if (!reg) {
+		set_flag(ZERO);
+	}
+	else {
+		reset_flag(ZERO);
+	}
+}
+void Gameboy_Cpu::shift_left_preserve_sign(u8 &reg) {
+	reset_flag(HALF_CARRY);
+	reset_flag(SUBTRACT);
+
+	if (reg & 0x80) {
+		set_flag(CARRY);
+	}
+	else {
+		reset_flag(CARRY);
+	}
+
+	reg <<= 1;
+
+	if (!reg) {
+		set_flag(ZERO);
+	}
+	else {
+		reset_flag(ZERO);
+	}
+}
+
+void Gameboy_Cpu::swap(u8 &reg) {
+	set_flag(CARRY);
+	set_flag(HALF_CARRY);
+	set_flag(SUBTRACT);
+
+	// copy right nybble
+	u8 original = reg & 0x0F;
+	// shift right to left nybble
+	original <<= 4;
+
+	// shift left to right nybble
+	reg >>= 4;
+
+	// OR / combine both
+	reg |= original;
+
+	if (!reg) {
+		set_flag(ZERO);
+	}
+	else {
+		reset_flag(ZERO);
+	}
 }

@@ -550,10 +550,50 @@ private:
 	void opc_reset_hl_6(); //0xF6
 	void opc_reset_hl_7(); //0xFE
 
+	// bit shifts
+	void opc_srl_a(); //0x3F
+	void opc_srl_b(); //0x38
+	void opc_srl_c(); //0x39
+	void opc_srl_d(); //0x3A
+	void opc_srl_e(); //0x3B
+	void opc_srl_h(); //0x3C
+	void opc_srl_l(); //0x3D
+	void opc_srl_p_hl(); //0x3E
+
+	// bitshift right, preserve sign
+	void opc_sra_a(); //0x2F
+	void opc_sra_b(); //0x28
+	void opc_sra_c(); //0x29
+	void opc_sra_d(); //0x2A
+	void opc_sra_e(); //0x2B
+	void opc_sra_h(); //0x2C
+	void opc_sra_l(); //0x2D
+	void opc_sra_p_hl(); //0x2E
+
+	// bitshift left, preserve sign
+	void opc_sla_a(); //0x27
+	void opc_sla_b(); //0x20
+	void opc_sla_c(); //0x21
+	void opc_sla_d(); //0x22
+	void opc_sla_e(); //0x23
+	void opc_sla_h(); //0x24
+	void opc_sla_l(); //0x25
+	void opc_sla_p_hl(); //0x26
+
+	// swap nybbles
+	void swap_a(); //0x37
+	void swap_b(); //0x30
+	void swap_c(); //0x31
+	void swap_d(); //0x32
+	void swap_e(); //0x33
+	void swap_h(); //0x34
+	void swap_l(); //0x35
+	void swap_p_hl(); //0x36
+
 
 	// setting and unsetting flags
 	void set_flag(u8 flag);
-	void unset_flag(u8 flag);
+	void reset_flag(u8 flag);
 	bool get_flag(u8 flag);
 
 	// helper functions
@@ -576,6 +616,11 @@ private:
 	void test_bit(u8 &reg, u8 bit); // test bit at position bit in register
 	void test_bit16(u16 &reg, u8 bit); // test, 16 bit version
 	void set_bit(u8 &reg, u8 bit); // set bit at position bit in register
+	void shift_right(u8 &reg); // shift reg right by amount
+	void shift_right_preserve_sign(u8 &reg); // shift right, preserve the sign
+	void shift_left_preserve_sign(u8 &reg); // shift left, preserve the sign
+	void swap(u8 &reg); // swap nybbles in reg
+
 public:
 	void emulate_cycle();
 	void startup();

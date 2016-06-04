@@ -80,6 +80,8 @@ u8 memory[0xFFFF];
 
 u8 video_memory[256][256];
 
+bool running = true; // used for CPU interrupts
+
 
 
 
@@ -671,6 +673,11 @@ private:
 	void jr_c_n(); //0x38 - if CARRY is set
 	void jr_nz_n(); //0x20 - if ZERO is NOT set
 	void jr_nc_n(); //0x30 - if CARRY is NOT set
+
+	// no operation
+	void nop(); //0x00
+	// STOP CPU
+	void stop(); //0x10
 
 	// setting and unsetting flags
 	void set_flag(u8 flag);

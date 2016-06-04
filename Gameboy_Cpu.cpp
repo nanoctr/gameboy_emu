@@ -1452,6 +1452,8 @@ void Gameboy_Cpu::pop_af() {
 	++pc;
 }
 
+// load at 0xFF00 + n
+
 // load A from 0xFF00 + n
 void Gameboy_Cpu::ldh_a_p_n() {
 	reg.a = memory[0xFF00 | memory[pc+1]];
@@ -1467,6 +1469,9 @@ void Gameboy_Cpu::ldh_p_c_a() {
 	memory[0xFF00 | reg.c] = reg.a;
 	pc += 2;
 }
+
+// MISC:
+
 // save A at nn
 void Gameboy_Cpu::ld_p_nn_a() {
 	// get nn from memory
@@ -1522,6 +1527,7 @@ void Gameboy_Cpu::cpl() {
 }
 
 // relative jump by n
+
 void Gameboy_Cpu::jr_n() {
 	relative_jump(memory[pc+1]);
 	pc += 2;
@@ -1550,6 +1556,19 @@ void Gameboy_Cpu::jr_nc_n() {
 	}
 	pc += 2;
 }
+
+// no operation
+void Gameboy_Cpu::nop() {
+	++pc;
+}
+
+// stop CPU
+void Gameboy_Cpu::stop() {
+	running = false;
+	++pc;
+}
+
+
 
 // helper functions
 

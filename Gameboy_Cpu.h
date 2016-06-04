@@ -643,6 +643,35 @@ private:
 	void pop_af(); //0xF1
 
 
+	// Misc:
+	// load A from 0xFF00 + n
+	void ldh_a_p_n(); //0xF0
+	// save A at 0xFF00 + n
+	void ldh_p_n_a(); //0xE0
+	// save A at 0xFF00 + C
+	void ldh_p_c_a(); //0xE2
+	// save A at nn
+	void ld_p_nn_a(); //0xEA
+	// save SP at nn
+	void ld_p_nn_sp(); //0x08
+	// copy HL to SP
+	void ld_sp_hl(); //0xF9
+	// add signed n to SP, save result in HL
+	void ldhl_sp_n(); //F8
+	// clear carry flag
+	void ccf(); //0x3F
+	// set carry flag
+	void scf(); //0x37
+	// compliment (logical NOT) on A
+	void cpl(); //0x2F
+
+	// relative jump by n
+	void jr_n(); //0x18
+	void jr_z_n(); //0x28 - if ZERO is set
+	void jr_c_n(); //0x38 - if CARRY is set
+	void jr_nz_n(); //0x20 - if ZERO is NOT set
+	void jr_nc_n(); //0x30 - if CARRY is NOT set
+
 	// setting and unsetting flags
 	void set_flag(u8 flag);
 	void reset_flag(u8 flag);
@@ -665,9 +694,11 @@ private:
 	void call_subroutine(u16 address); // call subroutine at address
 	void return_subroutine(); // return from subroutine
 	void reset_bit(u8 &reg, u8 bit); // reset bit at position bit in register
+	void reset_bit16(u16 &reg, u8 bit); // same, 16 bit version
 	void test_bit(u8 &reg, u8 bit); // test bit at position bit in register
 	void test_bit16(u16 &reg, u8 bit); // test, 16 bit version
 	void set_bit(u8 &reg, u8 bit); // set bit at position bit in register
+	void set_bit16(u16 &reg, u8 bit); // same, 16 bit version
 	void shift_right(u8 &reg); // shift reg right by amount
 	void shift_right_preserve_sign(u8 &reg); // shift right, preserve the sign
 	void shift_left_preserve_sign(u8 &reg); // shift left, preserve the sign
@@ -678,6 +709,7 @@ private:
 	void rotate_left_carry(u8 &reg); // same
 	void push(u16 value); // push value onto stack
 	void pop(u16 &reg); // pop stack at SP into reg
+	void relative_jump(char value); // relative jump by value
 
 
 public:

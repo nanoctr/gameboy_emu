@@ -630,6 +630,18 @@ private:
 	void rlc_l(); //0x05
 	void rlc_p_hl(); //0x06
 
+	// push 16bit onto stack
+	void push_bc(); //0xC5
+	void push_de(); //0xD5
+	void push_hl(); //0xE5
+	void push_af(); //0xF5
+
+	// pop 16bit from stack into register
+	void pop_bc(); //0xC1
+	void pop_de(); //0xD1
+	void pop_hl(); //0xE1
+	void pop_af(); //0xF1
+
 
 	// setting and unsetting flags
 	void set_flag(u8 flag);
@@ -664,6 +676,8 @@ private:
 	void rotate_left(u8 &reg); // rotate left by one bit, through carry flag
 	void rotate_right_carry(u8 &reg); // rotate right by one bit, jesus christ, this is the only real rotation, fuck this shit
 	void rotate_left_carry(u8 &reg); // same
+	void push(u16 value); // push value onto stack
+	void pop(u16 &reg); // pop stack at SP into reg
 
 
 public:

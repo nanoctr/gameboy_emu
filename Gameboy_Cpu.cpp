@@ -1414,6 +1414,44 @@ void Gameboy_Cpu::rlc_p_hl() {
 	++pc;
 }
 
+// push 16bit onto stack
+
+void Gameboy_Cpu::push_bc() {
+	push(reg.bc);
+	++pc;
+}
+void Gameboy_Cpu::push_de() {
+	push(reg.de);
+	++pc;
+}
+void Gameboy_Cpu::push_hl() {
+	push(reg.hl);
+	++pc;
+}
+void Gameboy_Cpu::push_af() {
+	push(reg.af);
+	++pc;
+}
+
+// pop 16bit from stack into register
+
+void Gameboy_Cpu::pop_bc() {
+	pop(reg.bc);
+	++pc;
+}
+void Gameboy_Cpu::pop_de() {
+	pop(reg.de);
+	++pc;
+}
+void Gameboy_Cpu::pop_hl() {
+	pop(reg.hl);
+	++pc;
+}
+void Gameboy_Cpu::pop_af() {
+	pop(reg.af);
+	++pc;
+}
+
 
 
 // helper functions
@@ -1918,4 +1956,15 @@ void Gameboy_Cpu::rotate_left_carry(u8 &reg) {
 	else {
 		reset_flag(ZERO);
 	}
+}
+
+void Gameboy_Cpu::push(u16 value) {
+	sp -= 2;
+	memory[sp] = value >> 8;
+	memory[sp+1] = value;
+}
+
+void Gameboy_Cpu::pop(u16 &reg) {
+	reg = (memory[sp] << 8) | memory[sp+1];
+	sp += 2;
 }

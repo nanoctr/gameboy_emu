@@ -590,6 +590,46 @@ private:
 	void swap_l(); //0x35
 	void swap_p_hl(); //0x36
 
+	// rotate right
+	void rr_a(); //0x1F
+	void rr_b(); //0x18
+	void rr_c(); //0x19
+	void rr_d(); //0x1A
+	void rr_e(); //0x1B
+	void rr_h(); //0x1C
+	void rr_l(); //0x1D
+	void rr_p_hl(); //0x1E
+
+	// rotate left
+	void rl_a(); //0x17
+	void rl_b(); //0x10
+	void rl_c(); //0x11
+	void rl_d(); //0x12
+	void rl_e(); //0x13
+	void rl_h(); //0x14
+	void rl_l(); //0x15
+	void rl_p_hl(); //0x16
+
+	// rotate right carry
+	void rrc_a(); //0x0F
+	void rrc_b(); //0x08
+	void rrc_c(); //0x09
+	void rrc_d(); //0x0A
+	void rrc_e(); //0x0B
+	void rrc_h(); //0x0C
+	void rrc_l(); //0x0D
+	void rrc_p_hl(); //0x0E
+
+	// rotate left carry
+	void rlc_a(); //0x07
+	void rlc_b(); //0x00
+	void rlc_c(); //0x01
+	void rlc_d(); //0x02
+	void rlc_e(); //0x03
+	void rlc_h(); //0x04
+	void rlc_l(); //0x05
+	void rlc_p_hl(); //0x06
+
 
 	// setting and unsetting flags
 	void set_flag(u8 flag);
@@ -620,6 +660,11 @@ private:
 	void shift_right_preserve_sign(u8 &reg); // shift right, preserve the sign
 	void shift_left_preserve_sign(u8 &reg); // shift left, preserve the sign
 	void swap(u8 &reg); // swap nybbles in reg
+	void rotate_right(u8 &reg); // rotate right by one bit, through carry flag
+	void rotate_left(u8 &reg); // rotate left by one bit, through carry flag
+	void rotate_right_carry(u8 &reg); // rotate right by one bit, jesus christ, this is the only real rotation, fuck this shit
+	void rotate_left_carry(u8 &reg); // same
+
 
 public:
 	void emulate_cycle();

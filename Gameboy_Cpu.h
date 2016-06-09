@@ -5,6 +5,8 @@
 #ifndef GAMEBOY_EMU_GAMEBOY_CPU_H
 #define GAMEBOY_EMU_GAMEBOY_CPU_H
 
+#include <bits/unordered_map.h>
+
 typedef unsigned char u8;
 typedef unsigned short u16;
 
@@ -57,6 +59,20 @@ struct registers {
 	};
 };
 
+// Opcode struct, stores function pointer, ticks and so on
+struct Opcode
+{
+	Opcode(void (*opcode_function)()) : opcode_function(opcode_function) { }
+
+// Function pointer to opcode function/
+	void (*opcode_function)();
+	// ticks
+};
+
+// Opcode structs saved in hashmap: Key[opcode_byte] -> Value[Opcode_struct]
+std::unordered_map<u8, Opcode> opcodes;
+std::unordered_map<u8, Opcode> extended_opcodes;
+
 // stack pointer and program counter
 u16 sp;
 u16 pc;
@@ -88,6 +104,11 @@ bool running = true; // used for CPU interrupts
 class Gameboy_Cpu {
 private:
 	registers reg;
+
+	// populate opcodes hashmaps
+	void load_opcodes();
+	void load_extended_opcodes();
+
 	// load n into register:
 	void opc_ld_a_n(); //0x3E
 	void opc_ld_b_n(); //0x06
@@ -334,350 +355,350 @@ private:
 	void opc_rst_38(); //0xFF
 
 	// 2 byte opcodes:
-	void opc_bit_a_0();//0x47
-	void opc_bit_a_1();//0x4F
-	void opc_bit_a_2();//0x57
-	void opc_bit_a_3();//0x5F
-	void opc_bit_a_4();//0x67
-	void opc_bit_a_5();//0x6F
-	void opc_bit_a_6();//0x77
-	void opc_bit_a_7();//0x7F
+	void opc_bit_a_0();//+0x47
+	void opc_bit_a_1();//+0x4F
+	void opc_bit_a_2();//+0x57
+	void opc_bit_a_3();//+0x5F
+	void opc_bit_a_4();//+0x67
+	void opc_bit_a_5();//+0x6F
+	void opc_bit_a_6();//+0x77
+	void opc_bit_a_7();//+0x7F
 
-	void opc_bit_b_0();//0x40
-	void opc_bit_b_1();//0x48
-	void opc_bit_b_2();//0x50
-	void opc_bit_b_3();//0x58
-	void opc_bit_b_4();//0x60
-	void opc_bit_b_5();//0x68
-	void opc_bit_b_6();//0x70
-	void opc_bit_b_7();//0x78
+	void opc_bit_b_0();//+0x40
+	void opc_bit_b_1();//+0x48
+	void opc_bit_b_2();//+0x50
+	void opc_bit_b_3();//+0x58
+	void opc_bit_b_4();//+0x60
+	void opc_bit_b_5();//+0x68
+	void opc_bit_b_6();//+0x70
+	void opc_bit_b_7();//+0x78
 
-	void opc_bit_c_0();//0x41
-	void opc_bit_c_1();//0x49
-	void opc_bit_c_2();//0x51
-	void opc_bit_c_3();//0x59
-	void opc_bit_c_4();//0x61
-	void opc_bit_c_5();//0x69
-	void opc_bit_c_6();//0x71
-	void opc_bit_c_7();//0x79
+	void opc_bit_c_0();//+0x41
+	void opc_bit_c_1();//+0x49
+	void opc_bit_c_2();//+0x51
+	void opc_bit_c_3();//+0x59
+	void opc_bit_c_4();//+0x61
+	void opc_bit_c_5();//+0x69
+	void opc_bit_c_6();//+0x71
+	void opc_bit_c_7();//+0x79
 
-	void opc_bit_d_0();//0x42
-	void opc_bit_d_1();//0x4A
-	void opc_bit_d_2();//0x52
-	void opc_bit_d_3();//0x5A
-	void opc_bit_d_4();//0x62
-	void opc_bit_d_5();//0x6A
-	void opc_bit_d_6();//0x72
-	void opc_bit_d_7();//0x7A
+	void opc_bit_d_0();//+0x42
+	void opc_bit_d_1();//+0x4A
+	void opc_bit_d_2();//+0x52
+	void opc_bit_d_3();//+0x5A
+	void opc_bit_d_4();//+0x62
+	void opc_bit_d_5();//+0x6A
+	void opc_bit_d_6();//+0x72
+	void opc_bit_d_7();//+0x7A
 
-	void opc_bit_e_0();//0x43
-	void opc_bit_e_1();//0x4B
-	void opc_bit_e_2();//0x53
-	void opc_bit_e_3();//0x5B
-	void opc_bit_e_4();//0x63
-	void opc_bit_e_5();//0x6B
-	void opc_bit_e_6();//0x73
-	void opc_bit_e_7();//0x7B
+	void opc_bit_e_0();//+0x43
+	void opc_bit_e_1();//+0x4B
+	void opc_bit_e_2();//+0x53
+	void opc_bit_e_3();//+0x5B
+	void opc_bit_e_4();//+0x63
+	void opc_bit_e_5();//+0x6B
+	void opc_bit_e_6();//+0x73
+	void opc_bit_e_7();//+0x7B
 
-	void opc_bit_h_0();//0x44
-	void opc_bit_h_1();//0x4C
-	void opc_bit_h_2();//0x54
-	void opc_bit_h_3();//0x5C
-	void opc_bit_h_4();//0x64
-	void opc_bit_h_5();//0x6C
-	void opc_bit_h_6();//0x74
-	void opc_bit_h_7();//0x7C
+	void opc_bit_h_0();//+0x44
+	void opc_bit_h_1();//+0x4C
+	void opc_bit_h_2();//+0x54
+	void opc_bit_h_3();//+0x5C
+	void opc_bit_h_4();//+0x64
+	void opc_bit_h_5();//+0x6C
+	void opc_bit_h_6();//+0x74
+	void opc_bit_h_7();//+0x7C
 
-	void opc_bit_l_0();//0x45
-	void opc_bit_l_1();//0x4D
-	void opc_bit_l_2();//0x55
-	void opc_bit_l_3();//0x5D
-	void opc_bit_l_4();//0x65
-	void opc_bit_l_5();//0x6D
-	void opc_bit_l_6();//0x75
-	void opc_bit_l_7();//0x7D
+	void opc_bit_l_0();//+0x45
+	void opc_bit_l_1();//+0x4D
+	void opc_bit_l_2();//+0x55
+	void opc_bit_l_3();//+0x5D
+	void opc_bit_l_4();//+0x65
+	void opc_bit_l_5();//+0x6D
+	void opc_bit_l_6();//+0x75
+	void opc_bit_l_7();//+0x7D
 
-	void opc_bit_hl_0();//0x46
-	void opc_bit_hl_1();//0x4E
-	void opc_bit_hl_2();//0x56
-	void opc_bit_hl_3();//0x5E
-	void opc_bit_hl_4();//0x66
-	void opc_bit_hl_5();//0x6E
-	void opc_bit_hl_6();//0x76
-	void opc_bit_hl_7();//0x7E
+	void opc_bit_hl_0();//+0x46
+	void opc_bit_hl_1();//+0x4E
+	void opc_bit_hl_2();//+0x56
+	void opc_bit_hl_3();//+0x5E
+	void opc_bit_hl_4();//+0x66
+	void opc_bit_hl_5();//+0x6E
+	void opc_bit_hl_6();//+0x76
+	void opc_bit_hl_7();//+0x7E
 
 	// setting bits
-	void opc_set_a_0(); //0xC7
-	void opc_set_a_1(); //0xCF
-	void opc_set_a_2(); //0xD7
-	void opc_set_a_3(); //0xDF
-	void opc_set_a_4(); //0xE7
-	void opc_set_a_5(); //0xEF
-	void opc_set_a_6(); //0xF7
-	void opc_set_a_7(); //0xFF
+	void opc_set_a_0(); //+0xC+
+	void opc_set_a_1(); //+0xCF
+	void opc_set_a_2(); //+0xD7
+	void opc_set_a_3(); //+0xDF
+	void opc_set_a_4(); //+0xE7
+	void opc_set_a_5(); //+0xEF
+	void opc_set_a_6(); //+0xF7
+	void opc_set_a_7(); //+0xFF
 
-	void opc_set_b_0(); //0xC0
-	void opc_set_b_1(); //0xC8
-	void opc_set_b_2(); //0xD0
-	void opc_set_b_3(); //0xD8
-	void opc_set_b_4(); //0xE0
-	void opc_set_b_5(); //0xE8
-	void opc_set_b_6(); //0xF0
-	void opc_set_b_7(); //0xF8
+	void opc_set_b_0(); //+0xC0
+	void opc_set_b_1(); //+0xC8
+	void opc_set_b_2(); //+0xD0
+	void opc_set_b_3(); //+0xD8
+	void opc_set_b_4(); //+0xE0
+	void opc_set_b_5(); //+0xE8
+	void opc_set_b_6(); //+0xF0
+	void opc_set_b_7(); //+0xF8
 
-	void opc_set_c_0(); //0xC1
-	void opc_set_c_1(); //0xC9
-	void opc_set_c_2(); //0xD1
-	void opc_set_c_3(); //0xD9
-	void opc_set_c_4(); //0xE1
-	void opc_set_c_5(); //0xE9
-	void opc_set_c_6(); //0xF1
-	void opc_set_c_7(); //0xF9
+	void opc_set_c_0(); //+0xC1
+	void opc_set_c_1(); //+0xC9
+	void opc_set_c_2(); //+0xD1
+	void opc_set_c_3(); //+0xD9
+	void opc_set_c_4(); //+0xE1
+	void opc_set_c_5(); //+0xE9
+	void opc_set_c_6(); //+0xF1
+	void opc_set_c_7(); //+0xF9
 
-	void opc_set_d_0(); //0xC2
-	void opc_set_d_1(); //0xCA
-	void opc_set_d_2(); //0xD2
-	void opc_set_d_3(); //0xDA
-	void opc_set_d_4(); //0xE2
-	void opc_set_d_5(); //0xEA
-	void opc_set_d_6(); //0xF2
-	void opc_set_d_7(); //0xFA
+	void opc_set_d_0(); //+0xC2
+	void opc_set_d_1(); //+0xCA
+	void opc_set_d_2(); //+0xD2
+	void opc_set_d_3(); //+0xDA
+	void opc_set_d_4(); //+0xE2
+	void opc_set_d_5(); //+0xEA
+	void opc_set_d_6(); //+0xF2
+	void opc_set_d_7(); //+0xFA
 
-	void opc_set_e_0(); //0xC3
-	void opc_set_e_1(); //0xCB
-	void opc_set_e_2(); //0xD3
-	void opc_set_e_3(); //0xDB
-	void opc_set_e_4(); //0xE3
-	void opc_set_e_5(); //0xEB
-	void opc_set_e_6(); //0xF3
-	void opc_set_e_7(); //0xFB
+	void opc_set_e_0(); //+0xC3
+	void opc_set_e_1(); //+0xCB
+	void opc_set_e_2(); //+0xD3
+	void opc_set_e_3(); //+0xDB
+	void opc_set_e_4(); //+0xE3
+	void opc_set_e_5(); //+0xEB
+	void opc_set_e_6(); //+0xF3
+	void opc_set_e_7(); //+0xFB
 
-	void opc_set_h_0(); //0xC4
-	void opc_set_h_1(); //0xCC
-	void opc_set_h_2(); //0xD4
-	void opc_set_h_3(); //0xDC
-	void opc_set_h_4(); //0xE4
-	void opc_set_h_5(); //0xEC
-	void opc_set_h_6(); //0xF4
-	void opc_set_h_7(); //0xFC
+	void opc_set_h_0(); //+0xC4
+	void opc_set_h_1(); //+0xCC
+	void opc_set_h_2(); //+0xD4
+	void opc_set_h_3(); //+0xDC
+	void opc_set_h_4(); //+0xE4
+	void opc_set_h_5(); //+0xEC
+	void opc_set_h_6(); //+0xF4
+	void opc_set_h_7(); //+0xFC
 
-	void opc_set_l_0(); //0xC5
-	void opc_set_l_1(); //0xCD
-	void opc_set_l_2(); //0xD5
-	void opc_set_l_3(); //0xDD
-	void opc_set_l_4(); //0xE5
-	void opc_set_l_5(); //0xED
-	void opc_set_l_6(); //0xF5
-	void opc_set_l_7(); //0xFD
+	void opc_set_l_0(); //+0xC5
+	void opc_set_l_1(); //+0xCD
+	void opc_set_l_2(); //+0xD5
+	void opc_set_l_3(); //+0xDD
+	void opc_set_l_4(); //+0xE5
+	void opc_set_l_5(); //+0xED
+	void opc_set_l_6(); //+0xF5
+	void opc_set_l_7(); //+0xFD
 
-	void opc_set_hl_0(); //0xC6
-	void opc_set_hl_1(); //0xCE
-	void opc_set_hl_2(); //0xD6
-	void opc_set_hl_3(); //0xDE
-	void opc_set_hl_4(); //0xE6
-	void opc_set_hl_5(); //0xEE
-	void opc_set_hl_6(); //0xF6
-	void opc_set_hl_7(); //0xFE
+	void opc_set_hl_0(); //+0xC6
+	void opc_set_hl_1(); //+0xCE
+	void opc_set_hl_2(); //+0xD6
+	void opc_set_hl_3(); //+0xDE
+	void opc_set_hl_4(); //+0xE6
+	void opc_set_hl_5(); //+0xEE
+	void opc_set_hl_6(); //+0xF6
+	void opc_set_hl_7(); //+0xFE
 
 	// resetting bits
-	void opc_reset_a_0(); //0xC7
-	void opc_reset_a_1(); //0xCF
-	void opc_reset_a_2(); //0xD7
-	void opc_reset_a_3(); //0xDF
-	void opc_reset_a_4(); //0xE7
-	void opc_reset_a_5(); //0xEF
-	void opc_reset_a_6(); //0xF7
-	void opc_reset_a_7(); //0xFF
+	void opc_reset_a_0(); //+0xC7
+	void opc_reset_a_1(); //+0xCF
+	void opc_reset_a_2(); //+0xD7
+	void opc_reset_a_3(); //+0xDF
+	void opc_reset_a_4(); //+0xE7
+	void opc_reset_a_5(); //+0xEF
+	void opc_reset_a_6(); //+0xF7
+	void opc_reset_a_7(); //+0xFF
 
-	void opc_reset_b_0(); //0xC0
-	void opc_reset_b_1(); //0xC8
-	void opc_reset_b_2(); //0xD0
-	void opc_reset_b_3(); //0xD8
-	void opc_reset_b_4(); //0xE0
-	void opc_reset_b_5(); //0xE8
-	void opc_reset_b_6(); //0xF0
-	void opc_reset_b_7(); //0xF8
+	void opc_reset_b_0(); //+0xC0
+	void opc_reset_b_1(); //+0xC8
+	void opc_reset_b_2(); //+0xD0
+	void opc_reset_b_3(); //+0xD8
+	void opc_reset_b_4(); //+0xE0
+	void opc_reset_b_5(); //+0xE8
+	void opc_reset_b_6(); //+0xF0
+	void opc_reset_b_7(); //+0xF8
 
-	void opc_reset_c_0(); //0xC1
-	void opc_reset_c_1(); //0xC9
-	void opc_reset_c_2(); //0xD1
-	void opc_reset_c_3(); //0xD9
-	void opc_reset_c_4(); //0xE1
-	void opc_reset_c_5(); //0xE9
-	void opc_reset_c_6(); //0xF1
-	void opc_reset_c_7(); //0xF9
+	void opc_reset_c_0(); //+0xC1
+	void opc_reset_c_1(); //+0xC9
+	void opc_reset_c_2(); //+0xD1
+	void opc_reset_c_3(); //+0xD9
+	void opc_reset_c_4(); //+0xE1
+	void opc_reset_c_5(); //+0xE9
+	void opc_reset_c_6(); //+0xF1
+	void opc_reset_c_7(); //+0xF9
 
-	void opc_reset_d_0(); //0xC2
-	void opc_reset_d_1(); //0xCA
-	void opc_reset_d_2(); //0xD2
-	void opc_reset_d_3(); //0xDA
-	void opc_reset_d_4(); //0xE2
-	void opc_reset_d_5(); //0xEA
-	void opc_reset_d_6(); //0xF2
-	void opc_reset_d_7(); //0xFA
+	void opc_reset_d_0(); //+0xC2
+	void opc_reset_d_1(); //+0xCA
+	void opc_reset_d_2(); //+0xD2
+	void opc_reset_d_3(); //+0xDA
+	void opc_reset_d_4(); //+0xE2
+	void opc_reset_d_5(); //+0xEA
+	void opc_reset_d_6(); //+0xF2
+	void opc_reset_d_7(); //+0xFA
 
-	void opc_reset_e_0(); //0xC3
-	void opc_reset_e_1(); //0xCB
-	void opc_reset_e_2(); //0xD3
-	void opc_reset_e_3(); //0xDB
-	void opc_reset_e_4(); //0xE3
-	void opc_reset_e_5(); //0xEB
-	void opc_reset_e_6(); //0xF3
-	void opc_reset_e_7(); //0xFB
+	void opc_reset_e_0(); //+0xC3
+	void opc_reset_e_1(); //+0xCB
+	void opc_reset_e_2(); //+0xD3
+	void opc_reset_e_3(); //+0xDB
+	void opc_reset_e_4(); //+0xE3
+	void opc_reset_e_5(); //+0xEB
+	void opc_reset_e_6(); //+0xF3
+	void opc_reset_e_7(); //+0xFB
 
-	void opc_reset_h_0(); //0xC4
-	void opc_reset_h_1(); //0xCC
-	void opc_reset_h_2(); //0xD4
-	void opc_reset_h_3(); //0xDC
-	void opc_reset_h_4(); //0xE4
-	void opc_reset_h_5(); //0xEC
-	void opc_reset_h_6(); //0xF4
-	void opc_reset_h_7(); //0xFC
+	void opc_reset_h_0(); //+0xC4
+	void opc_reset_h_1(); //+0xCC
+	void opc_reset_h_2(); //+0xD4
+	void opc_reset_h_3(); //+0xDC
+	void opc_reset_h_4(); //+0xE4
+	void opc_reset_h_5(); //+0xEC
+	void opc_reset_h_6(); //+0xF4
+	void opc_reset_h_7(); //+0xFC
 
-	void opc_reset_l_0(); //0xC5
-	void opc_reset_l_1(); //0xCD
-	void opc_reset_l_2(); //0xD5
-	void opc_reset_l_3(); //0xDD
-	void opc_reset_l_4(); //0xE5
-	void opc_reset_l_5(); //0xED
-	void opc_reset_l_6(); //0xF5
-	void opc_reset_l_7(); //0xFD
+	void opc_reset_l_0(); //+0xC5
+	void opc_reset_l_1(); //+0xCD
+	void opc_reset_l_2(); //+0xD5
+	void opc_reset_l_3(); //+0xDD
+	void opc_reset_l_4(); //+0xE5
+	void opc_reset_l_5(); //+0xED
+	void opc_reset_l_6(); //+0xF5
+	void opc_reset_l_7(); //+0xFD
 
-	void opc_reset_hl_0(); //0xC6
-	void opc_reset_hl_1(); //0xCE
-	void opc_reset_hl_2(); //0xD6
-	void opc_reset_hl_3(); //0xDE
-	void opc_reset_hl_4(); //0xE6
-	void opc_reset_hl_5(); //0xEE
-	void opc_reset_hl_6(); //0xF6
-	void opc_reset_hl_7(); //0xFE
+	void opc_reset_hl_0(); //+0xC6
+	void opc_reset_hl_1(); //+0xCE
+	void opc_reset_hl_2(); //+0xD6
+	void opc_reset_hl_3(); //+0xDE
+	void opc_reset_hl_4(); //+0xE6
+	void opc_reset_hl_5(); //+0xEE
+	void opc_reset_hl_6(); //+0xF6
+	void opc_reset_hl_7(); //+0xFE
 
 	// bit shifts
-	void opc_srl_a(); //0x3F
-	void opc_srl_b(); //0x38
-	void opc_srl_c(); //0x39
-	void opc_srl_d(); //0x3A
-	void opc_srl_e(); //0x3B
-	void opc_srl_h(); //0x3C
-	void opc_srl_l(); //0x3D
-	void opc_srl_p_hl(); //0x3E
+	void opc_srl_a(); //+0x3F
+	void opc_srl_b(); //+0x38
+	void opc_srl_c(); //+0x39
+	void opc_srl_d(); //+0x3A
+	void opc_srl_e(); //+0x3B
+	void opc_srl_h(); //+0x3C
+	void opc_srl_l(); //+0x3D
+	void opc_srl_p_hl(); //+0x3E
 
 	// bitshift right, preserve sign
-	void opc_sra_a(); //0x2F
-	void opc_sra_b(); //0x28
-	void opc_sra_c(); //0x29
-	void opc_sra_d(); //0x2A
-	void opc_sra_e(); //0x2B
-	void opc_sra_h(); //0x2C
-	void opc_sra_l(); //0x2D
-	void opc_sra_p_hl(); //0x2E
+	void opc_sra_a(); //+0x2F
+	void opc_sra_b(); //+0x28
+	void opc_sra_c(); //+0x29
+	void opc_sra_d(); //+0x2A
+	void opc_sra_e(); //+0x2B
+	void opc_sra_h(); //+0x2C
+	void opc_sra_l(); //+0x2D
+	void opc_sra_p_hl(); //+0x2E
 
 	// bitshift left, preserve sign
-	void opc_sla_a(); //0x27
-	void opc_sla_b(); //0x20
-	void opc_sla_c(); //0x21
-	void opc_sla_d(); //0x22
-	void opc_sla_e(); //0x23
-	void opc_sla_h(); //0x24
-	void opc_sla_l(); //0x25
-	void opc_sla_p_hl(); //0x26
+	void opc_sla_a(); //+0x27
+	void opc_sla_b(); //+0x20
+	void opc_sla_c(); //+0x21
+	void opc_sla_d(); //+0x22
+	void opc_sla_e(); //+0x23
+	void opc_sla_h(); //+0x24
+	void opc_sla_l(); //+0x25
+	void opc_sla_p_hl(); //+0x26
 
 	// swap nybbles
-	void swap_a(); //0x37
-	void swap_b(); //0x30
-	void swap_c(); //0x31
-	void swap_d(); //0x32
-	void swap_e(); //0x33
-	void swap_h(); //0x34
-	void swap_l(); //0x35
-	void swap_p_hl(); //0x36
+	void swap_a(); //+0x37
+	void swap_b(); //+0x30
+	void swap_c(); //+0x31
+	void swap_d(); //+0x32
+	void swap_e(); //+0x33
+	void swap_h(); //+0x34
+	void swap_l(); //+0x35
+	void swap_p_hl(); //+0x36
 
 	// rotate right
-	void rr_a(); //0x1F
-	void rr_b(); //0x18
-	void rr_c(); //0x19
-	void rr_d(); //0x1A
-	void rr_e(); //0x1B
-	void rr_h(); //0x1C
-	void rr_l(); //0x1D
-	void rr_p_hl(); //0x1E
+	void opc_rr_a(); //+0x1F
+	void opc_rr_b(); //+0x18
+	void opc_rr_c(); //+0x19
+	void opc_rr_d(); //+0x1A
+	void opc_rr_e(); //+0x1B
+	void opc_rr_h(); //+0x1C
+	void opc_rr_l(); //+0x1D
+	void opc_rr_p_hl(); //+0x1E
 
 	// rotate left
-	void rl_a(); //0x17
-	void rl_b(); //0x10
-	void rl_c(); //0x11
-	void rl_d(); //0x12
-	void rl_e(); //0x13
-	void rl_h(); //0x14
-	void rl_l(); //0x15
-	void rl_p_hl(); //0x16
+	void opc_rl_a(); //+0x17
+	void opc_rl_b(); //+0x10
+	void opc_rl_c(); //+0x11
+	void opc_rl_d(); //+0x12
+	void opc_rl_e(); //+0x13
+	void opc_rl_h(); //+0x14
+	void opc_rl_l(); //+0x15
+	void opc_rl_p_hl(); //+0x16
 
 	// rotate right carry
-	void rrc_a(); //0x0F
-	void rrc_b(); //0x08
-	void rrc_c(); //0x09
-	void rrc_d(); //0x0A
-	void rrc_e(); //0x0B
-	void rrc_h(); //0x0C
-	void rrc_l(); //0x0D
-	void rrc_p_hl(); //0x0E
+	void opc_rrc_a(); //+0x0F
+	void opc_rrc_b(); //+0x08
+	void opc_rrc_c(); //+0x09
+	void opc_rrc_d(); //+0x0A
+	void opc_rrc_e(); //+0x0B
+	void opc_rrc_h(); //+0x0C
+	void opc_rrc_l(); //+0x0D
+	void opc_rrc_p_hl(); //+0x0E
 
 	// rotate left carry
-	void rlc_a(); //0x07
-	void rlc_b(); //0x00
-	void rlc_c(); //0x01
-	void rlc_d(); //0x02
-	void rlc_e(); //0x03
-	void rlc_h(); //0x04
-	void rlc_l(); //0x05
-	void rlc_p_hl(); //0x06
+	void opc_rlc_a(); //+0x07
+	void opc_rlc_b(); //+0x00
+	void opc_rlc_c(); //+0x01
+	void opc_rlc_d(); //+0x02
+	void opc_rlc_e(); //+0x03
+	void opc_rlc_h(); //+0x04
+	void opc_rlc_l(); //+0x05
+	void opc_rlc_p_hl(); //+0x06
 
 	// push 16bit onto stack
-	void push_bc(); //0xC5
-	void push_de(); //0xD5
-	void push_hl(); //0xE5
-	void push_af(); //0xF5
+	void opc_push_bc(); //0xC5
+	void opc_push_de(); //0xD5
+	void opc_push_hl(); //0xE5
+	void opc_push_af(); //0xF5
 
 	// pop 16bit from stack into register
-	void pop_bc(); //0xC1
-	void pop_de(); //0xD1
-	void pop_hl(); //0xE1
-	void pop_af(); //0xF1
+	void opc_pop_bc(); //0xC1
+	void opc_pop_de(); //0xD1
+	void opc_pop_hl(); //0xE1
+	void opc_pop_af(); //0xF1
 
 
 	// Misc:
 	// load A from 0xFF00 + n
-	void ldh_a_p_n(); //0xF0
+	void opc_ldh_a_p_n(); //0xF0
 	// save A at 0xFF00 + n
-	void ldh_p_n_a(); //0xE0
+	void opc_ldh_p_n_a(); //0xE0
 	// save A at 0xFF00 + C
-	void ldh_p_c_a(); //0xE2
+	void opc_ldh_p_c_a(); //0xE2
 	// save A at nn
-	void ld_p_nn_a(); //0xEA
+	void opc_ld_p_nn_a(); //0xEA
 	// save SP at nn
-	void ld_p_nn_sp(); //0x08
+	void opc_ld_p_nn_sp(); //0x08
 	// copy HL to SP
-	void ld_sp_hl(); //0xF9
+	void opc_ld_sp_hl(); //0xF9
 	// add signed n to SP, save result in HL
-	void ldhl_sp_n(); //F8
+	void opc_ldhl_sp_n(); //F8
 	// clear carry flag
-	void ccf(); //0x3F
+	void opc_ccf(); //0x3F
 	// set carry flag
-	void scf(); //0x37
+	void opc_scf(); //0x37
 	// compliment (logical NOT) on A
-	void cpl(); //0x2F
+	void opc_cpl(); //0x2F
 
 	// relative jump by n
-	void jr_n(); //0x18
-	void jr_z_n(); //0x28 - if ZERO is set
-	void jr_c_n(); //0x38 - if CARRY is set
-	void jr_nz_n(); //0x20 - if ZERO is NOT set
-	void jr_nc_n(); //0x30 - if CARRY is NOT set
+	void opc_jr_n(); //0x18
+	void opc_jr_z_n(); //0x28 - if ZERO is set
+	void opc_jr_c_n(); //0x38 - if CARRY is set
+	void opc_jr_nz_n(); //0x20 - if ZERO is NOT set
+	void opc_jr_nc_n(); //0x30 - if CARRY is NOT set
 
 	// no operation
-	void nop(); //0x00
+	void opc_nop(); //0x00
 	// STOP CPU
-	void stop(); //0x10
+	void opc_stop(); //0x10
 
 	// setting and unsetting flags
 	void set_flag(u8 flag);

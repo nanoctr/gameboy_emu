@@ -5,6 +5,8 @@
 #include <iostream>
 #include "Gameboy_Cpu.h"
 
+
+
 typedef unsigned char u8;
 typedef unsigned short u16;
 
@@ -16,9 +18,21 @@ const int ZERO = 7;
 void Gameboy_Cpu::emulate_cycle() {
 	if (running) {
 		// Fetch opcode
-		u8 opcode = memory[pc];
+		u8 opcode_id = memory[pc];
+		Opcode opcode = opcodes.at(opcode_id);
 
+		// DEBUG BUILD -> log opcode ID, function and cycles
+#ifdef DEBUG_BUILD
+		logger.log_time();
+		logger.log_line(" ++++ executing opcode:");
+		logger.log_line("ID      : " + opcode_id);
+		// logger.log_line("FUNCTION: " + opcode.opcode_function);
+		// fuck, no reflection...gotta revisit this some time later on
+		logger.log_line("CYCLES  : " + opcode.cycles);
+		logger.log_line("----");
+#endif
 		// Decode opcode
+
 	}
 }
 

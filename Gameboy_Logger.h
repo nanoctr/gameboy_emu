@@ -17,6 +17,8 @@ private:
 public:
 	Gameboy_Logger(string file);
 	void log(string text);
+	void log_time();
+	void log_line(string text);
 };
 
 

@@ -4,8 +4,12 @@
 
 #ifndef GAMEBOY_EMU_GAMEBOY_CPU_H
 #define GAMEBOY_EMU_GAMEBOY_CPU_H
+// this is a debug build, change this for release compilation
+#define DEBUG_BUILD
+
 
 #include <unordered_map>
+#include "Gameboy_Logger.h"
 
 typedef unsigned char u8;
 typedef unsigned short u16;
@@ -105,7 +109,7 @@ u8 video_memory[256][256];
 
 bool running = true; // used for CPU interrupts
 
-
+Gameboy_Logger logger("/tmp/gameboy_cpu.log");
 
 
 class Gameboy_Cpu {

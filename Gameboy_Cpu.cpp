@@ -15,34 +15,87 @@ const int HALF_CARRY = 5;
 const int SUBTRACT = 6;
 const int ZERO = 7;
 
+
+
+void Gameboy_Cpu::startup() {
+	load_opcodes();
+	load_extended_opcodes();
+
+	logger = Gameboy_Logger("/tmp/gameboy_cpu.log");
+
+	// PC starts at 0
+	pc = 0x0000;
+
+	// Set whole memory to 0
+	for (auto &b: memory) {
+		b = 0;
+	}
+
+	load_file("/home/michi/ClionProjects/gameboy_emu/DMG_ROM.bin", 0);
+
+
+
+}
+
+void Gameboy_Cpu::load_file(string location, u16 starting_point) {
+	logger.log_line("loading game: '" + location +
+					"', starting at: " + std::to_string(starting_point));
+
+	// NOTE: This code is stolen from...dunno, that Chip-8 tutorial
+	FILE *fileptr;
+	int filelen;
+
+	fileptr = fopen(location.c_str(), "rb");
+	fseek(fileptr, 0, SEEK_END);
+	filelen = ftell(fileptr);
+	rewind(fileptr);
+
+	u8 buffer[filelen+1];
+
+	fread(buffer, filelen, 1, fileptr);
+	fclose(fileptr);
+	for (int i = 0; i < filelen; i++) {
+		memory[i + starting_point] = buffer[i];
+	}
+}
+
+
 void Gameboy_Cpu::emulate_cycle() {
 	if (running) {
 		// Fetch opcode
 		u8 opcode_id = memory[pc];
-		Opcode opcode = opcodes.at(opcode_id);
 
-		// DEBUG BUILD -> log opcode ID, function and cycles
+		try {
+			Opcode opcode = opcodes.at(opcode_id);
+
+			// DEBUG BUILD -> log opcode ID, function and cycles
 #ifdef DEBUG_BUILD
-		logger.log_time();
-		logger.log_line(" ++++ executing opcode:");
-		logger.log_line("ID      : " + opcode_id);
-		// logger.log_line("FUNCTION: " + opcode.opcode_function);
-		// fuck, no reflection...gotta revisit this some time later on
-		logger.log_line("CYCLES  : " + opcode.cycles);
-		logger.log_line("----");
+			logger.log_time();
+			logger.log(" ++++ executing opcode:\nPC      : ");
+			logger.log(logger.short_to_hex(pc));
+			logger.log("\nID      : ");
+			logger.log(logger.char_to_hex(opcode_id));
+			logger.log("\nCYCLES  : ");
+			logger.log(std::to_string(opcode.cycles));
+			logger.log_line("\n----");
+
+			// fuck, no reflection...gotta revisit this some time later on
+			// -> print function name
 #endif
 
-		// Call opcode function
-		(this->*opcode.opcode_function)();
+			// Call opcode function
+			(this->*opcode.opcode_function)();
 
-		// increment CPU cycles
-		cycles += opcode.cycles;
+			// increment CPU cycles
+			cycles += opcode.cycles;
+		}
+		catch (out_of_range) {
+			logger.log("ERROR: invalid opcode at: 0x");
+			logger.log_line(logger.short_to_hex(pc));
+		}
 	}
 }
 
-void Gameboy_Cpu::startup() {
-
-}
 
 // populate opcodes hashmaps
 void Gameboy_Cpu::load_opcodes() {
@@ -2650,3 +2703,5 @@ void Gameboy_Cpu::pop(u16 &reg) {
 void Gameboy_Cpu::relative_jump(char value) {
 	pc += value;
 }
+
+Gameboy_Cpu::Gameboy_Cpu() {}

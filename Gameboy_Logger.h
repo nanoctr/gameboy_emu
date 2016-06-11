@@ -11,6 +11,9 @@
 
 using namespace std;
 
+typedef unsigned char u8;
+typedef unsigned short u16;
+
 class Gameboy_Logger {
 private:
 	string logfile;
@@ -19,6 +22,8 @@ public:
 	void log(string text);
 	void log_time();
 	void log_line(string text);
+	string char_to_hex(u8 val);
+	string short_to_hex(u16 val);
 };
 
 

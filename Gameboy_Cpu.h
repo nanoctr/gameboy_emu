@@ -14,7 +14,12 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 
-/*
+
+
+
+class Gameboy_Cpu {
+private:
+	/*
  *  stolen from https://cturt.github.io/cinoop.html
  *  allows accessing registers like: register.a, register.af
  *  a, b, c, d, e, f, h, l = 8bit registers, often combined to form 16 bit
@@ -24,69 +29,68 @@ typedef unsigned short u16;
  *  6th bit -> subtract flag; if instruction is subtract -> set; otherwise unset
  *  7th bit -> zero flag; if result is 0 -> set; otherwise -> unset
  */
-struct registers {
-	struct {
-		union {
-			struct {
-				u8 f;
-				u8 a;
+	struct registers {
+		struct {
+			union {
+				struct {
+					u8 f;
+					u8 a;
+				};
+				u16 af;
 			};
-			u16 af;
+		};
+		struct {
+			union {
+				struct {
+					u8 c;
+					u8 b;
+				};
+				u16 bc;
+			};
+		};
+		struct {
+			union {
+				struct {
+					u8 e;
+					u8 d;
+				};
+				u16 de;
+			};
+		};
+		struct {
+			union {
+				struct {
+					u8 l;
+					u8 h;
+				};
+				u16 hl;
+			};
 		};
 	};
-	struct {
-		union {
-			struct {
-				u8 c;
-				u8 b;
-			};
-			u16 bc;
-		};
-	};
-	struct {
-		union {
-			struct {
-				u8 e;
-				u8 d;
-			};
-			u16 de;
-		};
-	};
-	struct {
-		union {
-			struct {
-				u8 l;
-				u8 h;
-			};
-			u16 hl;
-		};
-	};
-};
 
-class Gameboy_Cpu; // for the following stuff. fuck the preprocessor.
 // Opcode struct, stores function pointer, ticks and so on
-struct Opcode
-{
-	Opcode(void (Gameboy_Cpu::*opc_func)(), u8 cpu_cycles) {
-		opcode_function = opc_func;
-		cycles = cpu_cycles;
-	}
-	// Function pointer to opcode function
-	void (Gameboy_Cpu::*opcode_function)();
-	// Used cpu cycles
-	u8 cycles;
-};
+	struct Opcode
+	{
+		Opcode(void (Gameboy_Cpu::*opc_func)(), u8 cpu_cycles) {
+			opcode_function = opc_func;
+			cycles = cpu_cycles;
+		}
+		// Function pointer to opcode function
+		void (Gameboy_Cpu::*opcode_function)();
+		// Used cpu cycles
+		u8 cycles;
+	};
 
 // Opcode structs saved in hashmap: Key[opcode_byte] -> Value[Opcode_struct]
-std::unordered_map<u8, Opcode> opcodes;
-std::unordered_map<u8, Opcode> extended_opcodes;
+	std::unordered_map<u8, Opcode> opcodes;
+	std::unordered_map<u8, Opcode> extended_opcodes;
 
 // stack pointer and program counter
-u16 sp;
-u16 pc;
+	u16 sp;
+	u16 pc;
 
 // Cpu Cycle counter
-unsigned long cycles;
+	unsigned long cycles;
 
 /*
  *  memory map:
@@ -103,17 +107,13 @@ unsigned long cycles;
  *  FF80 - FFFE -> internal RAM
  *  FFFF -> interrupt enable register
  */
-u8 memory[0xFFFF];
+	u8 memory[0xFFFF];
 
-u8 video_memory[256][256];
+	u8 video_memory[256][256];
 
-bool running = true; // used for CPU interrupts
+	bool running = true; // used for CPU interrupts
 
-Gameboy_Logger logger("/tmp/gameboy_cpu.log");
-
-
-class Gameboy_Cpu {
-private:
+	Gameboy_Logger logger = Gameboy_Logger("/tmp/gameboy_cpu.log");
 	registers reg;
 
 	// populate opcodes hashmaps
@@ -121,6 +121,7 @@ private:
 	void load_extended_opcodes();
 
 	// load n into register:
+
 	void opc_ld_a_n(); //0x3E
 	void opc_ld_b_n(); //0x06
 	void opc_ld_c_n(); //0x0E
@@ -135,6 +136,7 @@ private:
 	void opc_ld_p_hl_n(); //0x36
 
 	// load r2 into r1:
+
 	void opc_ld_a_b(); //0x78
 	void opc_ld_a_c(); //0x79
 	void opc_ld_a_d(); //0x7A
@@ -205,12 +207,14 @@ private:
 	void opc_ld_p_de_a(); //0x12
 
 	// load + increment
+
 	void opc_ldi_hl_a(); //0x22; save A to memory pointed to by HL, HL += 1
 	void opc_ldd_hl_a(); //0x32; save A to memory pointed to by HL, HL -= 1
 	void opc_ldi_a_hl(); //0x2A
 	void opc_ldd_a_hl(); //0x3A
 
 	// increment registers
+
 	void opc_inc_a(); //0x3C
 	void opc_inc_b(); //0x04
 	void opc_inc_c(); //0x0C
@@ -225,6 +229,7 @@ private:
 	void opc_inc_p_hl(); //0x34
 
 	// decrement registers
+
 	void opc_dec_a(); //0x3D
 	void opc_dec_b(); //0x05
 	void opc_dec_c(); //0x0C
@@ -239,6 +244,7 @@ private:
 	void opc_dec_p_hl(); //0x35
 
 	// add registers
+
 	void opc_add_a_a(); //0x87
 	void opc_add_a_b(); //0x80
 	void opc_add_a_c(); //0x81
@@ -251,12 +257,14 @@ private:
 	void opc_add_sp_d(); //0xE8
 
 	// add 16 bits
+
 	void opc_add_hl_hl(); //0x29
 	void opc_add_hl_bc(); //0x09
 	void opc_add_hl_de(); //0x19
 	void opc_add_hl_sp(); //0x39
 
 	// add with carry
+
 	void opc_adc_a_a(); //0x8F
 	void opc_adc_a_b(); //0x88
 	void opc_adc_a_c(); //0x89
@@ -268,6 +276,7 @@ private:
 	void opc_adc_a_n(); //0xCE
 
 	// sub registers
+
 	void opc_sub_a_a(); //0x97
 	void opc_sub_a_b(); //0x90
 	void opc_sub_a_c(); //0x91
@@ -279,6 +288,7 @@ private:
 	void opc_sub_a_n(); //0xD6
 
 	// sub with carry
+
 	void opc_sbc_a_a(); //0x9F
 	void opc_sbc_a_b(); //0x98
 	void opc_sbc_a_c(); //0x99
@@ -290,6 +300,7 @@ private:
 	void opc_sbc_a_p_hl(); //0x9E
 
 	// logical AND
+
 	void opc_and_a_a(); //0xA7
 	void opc_and_a_b(); //0xA0
 	void opc_and_a_c(); //0xA1
@@ -301,6 +312,7 @@ private:
 	void opc_and_a_p_hl(); //0xA6
 
 	// logical OR
+
 	void opc_or_a_a(); //0xB7
 	void opc_or_a_b(); //0xB0
 	void opc_or_a_c(); //0xB1
@@ -312,6 +324,7 @@ private:
 	void opc_or_a_p_hl(); //0xB6
 
 	// logical XOR
+
 	void opc_xor_a_a(); //0xAF
 	void opc_xor_a_b(); //0xA8
 	void opc_xor_a_c(); //0xA9
@@ -323,6 +336,7 @@ private:
 	void opc_xor_a_p_hl(); //0xAE
 
 	// compare against a
+
 	void opc_cp_a_a(); //0xBF
 	void opc_cp_a_b(); //0xB8
 	void opc_cp_a_c(); //0xB9
@@ -334,6 +348,7 @@ private:
 	void opc_cp_a_n(); //0xFE
 
 	// calling subroutine
+
 	void opc_call_nn(); // 0xCD - call subroutine at nn
 	void opc_call_nz_nn(); //0xC4 - call subroutine if ZERO flag is not set
 	void opc_call_nc_nn(); //0xD4 - call subroutine if CARRY flag ist not set
@@ -341,6 +356,7 @@ private:
 	void opc_call_c_nn(); //0xDC - call subroutine if CARRY flag is set
 
 	// returning from subroutine
+
 	void opc_ret(); //0xC9
 	void opc_ret_nz(); //0xC0 - return if ZERO flag is not set
 	void opc_ret_nc(); //0xD0
@@ -348,6 +364,7 @@ private:
 	void opc_ret_n(); //0xD8
 
 	// jumping to address
+
 	void opc_jump_nn(); //0xC3
 	void opc_jump_nz_nn(); //0xC2
 	void opc_jump_nc_nn(); //0xD2
@@ -356,6 +373,7 @@ private:
 	void opc_jump_hl(); //0xE9
 
 	// calling specific address
+
 	void opc_rst_0(); //0xC7
 	void opc_rst_10(); //0xD7
 	void opc_rst_20(); //0xE7
@@ -366,6 +384,9 @@ private:
 	void opc_rst_38(); //0xFF
 
 	// 2 byte opcodes:
+
+	// check bit at position:
+
 	void opc_bit_a_0();//+0x47
 	void opc_bit_a_1();//+0x4F
 	void opc_bit_a_2();//+0x57
@@ -438,7 +459,8 @@ private:
 	void opc_bit_p_hl_6();//+0x76
 	void opc_bit_p_hl_7();//+0x7E
 
-	// setting bits
+	// set bit at position:
+
 	void opc_set_a_0(); //+0xC7
 	void opc_set_a_1(); //+0xCF
 	void opc_set_a_2(); //+0xD7
@@ -511,7 +533,8 @@ private:
 	void opc_set_p_hl_6(); //+0xF6
 	void opc_set_p_hl_7(); //+0xFE
 
-	// resetting bits
+	// reset bit at position:
+
 	void opc_reset_a_0(); //+0xC7
 	void opc_reset_a_1(); //+0xCF
 	void opc_reset_a_2(); //+0xD7
@@ -585,6 +608,7 @@ private:
 	void opc_reset_p_hl_7(); //+0xFE
 
 	// bit shifts
+
 	void opc_srl_a(); //+0x3F
 	void opc_srl_b(); //+0x38
 	void opc_srl_c(); //+0x39
@@ -595,6 +619,7 @@ private:
 	void opc_srl_p_hl(); //+0x3E
 
 	// bitshift right, preserve sign
+
 	void opc_sra_a(); //+0x2F
 	void opc_sra_b(); //+0x28
 	void opc_sra_c(); //+0x29
@@ -605,6 +630,7 @@ private:
 	void opc_sra_p_hl(); //+0x2E
 
 	// bitshift left, preserve sign
+
 	void opc_sla_a(); //+0x27
 	void opc_sla_b(); //+0x20
 	void opc_sla_c(); //+0x21
@@ -615,6 +641,7 @@ private:
 	void opc_sla_p_hl(); //+0x26
 
 	// swap nybbles
+
 	void swap_a(); //+0x37
 	void swap_b(); //+0x30
 	void swap_c(); //+0x31
@@ -625,6 +652,7 @@ private:
 	void swap_p_hl(); //+0x36
 
 	// rotate right
+
 	void opc_rr_a(); //+0x1F
 	void opc_rr_b(); //+0x18
 	void opc_rr_c(); //+0x19
@@ -635,6 +663,7 @@ private:
 	void opc_rr_p_hl(); //+0x1E
 
 	// rotate left
+
 	void opc_rl_a(); //+0x17
 	void opc_rl_b(); //+0x10
 	void opc_rl_c(); //+0x11
@@ -645,6 +674,7 @@ private:
 	void opc_rl_p_hl(); //+0x16
 
 	// rotate right carry
+
 	void opc_rrc_a(); //+0x0F
 	void opc_rrc_b(); //+0x08
 	void opc_rrc_c(); //+0x09
@@ -655,6 +685,7 @@ private:
 	void opc_rrc_p_hl(); //+0x0E
 
 	// rotate left carry
+
 	void opc_rlc_a(); //+0x07
 	void opc_rlc_b(); //+0x00
 	void opc_rlc_c(); //+0x01
@@ -665,12 +696,14 @@ private:
 	void opc_rlc_p_hl(); //+0x06
 
 	// push 16bit onto stack
+
 	void opc_push_bc(); //0xC5
 	void opc_push_de(); //0xD5
 	void opc_push_hl(); //0xE5
 	void opc_push_af(); //0xF5
 
 	// pop 16bit from stack into register
+
 	void opc_pop_bc(); //0xC1
 	void opc_pop_de(); //0xD1
 	void opc_pop_hl(); //0xE1
@@ -678,6 +711,7 @@ private:
 
 
 	// Misc:
+
 	// load A from 0xFF00 + n
 	void opc_ldh_a_p_n(); //0xF0
 	// save A at 0xFF00 + n
@@ -700,6 +734,7 @@ private:
 	void opc_cpl(); //0x2F
 
 	// relative jump by n
+
 	void opc_jr_n(); //0x18
 	void opc_jr_z_n(); //0x28 - if ZERO is set
 	void opc_jr_c_n(); //0x38 - if CARRY is set
@@ -712,11 +747,13 @@ private:
 	void opc_stop(); //0x10
 
 	// setting and unsetting flags
+
 	void set_flag(u8 flag);
 	void reset_flag(u8 flag);
 	bool get_flag(u8 flag);
 
 	// helper functions
+
 	void add(u8 &a, u8 b); // adding two 8bit values
 	void inc(u8 &val); // incrementing 8bit value
 	void dec(u8 &val); // decrementing 8bit value
@@ -754,6 +791,8 @@ private:
 public:
 	void emulate_cycle();
 	void startup();
+	void load_file(string location, u16 starting_point);
+	Gameboy_Cpu();
 };
 
 

@@ -62,11 +62,14 @@ struct registers {
 // Opcode struct, stores function pointer, ticks and so on
 struct Opcode
 {
-	Opcode(void (*opcode_function)()) : opcode_function(opcode_function) { }
-
-// Function pointer to opcode function/
+	Opcode(void (*opc_func)(), u8 cpu_cycles) {
+		opcode_function = opc_func;
+		cycles = cpu_cycles;
+	}
+	// Function pointer to opcode function
 	void (*opcode_function)();
-	// ticks
+	// Used cpu cycles
+	u8 cycles;
 };
 
 // Opcode structs saved in hashmap: Key[opcode_byte] -> Value[Opcode_struct]
@@ -142,7 +145,7 @@ private:
 	void opc_ld_b_e(); //0x43
 	void opc_ld_b_h(); //0x44
 	void opc_ld_b_l(); //0x45
-	void opc_ld_b_hl(); //0x46
+	void opc_ld_b_p_hl(); //0x46
 	void opc_ld_c_a(); //0x4F
 	void opc_ld_c_b(); //0x48
 	void opc_ld_c_c(); //0x49 -> NOP
@@ -150,7 +153,7 @@ private:
 	void opc_ld_c_e(); //0x4B
 	void opc_ld_c_h(); //0x4C
 	void opc_ld_c_l(); //0x4D
-	void opc_ld_c_hl(); //0x4E
+	void opc_ld_c_p_hl(); //0x4E
 	void opc_ld_d_a(); //0x57
 	void opc_ld_d_b(); //0x50
 	void opc_ld_d_c(); //0x51
@@ -158,7 +161,7 @@ private:
 	void opc_ld_d_e(); //0x53
 	void opc_ld_d_h(); //0x54
 	void opc_ld_d_l(); //0x55
-	void opc_ld_d_hl(); //0x56
+	void opc_ld_d_p_hl(); //0x56
 	void opc_ld_e_a(); //0x5F
 	void opc_ld_e_b(); //0x58
 	void opc_ld_e_c(); //0x59
@@ -166,7 +169,7 @@ private:
 	void opc_ld_e_e(); //0x5B -> NOP
 	void opc_ld_e_h(); //0x5C
 	void opc_ld_e_l(); //0x5D
-	void opc_ld_e_hl(); //0x5E
+	void opc_ld_e_p_hl(); //0x5E
 	void opc_ld_h_a(); //0x67
 	void opc_ld_h_b(); //0x60
 	void opc_ld_h_c(); //0x61
@@ -174,7 +177,7 @@ private:
 	void opc_ld_h_e(); //0x63
 	void opc_ld_h_h(); //0x64 -> NOP
 	void opc_ld_h_l(); //0x65
-	void opc_ld_h_hl(); //0x66
+	void opc_ld_h_p_hl(); //0x66
 	void opc_ld_l_a(); //0x6F
 	void opc_ld_l_b(); //0x68
 	void opc_ld_l_c(); //0x69
@@ -182,7 +185,7 @@ private:
 	void opc_ld_l_e(); //0x6B
 	void opc_ld_l_h(); //0x6C
 	void opc_ld_l_l(); //0x6D -> NOP
-	void opc_ld_l_hl(); //0x6E
+	void opc_ld_l_p_hl(); //0x6E
 	void opc_ld_p_hl_a(); //0x77
 	void opc_ld_p_hl_b(); //0x70
 	void opc_ld_p_hl_c(); //0x71
@@ -428,7 +431,7 @@ private:
 	void opc_bit_hl_7();//+0x7E
 
 	// setting bits
-	void opc_set_a_0(); //+0xC+
+	void opc_set_a_0(); //+0xC7
 	void opc_set_a_1(); //+0xCF
 	void opc_set_a_2(); //+0xD7
 	void opc_set_a_3(); //+0xDF
@@ -747,3 +750,14 @@ public:
 
 
 #endif //GAMEBOY_EMU_GAMEBOY_CPU_H
+
+
+/*
+ *  Notizen:
+ *  zyklen, erledigt:
+ *  LD r <- r
+ *  LD r <- n
+ *	LD r <- p_hl
+ *
+ *
+ */

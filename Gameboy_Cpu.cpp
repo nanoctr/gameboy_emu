@@ -156,7 +156,7 @@ void Gameboy_Cpu::opc_ld_b_l() {
 	reg.b = reg.l;
 	++pc;
 }
-void Gameboy_Cpu::opc_ld_b_hl() {
+void Gameboy_Cpu::opc_ld_b_p_hl() {
 	reg.b = memory[reg.hl];
 	++pc;
 }
@@ -184,7 +184,7 @@ void Gameboy_Cpu::opc_ld_c_l() {
 	reg.c = reg.l;
 	++pc;
 }
-void Gameboy_Cpu::opc_ld_c_hl() {
+void Gameboy_Cpu::opc_ld_c_p_hl() {
 	reg.c = memory[reg.hl];
 	++pc;
 }
@@ -212,7 +212,7 @@ void Gameboy_Cpu::opc_ld_d_l() {
 	reg.d = reg.l;
 	++pc;
 }
-void Gameboy_Cpu::opc_ld_d_hl() {
+void Gameboy_Cpu::opc_ld_d_p_hl() {
 	reg.d = memory[reg.hl];
 	++pc;
 }
@@ -240,7 +240,7 @@ void Gameboy_Cpu::opc_ld_e_l() {
 	reg.e = reg.l;
 	++pc;
 }
-void Gameboy_Cpu::opc_ld_e_hl() {
+void Gameboy_Cpu::opc_ld_e_p_hl() {
 	reg.e = memory[reg.hl];
 	++pc;
 }
@@ -268,7 +268,7 @@ void Gameboy_Cpu::opc_ld_h_l() {
 	reg.h = reg.l;
 	++pc;
 }
-void Gameboy_Cpu::opc_ld_h_hl() {
+void Gameboy_Cpu::opc_ld_h_p_hl() {
 	reg.h = memory[reg.hl];
 	++pc;
 }
@@ -296,7 +296,7 @@ void Gameboy_Cpu::opc_ld_l_h() {
 	reg.l = reg.h;
 	++pc;
 }
-void Gameboy_Cpu::opc_ld_l_hl() {
+void Gameboy_Cpu::opc_ld_l_p_hl() {
 	reg.l = memory[reg.hl];
 	++pc;
 }
@@ -471,13 +471,491 @@ void Gameboy_Cpu::opc_ldd_a_hl() {
 // populate opcodes hashmaps
 void Gameboy_Cpu::load_opcodes() {
 	opcodes = {
-			{0x00, Opcode(opc_rlc_b)},
-			{}
+			{0x3E, Opcode(opc_ld_a_n, 8)},
+			{0x06, Opcode(opc_ld_b_n, 8)},
+			{0x0E, Opcode(opc_ld_c_n, 8)},
+			{0x16, Opcode(opc_ld_d_n, 8)},
+			{0x1E, Opcode(opc_ld_e_n, 8)},
+			{0x26, Opcode(opc_ld_h_n, 8)},
+			{0x2E, Opcode(opc_ld_l_n, 8)},
+			{0x01, Opcode(opc_ld_bc_nn, 12)},
+			{0x11, Opcode(opc_ld_de_nn, 12)},
+			{0x21, Opcode(opc_ld_hl_nn, 12)},
+			{0x31, Opcode(opc_ld_sp_nn, 12)},
+			{0x36, Opcode(opc_ld_p_hl_n, 12)},
+			{0x78, Opcode(opc_ld_a_b, 4)},
+			{0x79, Opcode(opc_ld_a_c, 4)},
+			{0x7A, Opcode(opc_ld_a_d, 4)},
+			{0x7B, Opcode(opc_ld_a_e, 4)},
+			{0x7C, Opcode(opc_ld_a_h, 4)},
+			{0x7D, Opcode(opc_ld_a_l, 4)},
+			{0x7E, Opcode(opc_ld_a_p_hl, 8)},
+			{0x7F, Opcode(opc_ld_a_a, 4)},
+			{0x0A, Opcode(opc_ld_a_p_bc, 8)}, // unsure about cycles
+			{0x1A, Opcode(opc_ld_a_p_de, 8)}, // unsure about cycles
+			{0xFA, Opcode(opc_ld_a_p_nn, 8)}, // unsure about cycles
+			{0x47, Opcode(opc_ld_b_a, 4)},
+			{0x40, Opcode(opc_ld_b_b, 4)},
+			{0x41, Opcode(opc_ld_b_c, 4)},
+			{0x42, Opcode(opc_ld_b_d, 4)},
+			{0x43, Opcode(opc_ld_b_e, 4)},
+			{0x44, Opcode(opc_ld_b_h, 4)},
+			{0x45, Opcode(opc_ld_b_l, 4)},
+			{0x46, Opcode(opc_ld_b_p_hl, 8)},
+			{0x4F, Opcode(opc_ld_c_a, 4)},
+			{0x48, Opcode(opc_ld_c_b, 4)},
+			{0x49, Opcode(opc_ld_c_c, 4)},
+			{0x4A, Opcode(opc_ld_c_d, 4)},
+			{0x4B, Opcode(opc_ld_c_e, 4)},
+			{0x4C, Opcode(opc_ld_c_h, 4)},
+			{0x4D, Opcode(opc_ld_c_l, 4)},
+			{0x4E, Opcode(opc_ld_c_p_hl, 8)},
+			{0x57, Opcode(opc_ld_d_a, 4)},
+			{0x50, Opcode(opc_ld_d_b, 4)},
+			{0x51, Opcode(opc_ld_d_c, 4)},
+			{0x52, Opcode(opc_ld_d_d, 4)},
+			{0x53, Opcode(opc_ld_d_e, 4)},
+			{0x54, Opcode(opc_ld_d_h, 4)},
+			{0x55, Opcode(opc_ld_d_l, 4)},
+			{0x56, Opcode(opc_ld_d_p_hl, 8)},
+			{0x5F, Opcode(opc_ld_e_a, 4)},
+			{0x58, Opcode(opc_ld_e_b, 4)},
+			{0x59, Opcode(opc_ld_e_c, 4)},
+			{0x5A, Opcode(opc_ld_e_d, 4)},
+			{0x5B, Opcode(opc_ld_e_e, 4)},
+			{0x5C, Opcode(opc_ld_e_h, 4)},
+			{0x5D, Opcode(opc_ld_e_l, 4)},
+			{0x5E, Opcode(opc_ld_e_p_hl, 8)},
+			{0x67, Opcode(opc_ld_h_a, 4)},
+			{0x60, Opcode(opc_ld_h_b, 4)},
+			{0x61, Opcode(opc_ld_h_c, 4)},
+			{0x62, Opcode(opc_ld_h_d, 4)},
+			{0x63, Opcode(opc_ld_h_e, 4)},
+			{0x64, Opcode(opc_ld_h_h, 4)},
+			{0x65, Opcode(opc_ld_h_l, 4)},
+			{0x66, Opcode(opc_ld_h_p_hl, 8)},
+			{0x6F, Opcode(opc_ld_l_a, 4)},
+			{0x68, Opcode(opc_ld_l_b, 4)},
+			{0x69, Opcode(opc_ld_l_c, 4)},
+			{0x6A, Opcode(opc_ld_l_d, 4)},
+			{0x6B, Opcode(opc_ld_l_e, 4)},
+			{0x6C, Opcode(opc_ld_l_h, 4)},
+			{0x6D, Opcode(opc_ld_l_l, 4)},
+			{0x6E, Opcode(opc_ld_l_p_hl, 8)},
+			{0x77, Opcode(opc_ld_p_hl_a, 8)},
+			{0x70, Opcode(opc_ld_p_hl_b, 8)},
+			{0x71, Opcode(opc_ld_p_hl_c, 8)},
+			{0x72, Opcode(opc_ld_p_hl_d, 8)},
+			{0x73, Opcode(opc_ld_p_hl_e, 8)},
+			{0x74, Opcode(opc_ld_p_hl_h, 8)},
+			{0x75, Opcode(opc_ld_p_hl_l, 8)},
+			{0x02, Opcode(opc_ld_p_bc_a, 8)},
+			{0x12, Opcode(opc_ld_p_de_a, 8)},
+			{0x22, Opcode(opc_ldi_hl_a, 8)},
+			{0x32, Opcode(opc_ldd_hl_a, 8)},
+			{0x2A, Opcode(opc_ldi_a_hl, 8)},
+			{0x3A, Opcode(opc_ldd_a_hl, 8)},
+			{0x3C, Opcode(opc_inc_a, 4)},
+			{0x04, Opcode(opc_inc_b, 4)},
+			{0x0C, Opcode(opc_inc_c, 4)},
+			{0x14, Opcode(opc_inc_d, 4)},
+			{0x1C, Opcode(opc_inc_e, 4)},
+			{0x24, Opcode(opc_inc_h, 4)},
+			{0x2C, Opcode(opc_inc_l, 4)},
+			{0x03, Opcode(opc_inc_bc, 8)},
+			{0x13, Opcode(opc_inc_de, 8)},
+			{0x23, Opcode(opc_inc_hl, 8)},
+			{0x34, Opcode(opc_inc_sp, 8)},
+			{0x34, Opcode(opc_inc_p_hl, 12)},
+			{0x3D, Opcode(opc_dec_a, 4)},
+			{0x05, Opcode(opc_dec_b, 4)},
+			{0x0C, Opcode(opc_dec_c, 4)},
+			{0x15, Opcode(opc_dec_d, 4)},
+			{0x1D, Opcode(opc_dec_e, 4)},
+			{0x25, Opcode(opc_dec_h, 4)},
+			{0x2D, Opcode(opc_dec_l, 4)},
+			{0x0B, Opcode(opc_dec_bc, 8)},
+			{0x1B, Opcode(opc_dec_de, 8)},
+			{0x2B, Opcode(opc_dec_hl, 8)},
+			{0x3B, Opcode(opc_dec_sp, 8)},
+			{0x35, Opcode(opc_dec_p_hl, 12)},
+			{0x87, Opcode(opc_add_a_a, 4)},
+			{0x80, Opcode(opc_add_a_b, 4)},
+			{0x81, Opcode(opc_add_a_c, 4)},
+			{0x82, Opcode(opc_add_a_d, 4)},
+			{0x83, Opcode(opc_add_a_e, 4)},
+			{0x84, Opcode(opc_add_a_h, 4)},
+			{0x85, Opcode(opc_add_a_l, 4)},
+			{0x86, Opcode(opc_add_a_p_hl, 8)},
+			{0xC6, Opcode(opc_add_a_n, 8)},
+			{0xE8, Opcode(opc_add_sp_d, 16)},
+			{0x29, Opcode(opc_add_hl_hl, 8)},
+			{0x09, Opcode(opc_add_hl_bc, 8)},
+			{0x19, Opcode(opc_add_hl_de, 8)},
+			{0x39, Opcode(opc_add_hl_sp, 8)},
+			{0x8F, Opcode(opc_adc_a_a, 4)},
+			{0x88, Opcode(opc_adc_a_b, 4)},
+			{0x89, Opcode(opc_adc_a_c, 4)},
+			{0x8A, Opcode(opc_adc_a_d, 4)},
+			{0x8B, Opcode(opc_adc_a_e, 4)},
+			{0x8C, Opcode(opc_adc_a_h, 4)},
+			{0x8D, Opcode(opc_adc_a_l, 4)},
+			{0x8E, Opcode(opc_adc_a_p_hl, 8)},
+			{0xCE, Opcode(opc_adc_a_n, 8)},
+			{0x97, Opcode(opc_sub_a_a, 4)},
+			{0x90, Opcode(opc_sub_a_b, 4)},
+			{0x91, Opcode(opc_sub_a_c, 4)},
+			{0x92, Opcode(opc_sub_a_d, 4)},
+			{0x93, Opcode(opc_sub_a_e, 4)},
+			{0x94, Opcode(opc_sub_a_h, 4)},
+			{0x95, Opcode(opc_sub_a_l, 4)},
+			{0x96, Opcode(opc_sub_a_p_hl, 8)},
+			{0xD6, Opcode(opc_sub_a_n, 8)},
+			{0x9F, Opcode(opc_sbc_a_a, 4)},
+			{0x98, Opcode(opc_sbc_a_b, 4)},
+			{0x99, Opcode(opc_sbc_a_c, 4)},
+			{0x9A, Opcode(opc_sbc_a_d, 4)},
+			{0x9B, Opcode(opc_sbc_a_e, 4)},
+			{0x9C, Opcode(opc_sbc_a_h, 4)},
+			{0x9D, Opcode(opc_sbc_a_l, 4)},
+			{0xDE, Opcode(opc_sbc_a_n, 8)},
+			{0x9E, Opcode(opc_sbc_a_p_hl, 8)},
+			{0xA7, Opcode(opc_and_a_a, 4)},
+			{0xA0, Opcode(opc_and_a_b, 4)},
+			{0xA1, Opcode(opc_and_a_c, 4)},
+			{0xA2, Opcode(opc_and_a_d, 4)},
+			{0xA3, Opcode(opc_and_a_e, 4)},
+			{0xA4, Opcode(opc_and_a_h, 4)},
+			{0xA5, Opcode(opc_and_a_l, 4)},
+			{0xE6, Opcode(opc_and_a_n, 8)},
+			{0xA6, Opcode(opc_and_a_p_hl, 8)},
+			{0xB7, Opcode(opc_or_a_a, 4)},
+			{0xB0, Opcode(opc_or_a_b, 4)},
+			{0xB1, Opcode(opc_or_a_c, 4)},
+			{0xB2, Opcode(opc_or_a_d, 4)},
+			{0xB3, Opcode(opc_or_a_e, 4)},
+			{0xB4, Opcode(opc_or_a_h, 4)},
+			{0xB5, Opcode(opc_or_a_l, 4)},
+			{0xF6, Opcode(opc_or_a_n, 8)},
+			{0xB6, Opcode(opc_or_a_p_hl, 8)},
+			{0xAF, Opcode(opc_xor_a_a, 4)},
+			{0xA8, Opcode(opc_xor_a_b, 4)},
+			{0xA9, Opcode(opc_xor_a_c, 4)},
+			{0xAA, Opcode(opc_xor_a_d, 4)},
+			{0xAB, Opcode(opc_xor_a_e, 4)},
+			{0xAC, Opcode(opc_xor_a_h, 4)},
+			{0xAD, Opcode(opc_xor_a_l, 4)},
+			{0xEE, Opcode(opc_xor_a_n, 8)},
+			{0xAE, Opcode(opc_xor_a_p_hl, 8)},
+			{0xBF, Opcode(opc_cp_a_a, 4)},
+			{0xB8, Opcode(opc_cp_a_b, 4)},
+			{0xB9, Opcode(opc_cp_a_c, 4)},
+			{0xBA, Opcode(opc_cp_a_d, 4)},
+			{0xBB, Opcode(opc_cp_a_e, 4)},
+			{0xBC, Opcode(opc_cp_a_h, 4)},
+			{0xBD, Opcode(opc_cp_a_l, 4)},
+			{0xBE, Opcode(opc_cp_a_p_hl, 8)},
+			{0xFE, Opcode(opc_cp_a_n, 8)},
+			{0xCD, Opcode(opc_call_nn, 24)},
+			{0xC4, Opcode(opc_call_nz_nn, 12)},
+			{0xD4, Opcode(opc_call_nc_nn, 12)},
+			{0xCC, Opcode(opc_call_z_nn, 12)},
+			{0xDC, Opcode(opc_call_c_nn, 12)},
+			{0xC9, Opcode(opc_ret, 16)},
+			{0xC0, Opcode(opc_ret_nz, 8)},
+			{0xD0, Opcode(opc_ret_nc, 8)},
+			{0xC8, Opcode(opc_ret_z, 8)},
+			{0xD8, Opcode(opc_ret_n, 8)},
+			{0xC3, Opcode(opc_jump_nn, 16)},
+			{0xC2, Opcode(opc_jump_nz_nn, 12)},
+			{0xD2, Opcode(opc_jump_nc_nn, 12)},
+			{0xCA, Opcode(opc_jump_z_nn, 12)},
+			{0xDA, Opcode(opc_jump_c_nn, 12)},
+			{0xE9, Opcode(opc_jump_hl, 4)},
+			{0xC7, Opcode(opc_rst_0, 16)},
+			{0xD7, Opcode(opc_rst_10, 16)},
+			{0xE7, Opcode(opc_rst_20, 16)},
+			{0xF7, Opcode(opc_rst_30, 16)},
+			{0xCF, Opcode(opc_rst_8, 16)},
+			{0xDF, Opcode(opc_rst_18, 16)},
+			{0xEF, Opcode(opc_rst_28, 16)},
+			{0xFF, Opcode(opc_rst_38, 16)},
+			{0xC5, Opcode(opc_push_bc, 16)},
+			{0xD5, Opcode(opc_push_de, 16)},
+			{0xE5, Opcode(opc_push_hl, 16)},
+			{0xF5, Opcode(opc_push_af, 16)},
+			{0xC1, Opcode(opc_pop_bc, 12)},
+			{0xD1, Opcode(opc_pop_de, 12)},
+			{0xE1, Opcode(opc_pop_hl, 12)},
+			{0xF1, Opcode(opc_pop_af, 12)},
+			{0xF0, Opcode(opc_ldh_a_p_n, 12)},
+			{0xE0, Opcode(opc_ldh_p_n_a, 12)},
+			{0xE2, Opcode(opc_ldh_p_c_a, 8)},
+			{0xEA, Opcode(opc_ld_p_nn_a, 16)},
+			{0x08, Opcode(opc_ld_p_nn_sp, 20)},
+			{0xF9, Opcode(opc_ld_sp_hl, 8)},
+			{0x3F, Opcode(opc_ccf, 4)},
+			{0x37, Opcode(opc_scf, 4)},
+			{0x2F, Opcode(opc_cpl, 4)},
+			{0x18, Opcode(opc_jr_n, 12)},
+			{0x28, Opcode(opc_jr_z_n, 8)},
+			{0x38, Opcode(opc_jr_c_n, 8)},
+			{0x20, Opcode(opc_jr_nz_n, 8)},
+			{0x30, Opcode(opc_jr_nc_n, 8)},
+			{0x00, Opcode(opc_nop, 4)},
+			{0x10, Opcode(opc_stop, 4)},
 	};
 }
 void Gameboy_Cpu::load_extended_opcodes() {
 	extended_opcodes = {
-			{}
+			{0x47, Opcode(opc_bit_a_0)},
+			{0x4F, Opcode(opc_bit_a_1)},
+			{0x57, Opcode(opc_bit_a_2)},
+			{0x5F, Opcode(opc_bit_a_3)},
+			{0x67, Opcode(opc_bit_a_4)},
+			{0x6F, Opcode(opc_bit_a_5)},
+			{0x77, Opcode(opc_bit_a_6)},
+			{0x7F, Opcode(opc_bit_a_7)},
+			{0x40, Opcode(opc_bit_b_0)},
+			{0x48, Opcode(opc_bit_b_1)},
+			{0x50, Opcode(opc_bit_b_2)},
+			{0x58, Opcode(opc_bit_b_3)},
+			{0x60, Opcode(opc_bit_b_4)},
+			{0x68, Opcode(opc_bit_b_5)},
+			{0x70, Opcode(opc_bit_b_6)},
+			{0x78, Opcode(opc_bit_b_7)},
+			{0x41, Opcode(opc_bit_c_0)},
+			{0x49, Opcode(opc_bit_c_1)},
+			{0x51, Opcode(opc_bit_c_2)},
+			{0x59, Opcode(opc_bit_c_3)},
+			{0x61, Opcode(opc_bit_c_4)},
+			{0x69, Opcode(opc_bit_c_5)},
+			{0x71, Opcode(opc_bit_c_6)},
+			{0x79, Opcode(opc_bit_c_7)},
+			{0x42, Opcode(opc_bit_d_0)},
+			{0x4A, Opcode(opc_bit_d_1)},
+			{0x52, Opcode(opc_bit_d_2)},
+			{0x5A, Opcode(opc_bit_d_3)},
+			{0x62, Opcode(opc_bit_d_4)},
+			{0x6A, Opcode(opc_bit_d_5)},
+			{0x72, Opcode(opc_bit_d_6)},
+			{0x7A, Opcode(opc_bit_d_7)},
+			{0x43, Opcode(opc_bit_e_0)},
+			{0x4B, Opcode(opc_bit_e_1)},
+			{0x53, Opcode(opc_bit_e_2)},
+			{0x5B, Opcode(opc_bit_e_3)},
+			{0x63, Opcode(opc_bit_e_4)},
+			{0x6B, Opcode(opc_bit_e_5)},
+			{0x73, Opcode(opc_bit_e_6)},
+			{0x7B, Opcode(opc_bit_e_7)},
+			{0x44, Opcode(opc_bit_h_0)},
+			{0x4C, Opcode(opc_bit_h_1)},
+			{0x54, Opcode(opc_bit_h_2)},
+			{0x5C, Opcode(opc_bit_h_3)},
+			{0x64, Opcode(opc_bit_h_4)},
+			{0x6C, Opcode(opc_bit_h_5)},
+			{0x74, Opcode(opc_bit_h_6)},
+			{0x7C, Opcode(opc_bit_h_7)},
+			{0x45, Opcode(opc_bit_l_0)},
+			{0x4D, Opcode(opc_bit_l_1)},
+			{0x55, Opcode(opc_bit_l_2)},
+			{0x5D, Opcode(opc_bit_l_3)},
+			{0x65, Opcode(opc_bit_l_4)},
+			{0x6D, Opcode(opc_bit_l_5)},
+			{0x75, Opcode(opc_bit_l_6)},
+			{0x7D, Opcode(opc_bit_l_7)},
+			{0x46, Opcode(opc_bit_hl_0)},
+			{0x4E, Opcode(opc_bit_hl_1)},
+			{0x56, Opcode(opc_bit_hl_2)},
+			{0x5E, Opcode(opc_bit_hl_3)},
+			{0x66, Opcode(opc_bit_hl_4)},
+			{0x6E, Opcode(opc_bit_hl_5)},
+			{0x76, Opcode(opc_bit_hl_6)},
+			{0x7E, Opcode(opc_bit_hl_7)},
+			{0xC7, Opcode(opc_set_a_0)},
+			{0xCF, Opcode(opc_set_a_1)},
+			{0xD7, Opcode(opc_set_a_2)},
+			{0xDF, Opcode(opc_set_a_3)},
+			{0xE7, Opcode(opc_set_a_4)},
+			{0xEF, Opcode(opc_set_a_5)},
+			{0xF7, Opcode(opc_set_a_6)},
+			{0xFF, Opcode(opc_set_a_7)},
+			{0xC0, Opcode(opc_set_b_0)},
+			{0xC8, Opcode(opc_set_b_1)},
+			{0xD0, Opcode(opc_set_b_2)},
+			{0xD8, Opcode(opc_set_b_3)},
+			{0xE0, Opcode(opc_set_b_4)},
+			{0xE8, Opcode(opc_set_b_5)},
+			{0xF0, Opcode(opc_set_b_6)},
+			{0xF8, Opcode(opc_set_b_7)},
+			{0xC1, Opcode(opc_set_c_0)},
+			{0xC9, Opcode(opc_set_c_1)},
+			{0xD1, Opcode(opc_set_c_2)},
+			{0xD9, Opcode(opc_set_c_3)},
+			{0xE1, Opcode(opc_set_c_4)},
+			{0xE9, Opcode(opc_set_c_5)},
+			{0xF1, Opcode(opc_set_c_6)},
+			{0xF9, Opcode(opc_set_c_7)},
+			{0xC2, Opcode(opc_set_d_0)},
+			{0xCA, Opcode(opc_set_d_1)},
+			{0xD2, Opcode(opc_set_d_2)},
+			{0xDA, Opcode(opc_set_d_3)},
+			{0xE2, Opcode(opc_set_d_4)},
+			{0xEA, Opcode(opc_set_d_5)},
+			{0xF2, Opcode(opc_set_d_6)},
+			{0xFA, Opcode(opc_set_d_7)},
+			{0xC3, Opcode(opc_set_e_0)},
+			{0xCB, Opcode(opc_set_e_1)},
+			{0xD3, Opcode(opc_set_e_2)},
+			{0xDB, Opcode(opc_set_e_3)},
+			{0xE3, Opcode(opc_set_e_4)},
+			{0xEB, Opcode(opc_set_e_5)},
+			{0xF3, Opcode(opc_set_e_6)},
+			{0xFB, Opcode(opc_set_e_7)},
+			{0xC4, Opcode(opc_set_h_0)},
+			{0xCC, Opcode(opc_set_h_1)},
+			{0xD4, Opcode(opc_set_h_2)},
+			{0xDC, Opcode(opc_set_h_3)},
+			{0xE4, Opcode(opc_set_h_4)},
+			{0xEC, Opcode(opc_set_h_5)},
+			{0xF4, Opcode(opc_set_h_6)},
+			{0xFC, Opcode(opc_set_h_7)},
+			{0xC5, Opcode(opc_set_l_0)},
+			{0xCD, Opcode(opc_set_l_1)},
+			{0xD5, Opcode(opc_set_l_2)},
+			{0xDD, Opcode(opc_set_l_3)},
+			{0xE5, Opcode(opc_set_l_4)},
+			{0xED, Opcode(opc_set_l_5)},
+			{0xF5, Opcode(opc_set_l_6)},
+			{0xFD, Opcode(opc_set_l_7)},
+			{0xC6, Opcode(opc_set_hl_0)},
+			{0xCE, Opcode(opc_set_hl_1)},
+			{0xD6, Opcode(opc_set_hl_2)},
+			{0xDE, Opcode(opc_set_hl_3)},
+			{0xE6, Opcode(opc_set_hl_4)},
+			{0xEE, Opcode(opc_set_hl_5)},
+			{0xF6, Opcode(opc_set_hl_6)},
+			{0xFE, Opcode(opc_set_hl_7)},
+			{0xC7, Opcode(opc_reset_a_0)},
+			{0xCF, Opcode(opc_reset_a_1)},
+			{0xD7, Opcode(opc_reset_a_2)},
+			{0xDF, Opcode(opc_reset_a_3)},
+			{0xE7, Opcode(opc_reset_a_4)},
+			{0xEF, Opcode(opc_reset_a_5)},
+			{0xF7, Opcode(opc_reset_a_6)},
+			{0xFF, Opcode(opc_reset_a_7)},
+			{0xC0, Opcode(opc_reset_b_0)},
+			{0xC8, Opcode(opc_reset_b_1)},
+			{0xD0, Opcode(opc_reset_b_2)},
+			{0xD8, Opcode(opc_reset_b_3)},
+			{0xE0, Opcode(opc_reset_b_4)},
+			{0xE8, Opcode(opc_reset_b_5)},
+			{0xF0, Opcode(opc_reset_b_6)},
+			{0xF8, Opcode(opc_reset_b_7)},
+			{0xC1, Opcode(opc_reset_c_0)},
+			{0xC9, Opcode(opc_reset_c_1)},
+			{0xD1, Opcode(opc_reset_c_2)},
+			{0xD9, Opcode(opc_reset_c_3)},
+			{0xE1, Opcode(opc_reset_c_4)},
+			{0xE9, Opcode(opc_reset_c_5)},
+			{0xF1, Opcode(opc_reset_c_6)},
+			{0xF9, Opcode(opc_reset_c_7)},
+			{0xC2, Opcode(opc_reset_d_0)},
+			{0xCA, Opcode(opc_reset_d_1)},
+			{0xD2, Opcode(opc_reset_d_2)},
+			{0xDA, Opcode(opc_reset_d_3)},
+			{0xE2, Opcode(opc_reset_d_4)},
+			{0xEA, Opcode(opc_reset_d_5)},
+			{0xF2, Opcode(opc_reset_d_6)},
+			{0xFA, Opcode(opc_reset_d_7)},
+			{0xC3, Opcode(opc_reset_e_0)},
+			{0xCB, Opcode(opc_reset_e_1)},
+			{0xD3, Opcode(opc_reset_e_2)},
+			{0xDB, Opcode(opc_reset_e_3)},
+			{0xE3, Opcode(opc_reset_e_4)},
+			{0xEB, Opcode(opc_reset_e_5)},
+			{0xF3, Opcode(opc_reset_e_6)},
+			{0xFB, Opcode(opc_reset_e_7)},
+			{0xC4, Opcode(opc_reset_h_0)},
+			{0xCC, Opcode(opc_reset_h_1)},
+			{0xD4, Opcode(opc_reset_h_2)},
+			{0xDC, Opcode(opc_reset_h_3)},
+			{0xE4, Opcode(opc_reset_h_4)},
+			{0xEC, Opcode(opc_reset_h_5)},
+			{0xF4, Opcode(opc_reset_h_6)},
+			{0xFC, Opcode(opc_reset_h_7)},
+			{0xC5, Opcode(opc_reset_l_0)},
+			{0xCD, Opcode(opc_reset_l_1)},
+			{0xD5, Opcode(opc_reset_l_2)},
+			{0xDD, Opcode(opc_reset_l_3)},
+			{0xE5, Opcode(opc_reset_l_4)},
+			{0xED, Opcode(opc_reset_l_5)},
+			{0xF5, Opcode(opc_reset_l_6)},
+			{0xFD, Opcode(opc_reset_l_7)},
+			{0xC6, Opcode(opc_reset_hl_0)},
+			{0xCE, Opcode(opc_reset_hl_1)},
+			{0xD6, Opcode(opc_reset_hl_2)},
+			{0xDE, Opcode(opc_reset_hl_3)},
+			{0xE6, Opcode(opc_reset_hl_4)},
+			{0xEE, Opcode(opc_reset_hl_5)},
+			{0xF6, Opcode(opc_reset_hl_6)},
+			{0xFE, Opcode(opc_reset_hl_7)},
+			{0x3F, Opcode(opc_srl_a)},
+			{0x38, Opcode(opc_srl_b)},
+			{0x39, Opcode(opc_srl_c)},
+			{0x3A, Opcode(opc_srl_d)},
+			{0x3B, Opcode(opc_srl_e)},
+			{0x3C, Opcode(opc_srl_h)},
+			{0x3D, Opcode(opc_srl_l)},
+			{0x3E, Opcode(opc_srl_p_hl)},
+			{0x2F, Opcode(opc_sra_a)},
+			{0x28, Opcode(opc_sra_b)},
+			{0x29, Opcode(opc_sra_c)},
+			{0x2A, Opcode(opc_sra_d)},
+			{0x2B, Opcode(opc_sra_e)},
+			{0x2C, Opcode(opc_sra_h)},
+			{0x2D, Opcode(opc_sra_l)},
+			{0x2E, Opcode(opc_sra_p_hl)},
+			{0x27, Opcode(opc_sla_a)},
+			{0x20, Opcode(opc_sla_b)},
+			{0x21, Opcode(opc_sla_c)},
+			{0x22, Opcode(opc_sla_d)},
+			{0x23, Opcode(opc_sla_e)},
+			{0x24, Opcode(opc_sla_h)},
+			{0x25, Opcode(opc_sla_l)},
+			{0x26, Opcode(opc_sla_p_hl)},
+			{0x1F, Opcode(opc_rr_a)},
+			{0x18, Opcode(opc_rr_b)},
+			{0x19, Opcode(opc_rr_c)},
+			{0x1A, Opcode(opc_rr_d)},
+			{0x1B, Opcode(opc_rr_e)},
+			{0x1C, Opcode(opc_rr_h)},
+			{0x1D, Opcode(opc_rr_l)},
+			{0x1E, Opcode(opc_rr_p_hl)},
+			{0x17, Opcode(opc_rl_a)},
+			{0x10, Opcode(opc_rl_b)},
+			{0x11, Opcode(opc_rl_c)},
+			{0x12, Opcode(opc_rl_d)},
+			{0x13, Opcode(opc_rl_e)},
+			{0x14, Opcode(opc_rl_h)},
+			{0x15, Opcode(opc_rl_l)},
+			{0x16, Opcode(opc_rl_p_hl)},
+			{0x0F, Opcode(opc_rrc_a)},
+			{0x08, Opcode(opc_rrc_b)},
+			{0x09, Opcode(opc_rrc_c)},
+			{0x0A, Opcode(opc_rrc_d)},
+			{0x0B, Opcode(opc_rrc_e)},
+			{0x0C, Opcode(opc_rrc_h)},
+			{0x0D, Opcode(opc_rrc_l)},
+			{0x0E, Opcode(opc_rrc_p_hl)},
+			{0x07, Opcode(opc_rlc_a)},
+			{0x00, Opcode(opc_rlc_b)},
+			{0x01, Opcode(opc_rlc_c)},
+			{0x02, Opcode(opc_rlc_d)},
+			{0x03, Opcode(opc_rlc_e)},
+			{0x04, Opcode(opc_rlc_h)},
+			{0x05, Opcode(opc_rlc_l)},
+			{0x06, Opcode(opc_rlc_p_hl)},
 	};
 }
 
@@ -826,21 +1304,25 @@ void Gameboy_Cpu::opc_call_nn() {
 void Gameboy_Cpu::opc_call_nz_nn() {
 	if (!get_flag(ZERO)) {
 		call_subroutine((memory[pc+1] << 8) | memory[pc+2]);
+		cycles += 12;
 	}
 }
 void Gameboy_Cpu::opc_call_nc_nn() {
 	if (!get_flag(CARRY)) {
 		call_subroutine((memory[pc+1] << 8) | memory[pc+2]);
+		cycles += 12;
 	}
 }
 void Gameboy_Cpu::opc_call_z_nn() {
 	if (get_flag(ZERO)) {
 		call_subroutine((memory[pc+1] << 8) | memory[pc+2]);
+		cycles += 12;
 	}
 }
 void Gameboy_Cpu::opc_call_c_nn() {
 	if (get_flag(CARRY)) {
 		call_subroutine((memory[pc+1] << 8) | memory[pc+2]);
+		cycles += 12;
 	}
 }
 
@@ -852,21 +1334,25 @@ void Gameboy_Cpu::opc_ret() {
 void Gameboy_Cpu::opc_ret_nz() {
 	if (!get_flag(ZERO)) {
 		return_subroutine();
+		cycles += 12;
 	}
 }
 void Gameboy_Cpu::opc_ret_nc() {
 	if (!get_flag(CARRY)) {
 		return_subroutine();
+		cycles += 12;
 	}
 }
 void Gameboy_Cpu::opc_ret_z() {
 	if (get_flag(ZERO)) {
 		return_subroutine();
+		cycles += 12;
 	}
 }
 void Gameboy_Cpu::opc_ret_n() {
 	if (get_flag(CARRY)) {
 		return_subroutine();
+		cycles += 12;
 	}
 }
 
@@ -878,21 +1364,25 @@ void Gameboy_Cpu::opc_jump_nn() {
 void Gameboy_Cpu::opc_jump_nz_nn() {
 	if (!get_flag(ZERO)) {
 		pc = (memory[pc+1] << 8) | memory[pc+2];
+		cycles += 4;
 	}
 }
 void Gameboy_Cpu::opc_jump_nc_nn() {
 	if (!get_flag(CARRY)) {
 		pc = (memory[pc+1] << 8) | memory[pc+2];
+		cycles += 4;
 	}
 }
 void Gameboy_Cpu::opc_jump_z_nn() {
 	if (get_flag(ZERO)) {
 		pc = (memory[pc+1] << 8) | memory[pc+2];
+		cycles += 4;
 	}
 }
 void Gameboy_Cpu::opc_jump_c_nn() {
 	if (get_flag(CARRY)) {
 		pc = (memory[pc+1] << 8) | memory[pc+2];
+		cycles += 4;
 	}
 }
 void Gameboy_Cpu::opc_jump_hl() {
@@ -1547,31 +2037,35 @@ void Gameboy_Cpu::opc_cpl() {
 
 void Gameboy_Cpu::opc_jr_n() {
 	relative_jump(memory[pc+1]);
-	pc += 2;
+	//pc += 2;
 }
 void Gameboy_Cpu::opc_jr_z_n() {
 	if (get_flag(ZERO)) {
 		relative_jump(memory[pc+1]);
+		cycles += 4;
 	}
-	pc += 2;
+	//pc += 2;
 }
 void Gameboy_Cpu::opc_jr_c_n() {
 	if (get_flag(CARRY)) {
 		relative_jump(memory[pc+1]);
+		cycles += 4;
 	}
-	pc += 2;
+	//pc += 2;
 }
 void Gameboy_Cpu::opc_jr_nz_n() {
 	if (!get_flag(ZERO)) {
 		relative_jump(memory[pc+1]);
+		cycles += 4;
 	}
-	pc += 2;
+	//pc += 2;
 }
 void Gameboy_Cpu::opc_jr_nc_n() {
 	if (!get_flag(CARRY)) {
 		relative_jump(memory[pc+1]);
+		cycles += 4;
 	}
-	pc += 2;
+	//pc += 2;
 }
 
 // no operation
@@ -1590,13 +2084,14 @@ void Gameboy_Cpu::opc_stop() {
 // helper functions
 
 void Gameboy_Cpu::set_flag(u8 flag) {
+	reg.f &= 0xF0;
 	switch (flag)
 	{
 		case 4: reg.f |= 1 << 4; break;
 		case 5: reg.f |= 1 << 5; break;
 		case 6: reg.f |= 1 << 6; break;
 		case 7: reg.f |= 1 << 7; break;
-		default: std::cout << "ERROR: invalid value for flag to be set.";
+		default: std::cout << "ERROR: invald flag bit";
 	}
 }
 void Gameboy_Cpu::reset_flag(u8 flag) {

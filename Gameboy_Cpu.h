@@ -5,7 +5,7 @@
 #ifndef GAMEBOY_EMU_GAMEBOY_CPU_H
 #define GAMEBOY_EMU_GAMEBOY_CPU_H
 
-#include <bits/unordered_map.h>
+#include <unordered_map>
 
 typedef unsigned char u8;
 typedef unsigned short u16;
@@ -59,15 +59,16 @@ struct registers {
 	};
 };
 
+class Gameboy_Cpu; // for the following stuff. fuck the preprocessor.
 // Opcode struct, stores function pointer, ticks and so on
 struct Opcode
 {
-	Opcode(void (*opc_func)(), u8 cpu_cycles) {
+	Opcode(void (Gameboy_Cpu::*opc_func)(), u8 cpu_cycles) {
 		opcode_function = opc_func;
 		cycles = cpu_cycles;
 	}
 	// Function pointer to opcode function
-	void (*opcode_function)();
+	void (Gameboy_Cpu::*opcode_function)();
 	// Used cpu cycles
 	u8 cycles;
 };
@@ -79,6 +80,9 @@ std::unordered_map<u8, Opcode> extended_opcodes;
 // stack pointer and program counter
 u16 sp;
 u16 pc;
+
+// Cpu Cycle counter
+unsigned long cycles;
 
 /*
  *  memory map:
@@ -421,14 +425,14 @@ private:
 	void opc_bit_l_6();//+0x75
 	void opc_bit_l_7();//+0x7D
 
-	void opc_bit_hl_0();//+0x46
-	void opc_bit_hl_1();//+0x4E
-	void opc_bit_hl_2();//+0x56
-	void opc_bit_hl_3();//+0x5E
-	void opc_bit_hl_4();//+0x66
-	void opc_bit_hl_5();//+0x6E
-	void opc_bit_hl_6();//+0x76
-	void opc_bit_hl_7();//+0x7E
+	void opc_bit_p_hl_0();//+0x46
+	void opc_bit_p_hl_1();//+0x4E
+	void opc_bit_p_hl_2();//+0x56
+	void opc_bit_p_hl_3();//+0x5E
+	void opc_bit_p_hl_4();//+0x66
+	void opc_bit_p_hl_5();//+0x6E
+	void opc_bit_p_hl_6();//+0x76
+	void opc_bit_p_hl_7();//+0x7E
 
 	// setting bits
 	void opc_set_a_0(); //+0xC7
@@ -494,14 +498,14 @@ private:
 	void opc_set_l_6(); //+0xF5
 	void opc_set_l_7(); //+0xFD
 
-	void opc_set_hl_0(); //+0xC6
-	void opc_set_hl_1(); //+0xCE
-	void opc_set_hl_2(); //+0xD6
-	void opc_set_hl_3(); //+0xDE
-	void opc_set_hl_4(); //+0xE6
-	void opc_set_hl_5(); //+0xEE
-	void opc_set_hl_6(); //+0xF6
-	void opc_set_hl_7(); //+0xFE
+	void opc_set_p_hl_0(); //+0xC6
+	void opc_set_p_hl_1(); //+0xCE
+	void opc_set_p_hl_2(); //+0xD6
+	void opc_set_p_hl_3(); //+0xDE
+	void opc_set_p_hl_4(); //+0xE6
+	void opc_set_p_hl_5(); //+0xEE
+	void opc_set_p_hl_6(); //+0xF6
+	void opc_set_p_hl_7(); //+0xFE
 
 	// resetting bits
 	void opc_reset_a_0(); //+0xC7
@@ -567,14 +571,14 @@ private:
 	void opc_reset_l_6(); //+0xF5
 	void opc_reset_l_7(); //+0xFD
 
-	void opc_reset_hl_0(); //+0xC6
-	void opc_reset_hl_1(); //+0xCE
-	void opc_reset_hl_2(); //+0xD6
-	void opc_reset_hl_3(); //+0xDE
-	void opc_reset_hl_4(); //+0xE6
-	void opc_reset_hl_5(); //+0xEE
-	void opc_reset_hl_6(); //+0xF6
-	void opc_reset_hl_7(); //+0xFE
+	void opc_reset_p_hl_0(); //+0xC6
+	void opc_reset_p_hl_1(); //+0xCE
+	void opc_reset_p_hl_2(); //+0xD6
+	void opc_reset_p_hl_3(); //+0xDE
+	void opc_reset_p_hl_4(); //+0xE6
+	void opc_reset_p_hl_5(); //+0xEE
+	void opc_reset_p_hl_6(); //+0xF6
+	void opc_reset_p_hl_7(); //+0xFE
 
 	// bit shifts
 	void opc_srl_a(); //+0x3F

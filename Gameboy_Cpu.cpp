@@ -23,7 +23,7 @@ void Gameboy_Cpu::startup() {
 
 	logger = Gameboy_Logger("/tmp/gameboy_cpu.log");
 	logger.log_line("\n\n\n--------------------");
-	logger.log_line("LOADING EMULATOR");
+	logger.log_line("STARTING EMULATOR");
 	logger.log_time();
 	logger.log_line("\n--------------------\n\n");
 
@@ -36,9 +36,6 @@ void Gameboy_Cpu::startup() {
 	}
 
 	load_file("/home/michi/ClionProjects/gameboy_emu/DMG_ROM.bin", 0);
-
-
-
 }
 
 void Gameboy_Cpu::load_file(string location, u16 starting_point) {
@@ -79,6 +76,8 @@ void Gameboy_Cpu::emulate_cycle() {
 			logger.log(std::to_string(count_opcodes));
 			logger.log(":\nPC      : ");
 			logger.log(logger.short_to_hex(pc));
+			logger.log("\nSP       : ");
+			logger.log(logger.short_to_hex(sp));
 			logger.log("\nID      : ");
 			logger.log(logger.char_to_hex(opcode_id));
 			logger.log("\nCYCLES  : ");
@@ -648,7 +647,7 @@ void Gameboy_Cpu::opc_ld_hl_nn() {
 }
 // 0x31 - load 16bit in SP
 void Gameboy_Cpu::opc_ld_sp_nn() {
-	sp = (memory[pc+1] << 8) & memory[pc+2];
+	sp = (memory[pc+2] << 8) | memory[pc+1];
 	pc += 3;
 }
 // 0x36 - load 8bit in HL

@@ -22,6 +22,10 @@ void Gameboy_Cpu::startup() {
 	load_extended_opcodes();
 
 	logger = Gameboy_Logger("/tmp/gameboy_cpu.log");
+	logger.log_line("\n\n\n--------------------");
+	logger.log_line("LOADING EMULATOR");
+	logger.log_time();
+	logger.log_line("\n--------------------\n\n");
 
 	// PC starts at 0
 	pc = 0x0000;
@@ -71,7 +75,9 @@ void Gameboy_Cpu::emulate_cycle() {
 			// DEBUG BUILD -> log opcode ID, function and cycles
 #ifdef DEBUG_BUILD
 			logger.log_time();
-			logger.log(" ++++ executing opcode:\nPC      : ");
+			logger.log(" ++++ executing opcode #");
+			logger.log(std::to_string(count_opcodes));
+			logger.log(":\nPC      : ");
 			logger.log(logger.short_to_hex(pc));
 			logger.log("\nID      : ");
 			logger.log(logger.char_to_hex(opcode_id));
@@ -81,6 +87,7 @@ void Gameboy_Cpu::emulate_cycle() {
 
 			// fuck, no reflection...gotta revisit this some time later on
 			// -> print function name
+			++count_opcodes;
 #endif
 
 			// Call opcode function
@@ -91,7 +98,8 @@ void Gameboy_Cpu::emulate_cycle() {
 		}
 		catch (out_of_range) {
 			logger.log("ERROR: invalid opcode at: 0x");
-			logger.log_line(logger.short_to_hex(pc));
+			logger.log(logger.short_to_hex(pc));
+			logger.log_line("  #" + std::to_string(count_opcodes));
 		}
 	}
 }

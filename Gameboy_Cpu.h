@@ -15,10 +15,14 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 
 
-
-
 class Gameboy_Cpu {
 private:
+
+	// counting executed opcodes for debugging, starting at 1
+#ifdef DEBUG_BUILD
+	unsigned int count_opcodes = 1;
+#endif
+
 	/*
  *  stolen from https://cturt.github.io/cinoop.html
  *  allows accessing registers like: register.a, register.af

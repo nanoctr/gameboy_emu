@@ -18,7 +18,7 @@ Gameboy_Logger::Gameboy_Logger(string file) {
 
 void Gameboy_Logger::log(string text) {
 	ofstream file_logger;
-	file_logger.open(logfile);
+	file_logger.open(logfile, ios_base::app);
 
 	cout << text;
 	file_logger << text;
@@ -27,7 +27,7 @@ void Gameboy_Logger::log(string text) {
 }
 void Gameboy_Logger::log_line(string text) {
 	ofstream file_logger;
-	file_logger.open(logfile);
+	file_logger.open(logfile, ios_base::app);
 
 	cout << text << "\n";
 	file_logger << text << "\n";
@@ -37,7 +37,7 @@ void Gameboy_Logger::log_line(string text) {
 
 void Gameboy_Logger::log_time() {
 	ofstream file_logger;
-	file_logger.open(logfile);
+	file_logger.open(logfile, ios_base::app);
 
 	// format: hh:mm:ss
 	time_t t = time(0);

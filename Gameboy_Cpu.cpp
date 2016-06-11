@@ -632,17 +632,17 @@ void Gameboy_Cpu::opc_ld_l_n() {
 }
 // 0x01 - load 16bit in BC
 void Gameboy_Cpu::opc_ld_bc_nn() {
-	reg.bc = (memory[pc+1] << 8) & memory[pc+2];
+	reg.bc = (memory[pc+2] << 8) | memory[pc+1];
 	pc += 3;
 }
 // 0x11 - load 16bit in DE
 void Gameboy_Cpu::opc_ld_de_nn() {
-	reg.de = (memory[pc+1] << 8) & memory[pc+2];
+	reg.de = (memory[pc+2] << 8) | memory[pc+1];
 	pc += 3;
 }
 // 0x21 - load 16bit in HL
 void Gameboy_Cpu::opc_ld_hl_nn() {
-	reg.hl = (memory[pc+1] << 8) & memory[pc+2];
+	reg.hl = (memory[pc+2] << 8) | memory[pc+1];
 	pc += 3;
 }
 // 0x31 - load 16bit in SP

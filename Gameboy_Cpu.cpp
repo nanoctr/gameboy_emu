@@ -31,8 +31,12 @@ void Gameboy_Cpu::emulate_cycle() {
 		logger.log_line("CYCLES  : " + opcode.cycles);
 		logger.log_line("----");
 #endif
-		// Decode opcode
 
+		// Call opcode function
+		(this->*opcode.opcode_function)();
+
+		// increment CPU cycles
+		cycles += opcode.cycles;
 	}
 }
 
@@ -2131,7 +2135,7 @@ void Gameboy_Cpu::set_flag(u8 flag) {
 		case 5: reg.f |= 1 << 5; break;
 		case 6: reg.f |= 1 << 6; break;
 		case 7: reg.f |= 1 << 7; break;
-		default: std::cout << "ERROR: invald flag bit";
+		default: logger.log_line("Error setting flag: invalid flag :" + flag);
 	}
 }
 void Gameboy_Cpu::reset_flag(u8 flag) {
@@ -2141,7 +2145,7 @@ void Gameboy_Cpu::reset_flag(u8 flag) {
 		case 5: reg.f &= ~(1 << 5); break;
 		case 6: reg.f &= ~(1 << 6); break;
 		case 7: reg.f &= ~(1 << 7); break;
-		default: std::cout << "ERROR: invalid value for flag to be unset.";
+		default: logger.log_line("Error resetting flag: invalid flag :" + flag);
 	}
 }
 bool Gameboy_Cpu::get_flag(u8 flag) {
@@ -2151,7 +2155,7 @@ bool Gameboy_Cpu::get_flag(u8 flag) {
 		case 5: return reg.f & 0x20; break;
 		case 6: return reg.f & 0x40; break;
 		case 7: return reg.f & 0x80; break;
-		default: std::cout << "ERROR: invalid value for flag!";
+		default: logger.log_line("Error getting flag value: invalid flag :" + flag);
 			return false;
 	}
 }

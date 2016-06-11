@@ -21,7 +21,7 @@ void Gameboy_Logger::log_line(string text) {
 	ofstream file_logger;
 	file_logger.open(logfile);
 
-	cout << text;
+	cout << text << "\n";
 	file_logger << text << "\n";
 }
 

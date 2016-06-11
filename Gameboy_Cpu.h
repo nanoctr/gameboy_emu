@@ -758,14 +758,3 @@ public:
 
 
 #endif //GAMEBOY_EMU_GAMEBOY_CPU_H
-
-
-/*
- *  Notizen:
- *  zyklen, erledigt:
- *  LD r <- r
- *  LD r <- n
- *	LD r <- p_hl
- *
- *
- */

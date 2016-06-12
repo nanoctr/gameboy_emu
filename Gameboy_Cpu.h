@@ -5,6 +5,7 @@
 #ifndef GAMEBOY_EMU_GAMEBOY_CPU_H
 #define GAMEBOY_EMU_GAMEBOY_CPU_H
 // this is a debug build, change this for release compilation
+#define DEBUG_BUILD
 
 
 #include <unordered_map>
@@ -13,6 +14,7 @@
 
 typedef unsigned char u8;
 typedef unsigned short u16;
+typedef unsigned long u64;
 
 
 class Gameboy_Cpu {
@@ -96,7 +98,6 @@ private:
 
 // stack pointer and program counter
 	u16 sp;
-	u16 pc;
 
 // Cpu Cycle counter
 	unsigned long cycles;
@@ -804,6 +805,7 @@ public:
 	void startup();
 	void load_file(string location, u16 starting_point);
 	Gameboy_Cpu();
+	u16 pc;
 };
 
 

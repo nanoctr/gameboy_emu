@@ -70,3 +70,16 @@ string Gameboy_Logger::short_to_hex(u16 val) {
 
 	return result;
 }
+string Gameboy_Logger::int_to_hex(int val) {
+	string result(8, ' ');
+	result[0] = hexmap[(val & 0xF0000000) >> 28];
+	result[1] = hexmap[(val & 0x0F000000) >> 24];
+	result[2] = hexmap[(val & 0x00F00000) >> 20];
+	result[3] = hexmap[(val & 0x000F0000) >> 16];
+	result[4] = hexmap[(val & 0x0000F000) >> 12];
+	result[5] = hexmap[(val & 0x00000F00) >> 8];
+	result[6] = hexmap[(val & 0x000000F0) >> 4];
+	result[7] = hexmap[val & 0x0000000F];
+
+	return result;
+}

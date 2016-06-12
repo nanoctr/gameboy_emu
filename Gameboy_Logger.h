@@ -24,6 +24,7 @@ public:
 	void log_line(string text);
 	string char_to_hex(u8 val);
 	string short_to_hex(u16 val);
+	string int_to_hex(int val);
 };
 
 

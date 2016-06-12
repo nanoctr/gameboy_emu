@@ -9,6 +9,7 @@
 
 
 #include <unordered_map>
+#include <vector>
 #include "Gameboy_Logger.h"
 
 typedef unsigned char u8;
@@ -21,6 +22,7 @@ private:
 	// counting executed opcodes for debugging, starting at 1
 #ifdef DEBUG_BUILD
 	unsigned int count_opcodes = 1;
+	vector<u16> opcode_list;
 #endif
 
 	/*
@@ -75,14 +77,18 @@ private:
 // Opcode struct, stores function pointer, ticks and so on
 	struct Opcode
 	{
-		Opcode(void (Gameboy_Cpu::*opc_func)(), u8 cpu_cycles) {
+		Opcode(void (Gameboy_Cpu::*opc_func)(), u8 cpu_cycles, u8 opc_length) {
 			opcode_function = opc_func;
 			cycles = cpu_cycles;
+			length = opc_length;
 		}
 		// Function pointer to opcode function
 		void (Gameboy_Cpu::*opcode_function)();
 		// Used cpu cycles
 		u8 cycles;
+
+		// Length in bytes -> increment PC by this value
+		u8 length;
 	};
 
 // Opcode structs saved in hashmap: Key[opcode_byte] -> Value[Opcode_struct]

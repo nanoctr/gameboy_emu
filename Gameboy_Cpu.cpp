@@ -124,6 +124,9 @@ void Gameboy_Cpu::emulate_cycle() {
 
 			// increment CPU cycles
 			cycles += opcode.cycles;
+
+			// increment PC
+			pc += opcode.length;
 		}
 		catch (out_of_range) {
 			logger.log("ERROR: invalid opcode at: 0x");

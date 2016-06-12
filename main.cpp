@@ -10,7 +10,7 @@ using namespace std;
 const u8 DEBUGGER_NUMBER = 1;
 const u8 DEBUGGER_CONTINUE = 2;
 // saving breakpoints, take these from external files and such
-constexpr u16 breakpoints[] = {0x0003, 0x0007};
+constexpr u16 breakpoints[] = {0x000a};
 
 const regex match_numbers("^\\d+$");
 
@@ -28,10 +28,12 @@ int main() {
 	logger.log_line("\n\n--------------------");
 	logger.log_line("DEBUG BUILD ENABLED");
 	logger.log_line("\n--------------------");
+	bool debugger = true;
 #endif
 	cpu.startup();
 
 	string input = "";
+#ifndef DEBUG_BUILD
 	bool debugger = false;
 	cout << "Enable Debugger?" << endl;
 	getline(cin, input);
@@ -42,6 +44,7 @@ int main() {
 		logger.log_line("\n--------------------\n\n");
 
 	}
+#endif
 
 	if (debugger) {
 		debug();
@@ -85,6 +88,7 @@ void debug() {
 		}
 
 		else {
+			logger.log_line("DEBUG INFORMATION: PC = " + logger.short_to_hex(cpu.pc));
 			getline(cin, input);
 			if (input == ""){
 				cpu.emulate_cycle();
@@ -113,10 +117,16 @@ u8 match_debugger_instr(string input) {
 }
 
 bool is_breakpoint(u16 val) {
-	const u16 *breakpoint = find(begin(breakpoints), end(breakpoints), val);
-	if (breakpoint != breakpoints+2) return true;
-	else return false;
+	//const u16 *breakpoint = find(begin(breakpoints), end(breakpoints), val);
+	//if (breakpoint != breakpoints+2) return true;
+	//else return false;
+
+	for (u16 n: breakpoints) {
+		if (n == val) return true;
+	}
+	return false;
 }
+
 
 /*
  *  LEGACY CODE: main func, debug loop

@@ -5,7 +5,6 @@
 #ifndef GAMEBOY_EMU_GAMEBOY_CPU_H
 #define GAMEBOY_EMU_GAMEBOY_CPU_H
 // this is a debug build, change this for release compilation
-#define DEBUG_BUILD
 
 
 #include <unordered_map>

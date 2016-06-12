@@ -84,8 +84,10 @@ void Gameboy_Cpu::load_file(string location, u16 starting_point) {
 #endif
 
 	}
-
+	// maybe not needed, compiler may optimize it away when unused
+#ifdef DEBUG_BUILD
 	count_opcodes = 1;
+#endif
 }
 
 
@@ -126,7 +128,9 @@ void Gameboy_Cpu::emulate_cycle() {
 		catch (out_of_range) {
 			logger.log("ERROR: invalid opcode at: 0x");
 			logger.log(logger.short_to_hex(pc));
+#ifdef DEBUG_BUILD
 			logger.log_line("  #" + std::to_string(count_opcodes));
+#endif
 		}
 	}
 }
@@ -2248,7 +2252,9 @@ void Gameboy_Cpu::opc_ext() {
 	catch (out_of_range) {
 		logger.log("ERROR: invalid opcode at: 0x");
 		logger.log(logger.short_to_hex(pc));
+#ifdef DEBUG_BUILD
 		logger.log_line("  #" + std::to_string(count_opcodes));
+#endif
 	}
 	// pc += 2;
 }

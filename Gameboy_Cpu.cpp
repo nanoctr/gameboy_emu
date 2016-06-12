@@ -76,7 +76,7 @@ void Gameboy_Cpu::emulate_cycle() {
 			logger.log(std::to_string(count_opcodes));
 			logger.log(":\nPC      : ");
 			logger.log(logger.short_to_hex(pc));
-			logger.log("\nSP       : ");
+			logger.log("\nSP      : ");
 			logger.log(logger.short_to_hex(sp));
 			logger.log("\nID      : ");
 			logger.log(logger.char_to_hex(opcode_id));
@@ -107,6 +107,7 @@ void Gameboy_Cpu::emulate_cycle() {
 // populate opcodes hashmaps
 void Gameboy_Cpu::load_opcodes() {
 	opcodes = {
+			{0xCB, Opcode(&Gameboy_Cpu::opc_ext, 4)},
 			{0x3E, Opcode(&Gameboy_Cpu::opc_ld_a_n, 8)},
 			{0x06, Opcode(&Gameboy_Cpu::opc_ld_b_n, 8)},
 			{0x0E, Opcode(&Gameboy_Cpu::opc_ld_c_n, 8)},
@@ -472,70 +473,70 @@ void Gameboy_Cpu::load_extended_opcodes() {
 			{0xEE, Opcode(&Gameboy_Cpu::opc_set_p_hl_5, 16)},
 			{0xF6, Opcode(&Gameboy_Cpu::opc_set_p_hl_6, 16)},
 			{0xFE, Opcode(&Gameboy_Cpu::opc_set_p_hl_7, 16)},
-			{0xC7, Opcode(&Gameboy_Cpu::opc_reset_a_0, 8)},
-			{0xCF, Opcode(&Gameboy_Cpu::opc_reset_a_1, 8)},
-			{0xD7, Opcode(&Gameboy_Cpu::opc_reset_a_2, 8)},
-			{0xDF, Opcode(&Gameboy_Cpu::opc_reset_a_3, 8)},
-			{0xE7, Opcode(&Gameboy_Cpu::opc_reset_a_4, 8)},
-			{0xEF, Opcode(&Gameboy_Cpu::opc_reset_a_5, 8)},
-			{0xF7, Opcode(&Gameboy_Cpu::opc_reset_a_6, 8)},
-			{0xFF, Opcode(&Gameboy_Cpu::opc_reset_a_7, 8)},
-			{0xC0, Opcode(&Gameboy_Cpu::opc_reset_b_0, 8)},
-			{0xC8, Opcode(&Gameboy_Cpu::opc_reset_b_1, 8)},
-			{0xD0, Opcode(&Gameboy_Cpu::opc_reset_b_2, 8)},
-			{0xD8, Opcode(&Gameboy_Cpu::opc_reset_b_3, 8)},
-			{0xE0, Opcode(&Gameboy_Cpu::opc_reset_b_4, 8)},
-			{0xE8, Opcode(&Gameboy_Cpu::opc_reset_b_5, 8)},
-			{0xF0, Opcode(&Gameboy_Cpu::opc_reset_b_6, 8)},
-			{0xF8, Opcode(&Gameboy_Cpu::opc_reset_b_7, 8)},
-			{0xC1, Opcode(&Gameboy_Cpu::opc_reset_c_0, 8)},
-			{0xC9, Opcode(&Gameboy_Cpu::opc_reset_c_1, 8)},
-			{0xD1, Opcode(&Gameboy_Cpu::opc_reset_c_2, 8)},
-			{0xD9, Opcode(&Gameboy_Cpu::opc_reset_c_3, 8)},
-			{0xE1, Opcode(&Gameboy_Cpu::opc_reset_c_4, 8)},
-			{0xE9, Opcode(&Gameboy_Cpu::opc_reset_c_5, 8)},
-			{0xF1, Opcode(&Gameboy_Cpu::opc_reset_c_6, 8)},
-			{0xF9, Opcode(&Gameboy_Cpu::opc_reset_c_7, 8)},
-			{0xC2, Opcode(&Gameboy_Cpu::opc_reset_d_0, 8)},
-			{0xCA, Opcode(&Gameboy_Cpu::opc_reset_d_1, 8)},
-			{0xD2, Opcode(&Gameboy_Cpu::opc_reset_d_2, 8)},
-			{0xDA, Opcode(&Gameboy_Cpu::opc_reset_d_3, 8)},
-			{0xE2, Opcode(&Gameboy_Cpu::opc_reset_d_4, 8)},
-			{0xEA, Opcode(&Gameboy_Cpu::opc_reset_d_5, 8)},
-			{0xF2, Opcode(&Gameboy_Cpu::opc_reset_d_6, 8)},
-			{0xFA, Opcode(&Gameboy_Cpu::opc_reset_d_7, 8)},
-			{0xC3, Opcode(&Gameboy_Cpu::opc_reset_e_0, 8)},
-			{0xCB, Opcode(&Gameboy_Cpu::opc_reset_e_1, 8)},
-			{0xD3, Opcode(&Gameboy_Cpu::opc_reset_e_2, 8)},
-			{0xDB, Opcode(&Gameboy_Cpu::opc_reset_e_3, 8)},
-			{0xE3, Opcode(&Gameboy_Cpu::opc_reset_e_4, 8)},
-			{0xEB, Opcode(&Gameboy_Cpu::opc_reset_e_5, 8)},
-			{0xF3, Opcode(&Gameboy_Cpu::opc_reset_e_6, 8)},
-			{0xFB, Opcode(&Gameboy_Cpu::opc_reset_e_7, 8)},
-			{0xC4, Opcode(&Gameboy_Cpu::opc_reset_h_0, 8)},
-			{0xCC, Opcode(&Gameboy_Cpu::opc_reset_h_1, 8)},
-			{0xD4, Opcode(&Gameboy_Cpu::opc_reset_h_2, 8)},
-			{0xDC, Opcode(&Gameboy_Cpu::opc_reset_h_3, 8)},
-			{0xE4, Opcode(&Gameboy_Cpu::opc_reset_h_4, 8)},
-			{0xEC, Opcode(&Gameboy_Cpu::opc_reset_h_5, 8)},
-			{0xF4, Opcode(&Gameboy_Cpu::opc_reset_h_6, 8)},
-			{0xFC, Opcode(&Gameboy_Cpu::opc_reset_h_7, 8)},
-			{0xC5, Opcode(&Gameboy_Cpu::opc_reset_l_0, 8)},
-			{0xCD, Opcode(&Gameboy_Cpu::opc_reset_l_1, 8)},
-			{0xD5, Opcode(&Gameboy_Cpu::opc_reset_l_2, 8)},
-			{0xDD, Opcode(&Gameboy_Cpu::opc_reset_l_3, 8)},
-			{0xE5, Opcode(&Gameboy_Cpu::opc_reset_l_4, 8)},
-			{0xED, Opcode(&Gameboy_Cpu::opc_reset_l_5, 8)},
-			{0xF5, Opcode(&Gameboy_Cpu::opc_reset_l_6, 8)},
-			{0xFD, Opcode(&Gameboy_Cpu::opc_reset_l_7, 8)},
-			{0xC6, Opcode(&Gameboy_Cpu::opc_reset_p_hl_0, 16)},
-			{0xCE, Opcode(&Gameboy_Cpu::opc_reset_p_hl_1, 16)},
-			{0xD6, Opcode(&Gameboy_Cpu::opc_reset_p_hl_2, 16)},
-			{0xDE, Opcode(&Gameboy_Cpu::opc_reset_p_hl_3, 16)},
-			{0xE6, Opcode(&Gameboy_Cpu::opc_reset_p_hl_4, 16)},
-			{0xEE, Opcode(&Gameboy_Cpu::opc_reset_p_hl_5, 16)},
-			{0xF6, Opcode(&Gameboy_Cpu::opc_reset_p_hl_6, 16)},
-			{0xFE, Opcode(&Gameboy_Cpu::opc_reset_p_hl_7, 16)},
+			{0x87, Opcode(&Gameboy_Cpu::opc_reset_a_0, 8)},
+			{0x8F, Opcode(&Gameboy_Cpu::opc_reset_a_1, 8)},
+			{0x97, Opcode(&Gameboy_Cpu::opc_reset_a_2, 8)},
+			{0x9F, Opcode(&Gameboy_Cpu::opc_reset_a_3, 8)},
+			{0xA7, Opcode(&Gameboy_Cpu::opc_reset_a_4, 8)},
+			{0xAF, Opcode(&Gameboy_Cpu::opc_reset_a_5, 8)},
+			{0xB7, Opcode(&Gameboy_Cpu::opc_reset_a_6, 8)},
+			{0xBF, Opcode(&Gameboy_Cpu::opc_reset_a_7, 8)},
+			{0x80, Opcode(&Gameboy_Cpu::opc_reset_b_0, 8)},
+			{0x88, Opcode(&Gameboy_Cpu::opc_reset_b_1, 8)},
+			{0x90, Opcode(&Gameboy_Cpu::opc_reset_b_2, 8)},
+			{0x98, Opcode(&Gameboy_Cpu::opc_reset_b_3, 8)},
+			{0xA0, Opcode(&Gameboy_Cpu::opc_reset_b_4, 8)},
+			{0xA8, Opcode(&Gameboy_Cpu::opc_reset_b_5, 8)},
+			{0xB0, Opcode(&Gameboy_Cpu::opc_reset_b_6, 8)},
+			{0xB8, Opcode(&Gameboy_Cpu::opc_reset_b_7, 8)},
+			{0x81, Opcode(&Gameboy_Cpu::opc_reset_c_0, 8)},
+			{0x89, Opcode(&Gameboy_Cpu::opc_reset_c_1, 8)},
+			{0x91, Opcode(&Gameboy_Cpu::opc_reset_c_2, 8)},
+			{0x99, Opcode(&Gameboy_Cpu::opc_reset_c_3, 8)},
+			{0xA1, Opcode(&Gameboy_Cpu::opc_reset_c_4, 8)},
+			{0xA9, Opcode(&Gameboy_Cpu::opc_reset_c_5, 8)},
+			{0xB1, Opcode(&Gameboy_Cpu::opc_reset_c_6, 8)},
+			{0xB9, Opcode(&Gameboy_Cpu::opc_reset_c_7, 8)},
+			{0x82, Opcode(&Gameboy_Cpu::opc_reset_d_0, 8)},
+			{0x8A, Opcode(&Gameboy_Cpu::opc_reset_d_1, 8)},
+			{0x92, Opcode(&Gameboy_Cpu::opc_reset_d_2, 8)},
+			{0x9A, Opcode(&Gameboy_Cpu::opc_reset_d_3, 8)},
+			{0xA2, Opcode(&Gameboy_Cpu::opc_reset_d_4, 8)},
+			{0xAA, Opcode(&Gameboy_Cpu::opc_reset_d_5, 8)},
+			{0xB2, Opcode(&Gameboy_Cpu::opc_reset_d_6, 8)},
+			{0xBA, Opcode(&Gameboy_Cpu::opc_reset_d_7, 8)},
+			{0x83, Opcode(&Gameboy_Cpu::opc_reset_e_0, 8)},
+			{0x8B, Opcode(&Gameboy_Cpu::opc_reset_e_1, 8)},
+			{0x93, Opcode(&Gameboy_Cpu::opc_reset_e_2, 8)},
+			{0x9B, Opcode(&Gameboy_Cpu::opc_reset_e_3, 8)},
+			{0xA3, Opcode(&Gameboy_Cpu::opc_reset_e_4, 8)},
+			{0xAB, Opcode(&Gameboy_Cpu::opc_reset_e_5, 8)},
+			{0xB3, Opcode(&Gameboy_Cpu::opc_reset_e_6, 8)},
+			{0xBB, Opcode(&Gameboy_Cpu::opc_reset_e_7, 8)},
+			{0x84, Opcode(&Gameboy_Cpu::opc_reset_h_0, 8)},
+			{0x8C, Opcode(&Gameboy_Cpu::opc_reset_h_1, 8)},
+			{0x94, Opcode(&Gameboy_Cpu::opc_reset_h_2, 8)},
+			{0x9C, Opcode(&Gameboy_Cpu::opc_reset_h_3, 8)},
+			{0xA4, Opcode(&Gameboy_Cpu::opc_reset_h_4, 8)},
+			{0xAC, Opcode(&Gameboy_Cpu::opc_reset_h_5, 8)},
+			{0xB4, Opcode(&Gameboy_Cpu::opc_reset_h_6, 8)},
+			{0xBC, Opcode(&Gameboy_Cpu::opc_reset_h_7, 8)},
+			{0x85, Opcode(&Gameboy_Cpu::opc_reset_l_0, 8)},
+			{0x8D, Opcode(&Gameboy_Cpu::opc_reset_l_1, 8)},
+			{0x95, Opcode(&Gameboy_Cpu::opc_reset_l_2, 8)},
+			{0x9D, Opcode(&Gameboy_Cpu::opc_reset_l_3, 8)},
+			{0xA5, Opcode(&Gameboy_Cpu::opc_reset_l_4, 8)},
+			{0xAD, Opcode(&Gameboy_Cpu::opc_reset_l_5, 8)},
+			{0xB5, Opcode(&Gameboy_Cpu::opc_reset_l_6, 8)},
+			{0xBD, Opcode(&Gameboy_Cpu::opc_reset_l_7, 8)},
+			{0x86, Opcode(&Gameboy_Cpu::opc_reset_p_hl_0, 16)},
+			{0x8E, Opcode(&Gameboy_Cpu::opc_reset_p_hl_1, 16)},
+			{0x96, Opcode(&Gameboy_Cpu::opc_reset_p_hl_2, 16)},
+			{0x9E, Opcode(&Gameboy_Cpu::opc_reset_p_hl_3, 16)},
+			{0xA6, Opcode(&Gameboy_Cpu::opc_reset_p_hl_4, 16)},
+			{0xAE, Opcode(&Gameboy_Cpu::opc_reset_p_hl_5, 16)},
+			{0xB6, Opcode(&Gameboy_Cpu::opc_reset_p_hl_6, 16)},
+			{0xBE, Opcode(&Gameboy_Cpu::opc_reset_p_hl_7, 16)},
 			{0x3F, Opcode(&Gameboy_Cpu::opc_srl_a, 8)},
 			{0x38, Opcode(&Gameboy_Cpu::opc_srl_b, 8)},
 			{0x39, Opcode(&Gameboy_Cpu::opc_srl_c, 8)},
@@ -939,7 +940,7 @@ void Gameboy_Cpu::opc_ldi_hl_a() {
 }
 void Gameboy_Cpu::opc_ldd_hl_a() {
 	memory[reg.hl] = reg.a;
-	dec16(reg.hl);
+	--reg.hl;
 	++pc;
 }
 
@@ -1403,29 +1404,29 @@ void Gameboy_Cpu::opc_cp_a_p_hl() {
 // calling subroutine
 
 void Gameboy_Cpu::opc_call_nn() {
-	call_subroutine((memory[pc+1] << 8) | memory[pc+2]);
+	call_subroutine((memory[pc+2] << 8) | memory[pc+1]);
 }
 void Gameboy_Cpu::opc_call_nz_nn() {
 	if (!get_flag(ZERO)) {
-		call_subroutine((memory[pc+1] << 8) | memory[pc+2]);
+		call_subroutine((memory[pc+2] << 8) | memory[pc+1]);
 		cycles += 12;
 	}
 }
 void Gameboy_Cpu::opc_call_nc_nn() {
 	if (!get_flag(CARRY)) {
-		call_subroutine((memory[pc+1] << 8) | memory[pc+2]);
+		call_subroutine((memory[pc+2] << 8) | memory[pc+1]);
 		cycles += 12;
 	}
 }
 void Gameboy_Cpu::opc_call_z_nn() {
 	if (get_flag(ZERO)) {
-		call_subroutine((memory[pc+1] << 8) | memory[pc+2]);
+		call_subroutine((memory[pc+2] << 8) | memory[pc+1]);
 		cycles += 12;
 	}
 }
 void Gameboy_Cpu::opc_call_c_nn() {
 	if (get_flag(CARRY)) {
-		call_subroutine((memory[pc+1] << 8) | memory[pc+2]);
+		call_subroutine((memory[pc+2] << 8) | memory[pc+1]);
 		cycles += 12;
 	}
 }
@@ -1463,29 +1464,29 @@ void Gameboy_Cpu::opc_ret_n() {
 // jumping to address
 
 void Gameboy_Cpu::opc_jump_nn() {
-	pc = (memory[pc+1] << 8) | memory[pc+2];
+	pc = (memory[pc+2] << 8) | memory[pc+1];
 }
 void Gameboy_Cpu::opc_jump_nz_nn() {
 	if (!get_flag(ZERO)) {
-		pc = (memory[pc+1] << 8) | memory[pc+2];
+		pc = (memory[pc+2] << 8) | memory[pc+1];
 		cycles += 4;
 	}
 }
 void Gameboy_Cpu::opc_jump_nc_nn() {
 	if (!get_flag(CARRY)) {
-		pc = (memory[pc+1] << 8) | memory[pc+2];
+		pc = (memory[pc+2] << 8) | memory[pc+1];
 		cycles += 4;
 	}
 }
 void Gameboy_Cpu::opc_jump_z_nn() {
 	if (get_flag(ZERO)) {
-		pc = (memory[pc+1] << 8) | memory[pc+2];
+		pc = (memory[pc+2] << 8) | memory[pc+1];
 		cycles += 4;
 	}
 }
 void Gameboy_Cpu::opc_jump_c_nn() {
 	if (get_flag(CARRY)) {
-		pc = (memory[pc+1] << 8) | memory[pc+2];
+		pc = (memory[pc+2] << 8) | memory[pc+1];
 		cycles += 4;
 	}
 }
@@ -2141,35 +2142,35 @@ void Gameboy_Cpu::opc_cpl() {
 
 void Gameboy_Cpu::opc_jr_n() {
 	relative_jump(memory[pc+1]);
-	//pc += 2;
+	pc += 2;
 }
 void Gameboy_Cpu::opc_jr_z_n() {
 	if (get_flag(ZERO)) {
 		relative_jump(memory[pc+1]);
 		cycles += 4;
 	}
-	//pc += 2;
+	pc += 2;
 }
 void Gameboy_Cpu::opc_jr_c_n() {
 	if (get_flag(CARRY)) {
 		relative_jump(memory[pc+1]);
 		cycles += 4;
 	}
-	//pc += 2;
+	pc += 2;
 }
 void Gameboy_Cpu::opc_jr_nz_n() {
 	if (!get_flag(ZERO)) {
 		relative_jump(memory[pc+1]);
 		cycles += 4;
 	}
-	//pc += 2;
+	pc += 2;
 }
 void Gameboy_Cpu::opc_jr_nc_n() {
 	if (!get_flag(CARRY)) {
 		relative_jump(memory[pc+1]);
 		cycles += 4;
 	}
-	//pc += 2;
+	pc += 2;
 }
 
 // no operation
@@ -2183,6 +2184,46 @@ void Gameboy_Cpu::opc_stop() {
 	++pc;
 }
 
+// call extended opcode
+void Gameboy_Cpu::opc_ext() {
+	// Fetch opcode
+	u8 opcode_id = memory[pc+1];
+
+	try {
+		Opcode opcode = extended_opcodes.at(opcode_id);
+
+		// DEBUG BUILD -> log opcode ID, function and cycles
+#ifdef DEBUG_BUILD
+		logger.log_time();
+		logger.log(" ++++ executing extended opcode #");
+		logger.log(std::to_string(count_opcodes-1));
+		logger.log(":\nPC      : ");
+		logger.log(logger.short_to_hex(pc));
+		logger.log("\nSP      : ");
+		logger.log(logger.short_to_hex(sp));
+		logger.log("\nID      : +");
+		logger.log(logger.char_to_hex(opcode_id));
+		logger.log("\nCYCLES  : ");
+		logger.log(std::to_string(opcode.cycles));
+		logger.log_line("\n----");
+
+		// fuck, no reflection...gotta revisit this some time later on
+		// -> print function name
+#endif
+
+		// Call opcode function
+		(this->*opcode.opcode_function)();
+
+		// increment CPU cycles
+		cycles += opcode.cycles;
+	}
+	catch (out_of_range) {
+		logger.log("ERROR: invalid opcode at: 0x");
+		logger.log(logger.short_to_hex(pc));
+		logger.log_line("  #" + std::to_string(count_opcodes));
+	}
+	pc += 2;
+}
 
 
 // helper functions

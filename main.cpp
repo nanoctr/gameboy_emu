@@ -10,7 +10,7 @@ int main() {
 	cpu.startup();
 
 
-	for (int i = 0; i < 20; i++) {
+	for (int i = 0; i < 30000; i++) {
 		cpu.emulate_cycle();
 	}
 

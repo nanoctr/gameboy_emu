@@ -99,7 +99,7 @@ void Gameboy_Cpu::emulate_cycle() {
 		try {
 			Opcode opcode = opcodes.at(opcode_id);
 
-			// DEBUG BUILD -> log opcode ID, function and cycles
+			// DEBUG BUILD -> log opcode ID, function and steps
 #ifdef DEBUG_BUILD
 			logger.log_time();
 			logger.log(" ++++ executing opcode #");
@@ -122,7 +122,7 @@ void Gameboy_Cpu::emulate_cycle() {
 			// Call opcode function
 			(this->*opcode.opcode_function)();
 
-			// increment CPU cycles
+			// increment CPU steps
 			cycles += opcode.cycles;
 
 			// increment PC
@@ -163,9 +163,9 @@ void Gameboy_Cpu::load_opcodes() {
 			{0x7D, Opcode(&Gameboy_Cpu::opc_ld_a_l, 4, 1)},
 			{0x7E, Opcode(&Gameboy_Cpu::opc_ld_a_p_hl, 8, 1)},
 			{0x7F, Opcode(&Gameboy_Cpu::opc_ld_a_a, 4, 1)},
-			{0x0A, Opcode(&Gameboy_Cpu::opc_ld_a_p_bc, 8, 1)}, // unsure about cycles
-			{0x1A, Opcode(&Gameboy_Cpu::opc_ld_a_p_de, 8, 1)}, // unsure about cycles
-			{0xFA, Opcode(&Gameboy_Cpu::opc_ld_a_p_nn, 8, 3)}, // unsure about cycles
+			{0x0A, Opcode(&Gameboy_Cpu::opc_ld_a_p_bc, 8, 1)}, // unsure about steps
+			{0x1A, Opcode(&Gameboy_Cpu::opc_ld_a_p_de, 8, 1)}, // unsure about steps
+			{0xFA, Opcode(&Gameboy_Cpu::opc_ld_a_p_nn, 8, 3)}, // unsure about steps
 			{0x47, Opcode(&Gameboy_Cpu::opc_ld_b_a, 4, 1)},
 			{0x40, Opcode(&Gameboy_Cpu::opc_ld_b_b, 4, 1)},
 			{0x41, Opcode(&Gameboy_Cpu::opc_ld_b_c, 4, 1)},
@@ -2227,7 +2227,7 @@ void Gameboy_Cpu::opc_ext() {
 	try {
 		Opcode opcode = extended_opcodes.at(opcode_id);
 
-		// DEBUG BUILD -> log opcode ID, function and cycles
+		// DEBUG BUILD -> log opcode ID, function and steps
 #ifdef DEBUG_BUILD
 		logger.log_time();
 		logger.log(" ++++ executing extended opcode #");
@@ -2249,7 +2249,7 @@ void Gameboy_Cpu::opc_ext() {
 		// Call opcode function
 		(this->*opcode.opcode_function)();
 
-		// increment CPU cycles
+		// increment CPU steps
 		cycles += opcode.cycles;
 	}
 	catch (out_of_range) {

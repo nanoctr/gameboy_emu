@@ -85,7 +85,7 @@ private:
 		}
 		// Function pointer to opcode function
 		void (Gameboy_Cpu::*opcode_function)();
-		// Used cpu cycles
+		// Used cpu steps
 		u8 cycles;
 
 		// Length in bytes -> increment PC by this value

@@ -13,7 +13,7 @@ void Gameboy_Debugger::run() {
 		// breakpoint hit, stop execution, show debug interface, next loop when done
 		if (is_breakpoint(cpu.pc)) {
 			forever = false;
-			cycles = 0;
+			steps = 0;
 			debug_interface();
 			continue;
 		}
@@ -21,12 +21,12 @@ void Gameboy_Debugger::run() {
 		if (forever) {
 			cpu.emulate_cycle();
 		}
-		else if (cycles) {
+		else if (steps) {
 			cpu.emulate_cycle();
-			--cycles;
+			--steps;
 		}
 
-		// No 'forever' execution or end of cycles to execute -> open debug interface
+		// No 'forever' execution or end of steps to execute -> open debug interface
 		else {
 			debug_interface();
 		}
@@ -41,9 +41,9 @@ void Gameboy_Debugger::debug_interface() {
 
 	switch (match_debugger_instr(input, match))
 	{
-		case DEBUGGER_STEP: break; // execute one step
+		case DEBUGGER_STEP: steps = 1; break; // execute one step
 		case DEBUGGER_NUMBER: // execute $NUMBER steps
-			cycles = string_to_short(match.str(1)); break;
+			steps = string_to_short(match.str(1)); break;
 		case DEBUGGER_CONTINUE: // continue executing
 			forever = true; break;
 		case DEBUGGER_NEW_BREAKPOINT: // set new breakpoint

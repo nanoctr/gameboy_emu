@@ -24,11 +24,11 @@ private:
 	const regex match_save_breakpoint = regex("^bs\\s0x([\\dabcdefABCDEF]{4})");
 
 	// Debugger instructions
-	const u8 DEBUGGER_STEP = 1;
-	const u8 DEBUGGER_NUMBER = 2;
-	const u8 DEBUGGER_CONTINUE = 3;
-	const u8 DEBUGGER_NEW_BREAKPOINT = 4;
-	const u8 DEBUGGER_SAVE_BREAKPOINT = 5;
+	static const u8 DEBUGGER_STEP = 1;
+	static const u8 DEBUGGER_NUMBER = 2;
+	static const u8 DEBUGGER_CONTINUE = 3;
+	static const u8 DEBUGGER_NEW_BREAKPOINT = 4;
+	static const u8 DEBUGGER_SAVE_BREAKPOINT = 5;
 
 	// Breakpoint list file location
 	const string BREAKPOINT_FILE = "/home/michi/ClionProjects/gameboy_emu/breakpoints.txt";
@@ -39,7 +39,7 @@ private:
 	Gameboy_Cpu cpu;
 
 	// execute $cycles opcodes or until breakpoint / EOP
-	u16 cycles = 0;
+	u16 steps = 0;
 	// execute opcodes until breakpoint / EOP
 	bool forever = false;
 

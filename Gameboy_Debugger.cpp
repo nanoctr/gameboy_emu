@@ -70,7 +70,7 @@ void Gameboy_Debugger::save_breakpoint(smatch input) {
 }
 
 
-u8 Gameboy_Debugger::match_debugger_instr(string input, smatch match) {
+u8 Gameboy_Debugger::match_debugger_instr(string input, smatch &match) {
 	if (input == "") {
 		return DEBUGGER_STEP;
 	} // empty ENTER -> execute one step

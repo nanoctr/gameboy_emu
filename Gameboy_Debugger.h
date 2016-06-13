@@ -46,7 +46,7 @@ private:
 	int string_to_int(string s);
 	u16 string_to_short(string s);
 	bool is_breakpoint(u16 val);
-	u8 match_debugger_instr(string input, smatch match);
+	u8 match_debugger_instr(string input, smatch &match);
 	void load_breakpoints();
 	void debug_interface();
 

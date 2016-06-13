@@ -4,6 +4,7 @@
 
 #include "Gameboy_Debugger.h"
 
+typedef void (* debug_instruction)(string input);
 
 Gameboy_Debugger::Gameboy_Debugger() { }
 
@@ -35,22 +36,42 @@ void Gameboy_Debugger::run() {
 
 void Gameboy_Debugger::debug_interface() {
 	string input = "";
+	smatch match;
 	getline(cin, input);
 
-	switch (match_debugger_instr(input))
+	switch (match_debugger_instr(input, match))
 	{
-		case DEBUGGER_NUMBER: cycles = string_to_int(input); break;
-		case DEBUGGER_CONTINUE: forever = true; break;
+		case DEBUGGER_STEP: break;
+		case DEBUGGER_NUMBER:
+			cycles = string_to_short(match.str(1)); break;
+		case DEBUGGER_CONTINUE:
+			forever = true; break;
+		case DEBUGGER_NEW_BREAKPOINT:
+			breakpoints.insert(string_to_short(match.str(1))); break;
+		case DEBUGGER_SAVE_BREAKPOINT:
+			save_breakpoint(match); break;
 		default: cout << "Invalid debugger instruction!" << endl;
 	}
 }
 
+void Gameboy_Debugger::save_breakpoint(smatch input) {
+	string s = input.str(1);
+	breakpoints.insert(string_to_short(s));
 
-u8 Gameboy_Debugger::match_debugger_instr(string input) {
+	ofstream file;
+	file.open(breakpoint_list, ios_base::app);
+
+	file << endl << s;
+
+	file.close();
+}
+
+
+u8 Gameboy_Debugger::match_debugger_instr(string input, smatch match) {
 	if (input == "") {
 		return DEBUGGER_STEP;
 	} // empty ENTER -> execute one step
-	if (regex_match(input, match_numbers)) {
+	if (regex_search(input, match, match_numbers) && match.size() > 1) {
 		return DEBUGGER_NUMBER;
 	} // execute $NUMBER steps
 	else if (input[0] == 'c') {
@@ -66,12 +87,13 @@ u8 Gameboy_Debugger::match_debugger_instr(string input) {
 	return 0;
 }
 
+
 bool Gameboy_Debugger::is_breakpoint(u16 val) {
 	return (breakpoints.count(val) != 0);
 }
 
-void Gameboy_Debugger::load_breakpoints(string location) {
-	ifstream file(location);
+void Gameboy_Debugger::load_breakpoints() {
+	ifstream file(breakpoint_list);
 	string line;
 
 	while (getline(file, line)) {

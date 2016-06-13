@@ -18,7 +18,7 @@
 
 class Gameboy_Debugger {
 private:
-	const regex match_numbers = regex("^\\d+$");
+	const regex match_numbers = regex("^(\\d+)");
 	const regex match_breakpoint_data = regex("^0x[\\dabcdefABCDEF]{4}");
 	const regex match_new_breakpoint = regex("^b\\s0x([\\dabcdefABCDEF]{4})");
 	const regex match_save_breakpoint = regex("^bs\\s0x([\\dabcdefABCDEF]{4})");
@@ -29,6 +29,9 @@ private:
 	const u8 DEBUGGER_CONTINUE = 3;
 	const u8 DEBUGGER_NEW_BREAKPOINT = 4;
 	const u8 DEBUGGER_SAVE_BREAKPOINT = 5;
+
+	// Breakpoint list file location
+	const string breakpoint_list = "/home/michi/ClionProjects/gameboy_emu/breakpoints.txt";
 
 	unordered_set<u16> breakpoints;
 
@@ -43,9 +46,13 @@ private:
 	int string_to_int(string s);
 	u16 string_to_short(string s);
 	bool is_breakpoint(u16 val);
-	u8 match_debugger_instr(string input);
-	void load_breakpoints(string location);
+	u8 match_debugger_instr(string input, smatch match);
+	void load_breakpoints();
 	void debug_interface();
+
+	// debug instruction functions:
+	void save_breakpoint(smatch input);
+
 public:
 	Gameboy_Debugger();
 	void run();

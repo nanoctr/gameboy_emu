@@ -31,7 +31,7 @@ private:
 	const u8 DEBUGGER_SAVE_BREAKPOINT = 5;
 
 	// Breakpoint list file location
-	const string breakpoint_list = "/home/michi/ClionProjects/gameboy_emu/breakpoints.txt";
+	const string BREAKPOINT_FILE = "/home/michi/ClionProjects/gameboy_emu/breakpoints.txt";
 
 	unordered_set<u16> breakpoints;
 

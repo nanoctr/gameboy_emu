@@ -4,15 +4,13 @@
 
 #include "Gameboy_Debugger.h"
 
-typedef void (* debug_instruction)(string input);
-
 Gameboy_Debugger::Gameboy_Debugger() { }
 
-
+// Main execution loop
 void Gameboy_Debugger::run() {
 	while(true)
 	{
-		// breakpoint hit, stop execution, show debug interface, next loop if done
+		// breakpoint hit, stop execution, show debug interface, next loop when done
 		if (is_breakpoint(cpu.pc)) {
 			forever = false;
 			cycles = 0;
@@ -28,12 +26,14 @@ void Gameboy_Debugger::run() {
 			--cycles;
 		}
 
+		// No 'forever' execution or end of cycles to execute -> open debug interface
 		else {
 			debug_interface();
 		}
 	}
 }
 
+// Debugger main interface: print values, control debugger & code execution
 void Gameboy_Debugger::debug_interface() {
 	string input = "";
 	smatch match;
@@ -41,25 +41,28 @@ void Gameboy_Debugger::debug_interface() {
 
 	switch (match_debugger_instr(input, match))
 	{
-		case DEBUGGER_STEP: break;
-		case DEBUGGER_NUMBER:
+		case DEBUGGER_STEP: break; // execute one step
+		case DEBUGGER_NUMBER: // execute $NUMBER steps
 			cycles = string_to_short(match.str(1)); break;
-		case DEBUGGER_CONTINUE:
+		case DEBUGGER_CONTINUE: // continue executing
 			forever = true; break;
-		case DEBUGGER_NEW_BREAKPOINT:
+		case DEBUGGER_NEW_BREAKPOINT: // set new breakpoint
 			breakpoints.insert(string_to_short(match.str(1))); break;
-		case DEBUGGER_SAVE_BREAKPOINT:
+		case DEBUGGER_SAVE_BREAKPOINT: // set new breakpoint, store in file
 			save_breakpoint(match); break;
-		default: cout << "Invalid debugger instruction!" << endl;
+		default:
+			logger.log_line("Invalid Debugger Instruction: " + input);
+			cout << "Invalid Debugger Instruction!"; break;
 	}
 }
 
+// set new breakpoint, store in file
 void Gameboy_Debugger::save_breakpoint(smatch input) {
 	string s = input.str(1);
 	breakpoints.insert(string_to_short(s));
 
 	ofstream file;
-	file.open(breakpoint_list, ios_base::app);
+	file.open(BREAKPOINT_FILE, ios_base::app);
 
 	file << endl << s;
 
@@ -77,10 +80,10 @@ u8 Gameboy_Debugger::match_debugger_instr(string input, smatch match) {
 	else if (input[0] == 'c') {
 		return DEBUGGER_CONTINUE;
 	} // execute until EOP
-	else if (regex_match(input, match_new_breakpoint)) {
+	else if (regex_search(input, match, match_new_breakpoint) && match.size() > 1) {
 		return DEBUGGER_NEW_BREAKPOINT;
 	} // set new breakpoint
-	else if (regex_match(input, match_save_breakpoint)) {
+	else if (regex_search(input, match, match_save_breakpoint) && match.size() > 1) {
 		return DEBUGGER_SAVE_BREAKPOINT;
 	} // (set new breakpoint), save to file
 
@@ -92,8 +95,9 @@ bool Gameboy_Debugger::is_breakpoint(u16 val) {
 	return (breakpoints.count(val) != 0);
 }
 
+// load breakpoints from $BREAKPOINT_FILE
 void Gameboy_Debugger::load_breakpoints() {
-	ifstream file(breakpoint_list);
+	ifstream file(BREAKPOINT_FILE);
 	string line;
 
 	while (getline(file, line)) {
@@ -107,9 +111,9 @@ int Gameboy_Debugger::string_to_int(string s) {
 	string::size_type sz;
 	return stoi(s, &sz);
 }
+// TODO: dunno, this is unsafe, but it will probably never be a problem. fuck it.
+// (receives only 16 bit numbers, is called only with regex -> *hex*{4} values)
 u16 Gameboy_Debugger::string_to_short(string s) {
 	string::size_type sz;
-	// TODO: dunno, this is unsafe, but it will never be a problem. fuck it.
-	// (gets only 16 bit numbers, is only used in load_breakpoints)
 	return stoi(s, &sz);
 }

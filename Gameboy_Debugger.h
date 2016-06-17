@@ -22,6 +22,9 @@ private:
 	const regex match_breakpoint_data = regex("^0x[\\dabcdefABCDEF]{4}");
 	const regex match_new_breakpoint = regex("^b\\s0x([\\dabcdefABCDEF]{4})");
 	const regex match_save_breakpoint = regex("^bs\\s0x([\\dabcdefABCDEF]{4})");
+	const regex match_watch_register = regex("^w\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
+	const regex match_watch_save = regex("^ws\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
+	const regex match_print_register = regex("^p\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
 
 	// Debugger instructions
 	static const u8 DEBUGGER_STEP = 1;
@@ -30,6 +33,7 @@ private:
 	static const u8 DEBUGGER_NEW_BREAKPOINT = 4;
 	static const u8 DEBUGGER_SAVE_BREAKPOINT = 5;
 	static const u8 DEBUGGER_WATCH_REGISTER = 6;
+	static const u8 DEBUGGER_SAFE_WATCH = 10;
 	static const u8 DEBUGGER_PRINT_REGISTER = 7;
 	static const u8 DEBUGGER_DIFF_REGISTER = 8;
 	static const u8 DEBUGGER_DIFF_ALL = 9;
@@ -65,9 +69,8 @@ private:
 				return result;
 			}
 	};
-	// Debug Register Array
-	Debug_Register debug_registers[9];
 	// Constants
+	static const u8 REG_NUMBER = 13;
 	static const u8 REG_PC = 0;
 	static const u8 REG_SP = 1;
 	static const u8 REG_A = 2;
@@ -77,6 +80,20 @@ private:
 	static const u8 REG_E = 6;
 	static const u8 REG_H = 7;
 	static const u8 REG_L = 8;
+	static const u8 REG_AF = 9;
+	static const u8 REG_BC = 10;
+	static const u8 REG_DE = 11;
+	static const u8 REG_HL = 12;
+	// Debug Register Array
+	Debug_Register debug_registers[REG_NUMBER];
+	// helper map
+	unordered_map<string, u8> reg_constants = 	{
+			{"a", REG_A},   {"b", REG_B},   {"c", REG_C},
+			{"d", REG_D},   {"h", REG_E},   {"h", REG_H},
+			{"l", REG_L},   {"af", REG_AF}, {"bc", REG_BC},
+			{"de", REG_DE}, {"hl", REG_HL}, {"pc", REG_PC},
+			{"sp", REG_SP}
+	};
 
 	// Registers mirror
 	registers reg;
@@ -105,6 +122,7 @@ private:
 	void load_breakpoints();
 	void debug_interface();
 	string print_registers(bool list[9]);
+	string print_register(u8 value);
 
 	// debug instruction functions:
 	void save_breakpoint(smatch input);

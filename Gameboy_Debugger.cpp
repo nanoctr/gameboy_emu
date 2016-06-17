@@ -5,15 +5,19 @@
 #include "Gameboy_Debugger.h"
 
 Gameboy_Debugger::Gameboy_Debugger() {
-	debug_registers[REG_PC] = Debug_Register(nullptr, &reg.pc, '', "PC");
-	debug_registers[REG_SP] = Debug_Register(nullptr, &reg.sp, '', "SP");
+	debug_registers[REG_PC] = Debug_Register(nullptr, &reg.pc, ' ', "PC");
+	debug_registers[REG_SP] = Debug_Register(nullptr, &reg.sp, ' ', "SP");
 	debug_registers[REG_A] = Debug_Register(&reg.a, &reg.af, 'A', "AF");
+	debug_registers[REG_AF] = Debug_Register(nullptr, &reg.af, ' ', "AF");
 	debug_registers[REG_B] = Debug_Register(&reg.b, &reg.bc, 'B', "BC");
 	debug_registers[REG_C] = Debug_Register(&reg.c, &reg.bc, 'C', "BC");
+	debug_registers[REG_BC] = Debug_Register(nullptr, &reg.bc, ' ', "BC");
 	debug_registers[REG_D] = Debug_Register(&reg.d, &reg.de, 'D', "DE");
 	debug_registers[REG_E] = Debug_Register(&reg.e, &reg.de, 'E', "DE");
+	debug_registers[REG_DE] = Debug_Register(nullptr, &reg.de, ' ', "DE");
 	debug_registers[REG_H] = Debug_Register(&reg.h, &reg.hl, 'H', "HL");
 	debug_registers[REG_L] = Debug_Register(&reg.l, &reg.hl, 'L', "HL");
+	debug_registers[REG_HL] = Debug_Register(nullptr, &reg.hl, ' ', "HL");
 
 	watch_list[REG_PC] = true;
 	watch_list[REG_SP] = true;
@@ -47,7 +51,16 @@ void Gameboy_Debugger::run() {
 	}
 }
 
-string Gameboy_Debugger::print_registers(bool list[9]) {
+string Gameboy_Debugger::print_register(u8 value) {
+	bool arr[REG_NUMBER];
+	for (bool & b : arr) {
+		b = false;
+	}
+	arr[value] = true;
+	return print_registers(arr);
+}
+
+string Gameboy_Debugger::print_registers(bool list[REG_NUMBER]) {
 	string result = "REGISTERS: \n";
 	for (u8 i = 0; i <= 8; ++i) {
 		if (list[i]) {
@@ -55,6 +68,7 @@ string Gameboy_Debugger::print_registers(bool list[9]) {
 		}
 	}
 	result.append("\n");
+	return result;
 }
 
 // Debugger main interface: print values, control debugger & code execution
@@ -74,6 +88,8 @@ void Gameboy_Debugger::debug_interface() {
 			breakpoints.insert(string_to_short(match.str(1))); break;
 		case DEBUGGER_SAVE_BREAKPOINT: // set new breakpoint, store in file
 			save_breakpoint(match); break;
+		case DEBUGGER_PRINT_REGISTER: // print register value
+			print_register(reg_constants.at(match.str(1))); break;
 		default:
 			logger.log_line("Invalid Debugger Instruction: " + input);
 			cout << "Invalid Debugger Instruction!"; break;
@@ -110,6 +126,15 @@ u8 Gameboy_Debugger::match_debugger_instr(string input, smatch &match) {
 	else if (regex_search(input, match, match_save_breakpoint) && match.size() > 1) {
 		return DEBUGGER_SAVE_BREAKPOINT;
 	} // (set new breakpoint), save to file
+	else if (regex_search(input, match, match_watch_register) && match.size() > 1) {
+		return DEBUGGER_WATCH_REGISTER;
+	}
+	else if (regex_search(input, match, match_watch_save) && match.size() > 1) {
+		return DEBUGGER_SAFE_WATCH;
+	}
+	else if (regex_search(input, match, match_print_register) && match.size() > 1) {
+		return DEBUGGER_PRINT_REGISTER;
+	}
 
 	return 0;
 }

@@ -11,9 +11,8 @@
 #include <unordered_map>
 #include <vector>
 #include "Gameboy_Logger.h"
+#include "Gameboy_Registers.h"
 
-typedef unsigned char u8;
-typedef unsigned short u16;
 typedef unsigned long u64;
 
 
@@ -26,54 +25,6 @@ private:
 	vector<u16> opcode_list;
 #endif
 
-	/*
- *  stolen from https://cturt.github.io/cinoop.html
- *  allows accessing registers like: register.a, register.af
- *  a, b, c, d, e, f, h, l = 8bit registers, often combined to form 16 bit
- *  F = flag register. flags:
- *  4th bit -> CARRY flag
- *  5th bit -> half-carry flag; set if carry from bit 3
- *  6th bit -> subtract flag; if instruction is subtract -> set; otherwise unset
- *  7th bit -> zero flag; if result is 0 -> set; otherwise -> unset
- */
-	struct registers {
-		struct {
-			union {
-				struct {
-					u8 f;
-					u8 a;
-				};
-				u16 af;
-			};
-		};
-		struct {
-			union {
-				struct {
-					u8 c;
-					u8 b;
-				};
-				u16 bc;
-			};
-		};
-		struct {
-			union {
-				struct {
-					u8 e;
-					u8 d;
-				};
-				u16 de;
-			};
-		};
-		struct {
-			union {
-				struct {
-					u8 l;
-					u8 h;
-				};
-				u16 hl;
-			};
-		};
-	};
 
 // Opcode struct, stores function pointer, ticks and so on
 	struct Opcode
@@ -95,9 +46,6 @@ private:
 // Opcode structs saved in hashmap: Key[opcode_byte] -> Value[Opcode_struct]
 	std::unordered_map<u8, Opcode> opcodes;
 	std::unordered_map<u8, Opcode> extended_opcodes;
-
-// stack pointer and program counter
-	u16 sp;
 
 // Cpu Cycle counter
 	unsigned long cycles;
@@ -124,7 +72,6 @@ private:
 	bool running = true; // used for CPU interrupts
 
 	Gameboy_Logger logger = Gameboy_Logger("/tmp/gameboy_cpu.log");
-	registers reg;
 
 	// populate opcodes hashmaps
 	void load_opcodes();
@@ -796,7 +743,7 @@ private:
 	void rotate_right_carry(u8 &reg); // rotate right by one bit, jesus christ, this is the only real rotation, fuck this shit
 	void rotate_left_carry(u8 &reg); // same
 	void push(u16 value); // push value onto stack
-	void pop(u16 &reg); // pop stack at SP into reg
+	void pop(u16 &_reg); // pop stack at SP into reg
 	void relative_jump(char value); // relative jump by value
 
 
@@ -805,7 +752,7 @@ public:
 	void startup();
 	void load_file(string location, u16 starting_point);
 	Gameboy_Cpu();
-	u16 pc;
+	registers reg;
 };
 
 

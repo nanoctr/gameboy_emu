@@ -4,16 +4,30 @@
 
 #include "Gameboy_Debugger.h"
 
-Gameboy_Debugger::Gameboy_Debugger() { }
+Gameboy_Debugger::Gameboy_Debugger() {
+	debug_registers[REG_PC] = Debug_Register(nullptr, &reg.pc, '', "PC");
+	debug_registers[REG_SP] = Debug_Register(nullptr, &reg.sp, '', "SP");
+	debug_registers[REG_A] = Debug_Register(&reg.a, &reg.af, 'A', "AF");
+	debug_registers[REG_B] = Debug_Register(&reg.b, &reg.bc, 'B', "BC");
+	debug_registers[REG_C] = Debug_Register(&reg.c, &reg.bc, 'C', "BC");
+	debug_registers[REG_D] = Debug_Register(&reg.d, &reg.de, 'D', "DE");
+	debug_registers[REG_E] = Debug_Register(&reg.e, &reg.de, 'E', "DE");
+	debug_registers[REG_H] = Debug_Register(&reg.h, &reg.hl, 'H', "HL");
+	debug_registers[REG_L] = Debug_Register(&reg.l, &reg.hl, 'L', "HL");
+
+	watch_list[REG_PC] = true;
+	watch_list[REG_SP] = true;
+}
 
 // Main execution loop
 void Gameboy_Debugger::run() {
 	while(true)
 	{
 		// breakpoint hit, stop execution, show debug interface, next loop when done
-		if (is_breakpoint(cpu.pc)) {
+		if (is_breakpoint(cpu.reg.pc)) {
 			forever = false;
 			steps = 0;
+			reg = cpu.reg;
 			debug_interface();
 			continue;
 		}
@@ -31,6 +45,16 @@ void Gameboy_Debugger::run() {
 			debug_interface();
 		}
 	}
+}
+
+string Gameboy_Debugger::print_registers(bool list[9]) {
+	string result = "REGISTERS: \n";
+	for (u8 i = 0; i <= 8; ++i) {
+		if (list[i]) {
+			result.append(debug_registers[i].description());
+		}
+	}
+	result.append("\n");
 }
 
 // Debugger main interface: print values, control debugger & code execution

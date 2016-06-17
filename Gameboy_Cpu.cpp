@@ -6,10 +6,6 @@
 #include "Gameboy_Cpu.h"
 
 
-
-typedef unsigned char u8;
-typedef unsigned short u16;
-
 const int CARRY = 4;
 const int HALF_CARRY = 5;
 const int SUBTRACT = 6;
@@ -28,7 +24,7 @@ void Gameboy_Cpu::startup() {
 	logger.log_line("\n--------------------\n\n");
 
 	// PC starts at 0
-	pc = 0x0000;
+	reg.pc = 0x0000;
 
 	// Set whole memory to 0
 	for (auto &b: memory) {
@@ -94,7 +90,7 @@ void Gameboy_Cpu::load_file(string location, u16 starting_point) {
 void Gameboy_Cpu::emulate_cycle() {
 	if (running) {
 		// Fetch opcode
-		u8 opcode_id = memory[pc];
+		u8 opcode_id = memory[reg.pc];
 
 		try {
 			Opcode opcode = opcodes.at(opcode_id);
@@ -105,9 +101,9 @@ void Gameboy_Cpu::emulate_cycle() {
 			logger.log(" ++++ executing opcode #");
 			logger.log(std::to_string(count_opcodes));
 			logger.log(":\nPC      : ");
-			logger.log(logger.short_to_hex(pc));
+			logger.log(logger.short_to_hex(reg.pc));
 			logger.log("\nSP      : ");
-			logger.log(logger.short_to_hex(sp));
+			logger.log(logger.short_to_hex(reg.sp));
 			logger.log("\nID      : ");
 			logger.log(logger.char_to_hex(opcode_id));
 			logger.log("\nCYCLES  : ");
@@ -126,11 +122,11 @@ void Gameboy_Cpu::emulate_cycle() {
 			cycles += opcode.cycles;
 
 			// increment PC
-			pc += opcode.length;
+			reg.pc += opcode.length;
 		}
 		catch (out_of_range) {
 			logger.log("ERROR: invalid opcode at: 0x");
-			logger.log(logger.short_to_hex(pc));
+			logger.log(logger.short_to_hex(reg.pc));
 #ifdef DEBUG_BUILD
 			logger.log_line("  #" + std::to_string(count_opcodes));
 #endif
@@ -638,57 +634,57 @@ void Gameboy_Cpu::load_extended_opcodes() {
 
 // 0x06 - load n in B
 void Gameboy_Cpu::opc_ld_b_n() {
-	reg.b = memory[pc+1];
+	reg.b = memory[reg.pc+1];
 	// pc += 2;
 }
 // 0x0E - load in C
 void Gameboy_Cpu::opc_ld_c_n() {
-	reg.c = memory[pc+1];
+	reg.c = memory[reg.pc+1];
 	// pc += 2;
 }
 // 0x16 - load in D
 void Gameboy_Cpu::opc_ld_d_n() {
-	reg.d = memory[pc+1];
+	reg.d = memory[reg.pc+1];
 	// pc += 2;
 }
 // 0x1E - load in E
 void Gameboy_Cpu::opc_ld_e_n() {
-	reg.e = memory[pc+1];
+	reg.e = memory[reg.pc+1];
 	// pc += 2;
 }
 // 0x26 - load in H
 void Gameboy_Cpu::opc_ld_h_n() {
-	reg.h = memory[pc+1];
+	reg.h = memory[reg.pc+1];
 	// pc += 2;
 }
 // 0x2E - load in L
 void Gameboy_Cpu::opc_ld_l_n() {
-	reg.l = memory[pc+1];
+	reg.l = memory[reg.pc+1];
 	// pc += 2;
 }
 // 0x01 - load 16bit in BC
 void Gameboy_Cpu::opc_ld_bc_nn() {
-	reg.bc = (memory[pc+2] << 8) | memory[pc+1];
+	reg.bc = (memory[reg.pc+2] << 8) | memory[reg.pc+1];
 	// pc += 3;
 }
 // 0x11 - load 16bit in DE
 void Gameboy_Cpu::opc_ld_de_nn() {
-	reg.de = (memory[pc+2] << 8) | memory[pc+1];
+	reg.de = (memory[reg.pc+2] << 8) | memory[reg.pc+1];
 	// pc += 3;
 }
 // 0x21 - load 16bit in HL
 void Gameboy_Cpu::opc_ld_hl_nn() {
-	reg.hl = (memory[pc+2] << 8) | memory[pc+1];
+	reg.hl = (memory[reg.pc+2] << 8) | memory[reg.pc+1];
 	// pc += 3;
 }
 // 0x31 - load 16bit in SP
 void Gameboy_Cpu::opc_ld_sp_nn() {
-	sp = (memory[pc+2] << 8) | memory[pc+1];
+	reg.sp = (memory[reg.pc+2] << 8) | memory[reg.pc+1];
 	// pc += 3;
 }
 // 0x36 - load 8bit in HL
 void Gameboy_Cpu::opc_ld_p_hl_n() {
-	memory[reg.hl] = memory[pc+1];
+	memory[reg.hl] = memory[reg.pc+1];
 	// pc += 2;
 }
 
@@ -720,378 +716,378 @@ void Gameboy_Cpu::opc_ld_l_l() {
 
 void Gameboy_Cpu::opc_ld_a_b() {
 	reg.a = reg.b;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_a_c() {
 	reg.a = reg.c;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_a_d() {
 	reg.a = reg.d;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_a_e() {
 	reg.a = reg.e;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_a_h() {
 	reg.a = reg.h;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_a_l() {
 	reg.a = reg.l;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_a_p_hl() {
 	reg.a = memory[reg.hl];
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_a_p_bc() {
 	reg.a = memory[reg.bc];
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_a_p_de() {
 	reg.a = memory[reg.de];
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_a_p_nn() {
-	reg.a = memory[(memory[pc+1] << 8) & memory[pc+2]];
+	reg.a = memory[(memory[reg.pc+1] << 8) & memory[reg.pc+2]];
 	// pc += 3;
 }
 void Gameboy_Cpu::opc_ld_a_n() {
-	reg.a = memory[pc+1];
+	reg.a = memory[reg.pc+1];
 	// pc += 2;
 }
 void Gameboy_Cpu::opc_ld_b_a() {
 	reg.b = reg.a;
-	// ++pc;
+	// ++reg.pc;
 } //0x47
 void Gameboy_Cpu::opc_ld_b_c() {
 	reg.b = reg.c;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_b_d() {
 	reg.b = reg.d;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_b_e() {
 	reg.b = reg.e;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_b_h() {
 	reg.b = reg.h;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_b_l() {
 	reg.b = reg.l;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_b_p_hl() {
 	reg.b = memory[reg.hl];
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_c_a() {
 	reg.c = reg.a;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_c_b() {
 	reg.c = reg.b;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_c_d() {
 	reg.c = reg.d;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_c_e() {
 	reg.c = reg.e;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_c_h() {
 	reg.c = reg.h;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_c_l() {
 	reg.c = reg.l;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_c_p_hl() {
 	reg.c = memory[reg.hl];
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_d_a() {
 	reg.d = reg.a;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_d_b() {
 	reg.d = reg.b;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_d_c() {
 	reg.d = reg.c;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_d_e() {
 	reg.d = reg.e;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_d_h() {
 	reg.d = reg.h;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_d_l() {
 	reg.d = reg.l;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_d_p_hl() {
 	reg.d = memory[reg.hl];
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_e_a() {
 	reg.e = reg.a;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_e_b() {
 	reg.e = reg.b;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_e_c() {
 	reg.e = reg.c;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_e_d() {
 	reg.e = reg.d;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_e_h() {
 	reg.e = reg.h;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_e_l() {
 	reg.e = reg.l;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_e_p_hl() {
 	reg.e = memory[reg.hl];
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_h_a() {
 	reg.h = reg.a;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_h_b() {
 	reg.h = reg.b;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_h_c() {
 	reg.h = reg.c;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_h_d() {
 	reg.h = reg.d;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_h_e() {
 	reg.h = reg.e;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_h_l() {
 	reg.h = reg.l;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_h_p_hl() {
 	reg.h = memory[reg.hl];
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_l_a() {
 	reg.l = reg.a;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_l_b() {
 	reg.l = reg.b;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_l_c() {
 	reg.l = reg.c;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_l_d() {
 	reg.l = reg.d;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_l_e() {
 	reg.l = reg.e;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_l_h() {
 	reg.l = reg.h;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_l_p_hl() {
 	reg.l = memory[reg.hl];
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_p_hl_a() {
 	memory[reg.hl] = reg.a;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_p_hl_b() {
 	memory[reg.hl] = reg.b;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_p_hl_c() {
 	memory[reg.hl] = reg.c;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_p_hl_d() {
 	memory[reg.hl] = reg.d;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_p_hl_e() {
 	memory[reg.hl] = reg.e;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_p_hl_h() {
 	memory[reg.hl] = reg.h;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ld_p_hl_l() {
 	memory[reg.hl] = reg.l;
-	// ++pc;
+	// ++reg.pc;
 }
 
 void Gameboy_Cpu::opc_ld_p_bc_a() {
 	memory[reg.bc] = reg.a;
-	// ++pc;
+	// ++reg.pc;
 } //0x02
 void Gameboy_Cpu::opc_ld_p_de_a() {
 	memory[reg.de] = reg.a;
-	// ++pc;
+	// ++reg.pc;
 } //0x12
 
 void Gameboy_Cpu::opc_ldi_hl_a() {
 	memory[reg.hl] = reg.a;
 	inc16(reg.hl);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ldd_hl_a() {
 	memory[reg.hl] = reg.a;
 	--reg.hl;
-	// ++pc;
+	// ++reg.pc;
 }
 
 // increment values
 
 void Gameboy_Cpu::opc_inc_bc() {
 	inc16(reg.bc);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_inc_de() {
 	inc16(reg.de);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_inc_hl() {
 	inc16(reg.hl);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_inc_sp() {
-	inc16(sp);
-	// ++pc;
+	inc16(reg.sp);
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_inc_a() {
 	inc(reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_inc_b() {
 	inc(reg.b);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_inc_c() {
 	inc(reg.c);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_inc_d() {
 	inc(reg.d);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_inc_e() {
 	inc(reg.e);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_inc_h() {
 	inc(reg.h);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_inc_l() {
 	inc(reg.l);
-	// ++pc;
+	// ++reg.pc;
 }
 
 void Gameboy_Cpu::opc_inc_p_hl() {
 	inc(memory[reg.hl]);
-	// ++pc;
+	// ++reg.pc;
 }
 
 // decrement values
 
 void Gameboy_Cpu::opc_dec_hl() {
 	dec16(reg.hl);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_dec_bc() {
 	dec16(reg.bc);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_dec_de() {
 	dec16(reg.de);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_dec_sp() {
-	dec16(sp);
-	// ++pc;
+	dec16(reg.sp);
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_dec_a() {
 	dec(reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_dec_b() {
 	dec(reg.b);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_dec_c() {
 	dec(reg.c);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_dec_d() {
 	dec(reg.d);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_dec_e() {
 	dec(reg.e);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_dec_h() {
 	dec(reg.h);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_dec_l() {
 	dec(reg.l);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_dec_p_hl() {
 	dec(memory[reg.hl]);
-	// ++pc;
+	// ++reg.pc;
 }
 
 
 void Gameboy_Cpu::opc_ldi_a_hl() {
 	reg.a = memory[reg.hl];
 	++reg.hl;
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_ldd_a_hl() {
 	reg.a = memory[reg.hl];
 	--reg.hl;
-	// ++pc;
+	// ++reg.pc;
 }
 
 //TODO: you gotta set flags in DEC / INC too, retard
@@ -1103,82 +1099,82 @@ void Gameboy_Cpu::opc_ldd_a_hl() {
 
 void Gameboy_Cpu::opc_add_a_a() {
 	add(reg.a, reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_add_a_b() {
 	add(reg.a, reg.b);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_add_a_c() {
 	add(reg.a, reg.c);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_add_a_d() {
 	add(reg.a, reg.d);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_add_a_e() {
 	add(reg.a, reg.e);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_add_a_h() {
 	add(reg.a, reg.h);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_add_a_l() {
 	add(reg.a, reg.l);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_add_a_p_hl() {
 	add(reg.a, memory[reg.hl]);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_add_a_n() {
-	add(reg.a, memory[pc+1]);
+	add(reg.a, memory[reg.pc+1]);
 	// pc += 2;
 }
 
 void Gameboy_Cpu::opc_add_sp_d() {
-	add16(sp, reg.d);
-	// ++pc;
+	add16(reg.sp, reg.d);
+	// ++reg.pc;
 }
 
 // add to A with carry
 
 void Gameboy_Cpu::opc_adc_a_a() {
 	adc(reg.a, reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_adc_a_b() {
 	adc(reg.a, reg.b);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_adc_a_c() {
 	adc(reg.a, reg.c);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_adc_a_d() {
 	adc(reg.a, reg.d);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_adc_a_e() {
 	adc(reg.a, reg.e);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_adc_a_h() {
 	adc(reg.a, reg.h);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_adc_a_l() {
 	adc(reg.a, reg.l);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_adc_a_p_hl() {
 	adc(reg.a, memory[reg.hl]);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_adc_a_n() {
-	adc(reg.a, memory[pc+1]);
+	adc(reg.a, memory[reg.pc+1]);
 	// pc += 2;
 }
 
@@ -1186,131 +1182,131 @@ void Gameboy_Cpu::opc_adc_a_n() {
 
 void Gameboy_Cpu::opc_sub_a_a() {
 	sub(reg.a, reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sub_a_b() {
 	sub(reg.a, reg.b);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sub_a_c() {
 	sub(reg.a, reg.c);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sub_a_d() {
 	sub(reg.a, reg.d);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sub_a_e() {
 	sub(reg.a, reg.e);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sub_a_h() {
 	sub(reg.a, reg.h);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sub_a_l() {
 	sub(reg.a, reg.l);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sub_a_p_hl() {
 	sub(reg.a, memory[reg.hl]);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sub_a_n() {
-	sub(reg.a, memory[pc]);
-	// ++pc;
+	sub(reg.a, memory[reg.pc]);
+	// ++reg.pc;
 }
 
 // subtract with carry
 
 void Gameboy_Cpu::opc_sbc_a_a() {
 	sbc(reg.a, reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sbc_a_b() {
 	sbc(reg.a, reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sbc_a_c() {
 	sbc(reg.a, reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sbc_a_d() {
 	sbc(reg.a, reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sbc_a_e() {
 	sbc(reg.a, reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sbc_a_h() {
 	sbc(reg.a, reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sbc_a_l() {
 	sbc(reg.a, reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sbc_a_n() {
-	sbc(reg.a, memory[pc+1]);
+	sbc(reg.a, memory[reg.pc+1]);
 	// pc += 2;
 }
 void Gameboy_Cpu::opc_sbc_a_p_hl() {
 	sbc(reg.a, memory[reg.hl]);
-	// ++pc;
+	// ++reg.pc;
 }
 
 // add 16 bit values
 
 void Gameboy_Cpu::opc_add_hl_hl() {
 	add16(reg.hl, reg.hl);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_add_hl_bc() {
 	add16(reg.hl, reg.bc);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_add_hl_de() {
 	add16(reg.hl, reg.de);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_add_hl_sp() {
-	add16(reg.hl, sp);
-	// ++pc;
+	add16(reg.hl, reg.sp);
+	// ++reg.pc;
 }
 
 // logical AND
 
 void Gameboy_Cpu::opc_and_a_a() {
 	logical_and(reg.a, reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_and_a_b() {
 	logical_and(reg.a, reg.b);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_and_a_c() {
 	logical_and(reg.a, reg.c);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_and_a_d() {
 	logical_and(reg.a, reg.d);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_and_a_e() {
 	logical_and(reg.a, reg.e);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_and_a_h() {
 	logical_and(reg.a, reg.h);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_and_a_l() {
 	logical_and(reg.a, reg.l);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_and_a_n() {
-	logical_and(reg.a, memory[pc+1]);
+	logical_and(reg.a, memory[reg.pc+1]);
 	// pc += 2;
 }
 void Gameboy_Cpu::opc_and_a_p_hl() {
@@ -1323,112 +1319,112 @@ void Gameboy_Cpu::opc_and_a_p_hl() {
 
 void Gameboy_Cpu::opc_or_a_a() {
 	logical_or(reg.a, reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_or_a_b() {
 	logical_or(reg.a, reg.b);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_or_a_c() {
 	logical_or(reg.a, reg.c);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_or_a_d() {
 	logical_or(reg.a, reg.d);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_or_a_e() {
 	logical_or(reg.a, reg.e);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_or_a_h() {
 	logical_or(reg.a, reg.h);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_or_a_l() {
 	logical_or(reg.a, reg.l);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_or_a_n() {
-	logical_or(reg.a, memory[pc+1]);
+	logical_or(reg.a, memory[reg.pc+1]);
 	// pc += 2;
 }
 void Gameboy_Cpu::opc_or_a_p_hl() {
 	logical_or(reg.a, memory[reg.hl]);
-	// ++pc;
+	// ++reg.pc;
 }
 
 // logical XOR
 
 void Gameboy_Cpu::opc_xor_a_a() {
 	logical_xor(reg.a, reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_xor_a_b() {
 	logical_xor(reg.a, reg.b);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_xor_a_c() {
 	logical_xor(reg.a, reg.c);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_xor_a_d() {
 	logical_xor(reg.a, reg.d);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_xor_a_e() {
 	logical_xor(reg.a, reg.e);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_xor_a_h() {
 	logical_xor(reg.a, reg.h);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_xor_a_l() {
 	logical_xor(reg.a, reg.l);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_xor_a_n() {
-	logical_xor(reg.a, memory[pc+1]);
+	logical_xor(reg.a, memory[reg.pc+1]);
 	// pc += 2;
 }
 void Gameboy_Cpu::opc_xor_a_p_hl() {
 	logical_xor(reg.a, memory[reg.hl]);
-	// ++pc;
+	// ++reg.pc;
 }
 
 // compare against a
 
 void Gameboy_Cpu::opc_cp_a_a() {
 	compare(reg.a, reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_cp_a_b() {
 	compare(reg.a, reg.b);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_cp_a_c() {
 	compare(reg.a, reg.c);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_cp_a_d() {
 	compare(reg.a, reg.d);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_cp_a_e() {
 	compare(reg.a, reg.e);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_cp_a_h() {
 	compare(reg.a, reg.h);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_cp_a_l() {
 	compare(reg.a, reg.l);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_cp_a_n() {
-	compare(reg.a, memory[pc+1]);
+	compare(reg.a, memory[reg.pc+1]);
 	// pc += 2;
 }
 void Gameboy_Cpu::opc_cp_a_p_hl() {
@@ -1439,29 +1435,29 @@ void Gameboy_Cpu::opc_cp_a_p_hl() {
 // calling subroutine
 
 void Gameboy_Cpu::opc_call_nn() {
-	call_subroutine((memory[pc+2] << 8) | memory[pc+1]);
+	call_subroutine((memory[reg.pc+2] << 8) | memory[reg.pc+1]);
 }
 void Gameboy_Cpu::opc_call_nz_nn() {
 	if (!get_flag(ZERO)) {
-		call_subroutine((memory[pc+2] << 8) | memory[pc+1]);
+		call_subroutine((memory[reg.pc+2] << 8) | memory[reg.pc+1]);
 		cycles += 12;
 	}
 }
 void Gameboy_Cpu::opc_call_nc_nn() {
 	if (!get_flag(CARRY)) {
-		call_subroutine((memory[pc+2] << 8) | memory[pc+1]);
+		call_subroutine((memory[reg.pc+2] << 8) | memory[reg.pc+1]);
 		cycles += 12;
 	}
 }
 void Gameboy_Cpu::opc_call_z_nn() {
 	if (get_flag(ZERO)) {
-		call_subroutine((memory[pc+2] << 8) | memory[pc+1]);
+		call_subroutine((memory[reg.pc+2] << 8) | memory[reg.pc+1]);
 		cycles += 12;
 	}
 }
 void Gameboy_Cpu::opc_call_c_nn() {
 	if (get_flag(CARRY)) {
-		call_subroutine((memory[pc+2] << 8) | memory[pc+1]);
+		call_subroutine((memory[reg.pc+2] << 8) | memory[reg.pc+1]);
 		cycles += 12;
 	}
 }
@@ -1499,34 +1495,34 @@ void Gameboy_Cpu::opc_ret_n() {
 // jumping to address
 
 void Gameboy_Cpu::opc_jump_nn() {
-	pc = (memory[pc+2] << 8) | memory[pc+1];
+	reg.pc = (memory[reg.pc+2] << 8) | memory[reg.pc+1];
 }
 void Gameboy_Cpu::opc_jump_nz_nn() {
 	if (!get_flag(ZERO)) {
-		pc = (memory[pc+2] << 8) | memory[pc+1];
+		reg.pc = (memory[reg.pc+2] << 8) | memory[reg.pc+1];
 		cycles += 4;
 	}
 }
 void Gameboy_Cpu::opc_jump_nc_nn() {
 	if (!get_flag(CARRY)) {
-		pc = (memory[pc+2] << 8) | memory[pc+1];
+		reg.pc = (memory[reg.pc+2] << 8) | memory[reg.pc+1];
 		cycles += 4;
 	}
 }
 void Gameboy_Cpu::opc_jump_z_nn() {
 	if (get_flag(ZERO)) {
-		pc = (memory[pc+2] << 8) | memory[pc+1];
+		reg.pc = (memory[reg.pc+2] << 8) | memory[reg.pc+1];
 		cycles += 4;
 	}
 }
 void Gameboy_Cpu::opc_jump_c_nn() {
 	if (get_flag(CARRY)) {
-		pc = (memory[pc+2] << 8) | memory[pc+1];
+		reg.pc = (memory[reg.pc+2] << 8) | memory[reg.pc+1];
 		cycles += 4;
 	}
 }
 void Gameboy_Cpu::opc_jump_hl() {
-	pc = reg.hl;
+	reg.pc = reg.hl;
 }
 
 // RST
@@ -1785,330 +1781,330 @@ void Gameboy_Cpu::opc_reset_p_hl_7() { reset_bit16(reg.hl, 7); }
 
 void Gameboy_Cpu::opc_srl_a() {
 	shift_right(reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_srl_b() {
 	shift_right(reg.b);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_srl_c() {
 	shift_right(reg.c);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_srl_d() {
 	shift_right(reg.d);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_srl_e() {
 	shift_right(reg.e);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_srl_h() {
 	shift_right(reg.h);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_srl_l() {
 	shift_right(reg.l);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_srl_p_hl() {
 	shift_right(memory[reg.hl]);
-	// ++pc;
+	// ++reg.pc;
 }
 
 // bitshift right, preserve sign
 
 void Gameboy_Cpu::opc_sra_a() {
 	shift_right_preserve_sign(reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sra_b() {
 	shift_right_preserve_sign(reg.b);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sra_c() {
 	shift_right_preserve_sign(reg.c);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sra_d() {
 	shift_right_preserve_sign(reg.d);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sra_e() {
 	shift_right_preserve_sign(reg.e);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sra_h() {
 	shift_right_preserve_sign(reg.h);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sra_l() {
 	shift_right_preserve_sign(reg.l);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sra_p_hl() {
 	shift_right_preserve_sign(memory[reg.hl]);
-	// ++pc;
+	// ++reg.pc;
 }
 
 // bitshift left, preserve sign
 
 void Gameboy_Cpu::opc_sla_a() {
 	shift_left_preserve_sign(reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sla_b() {
 	shift_left_preserve_sign(reg.b);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sla_c() {
 	shift_left_preserve_sign(reg.c);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sla_d() {
 	shift_left_preserve_sign(reg.d);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sla_e() {
 	shift_left_preserve_sign(reg.e);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sla_h() {
 	shift_left_preserve_sign(reg.h);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sla_l() {
 	shift_left_preserve_sign(reg.l);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_sla_p_hl() {
 	shift_left_preserve_sign(memory[reg.hl]);
-	// ++pc;
+	// ++reg.pc;
 }
 
 // swap nybbles
 
 void Gameboy_Cpu::swap_a() {
 	swap(reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::swap_b() {
 	swap(reg.b);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::swap_c() {
 	swap(reg.c);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::swap_d() {
 	swap(reg.d);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::swap_e() {
 	swap(reg.e);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::swap_h() {
 	swap(reg.h);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::swap_l() {
 	swap(reg.l);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::swap_p_hl() {
 	swap(memory[reg.hl]);
-	// ++pc;
+	// ++reg.pc;
 }
 
 // rotate right
 
 void Gameboy_Cpu::opc_rr_a() {
 	rotate_right(reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rr_b() {
 	rotate_right(reg.b);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rr_c() {
 	rotate_right(reg.c);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rr_d() {
 	rotate_right(reg.d);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rr_e() {
 	rotate_right(reg.e);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rr_h() {
 	rotate_right(reg.h);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rr_l() {
 	rotate_right(reg.l);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rr_p_hl() {
 	rotate_right(memory[reg.hl]);
-	// ++pc;
+	// ++reg.pc;
 }
 
 // rotate left
 
 void Gameboy_Cpu::opc_rl_a() {
 	rotate_left(reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rl_b() {
 	rotate_left(reg.b);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rl_c() {
 	rotate_left(reg.c);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rl_d() {
 	rotate_left(reg.d);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rl_e() {
 	rotate_left(reg.e);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rl_h() {
 	rotate_left(reg.h);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rl_l() {
 	rotate_left(reg.l);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rl_p_hl() {
 	rotate_left(memory[reg.hl]);
-	// ++pc;
+	// ++reg.pc;
 }
 
 // rotate right carry
 
 void Gameboy_Cpu::opc_rrc_a() {
 	rotate_right_carry(reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rrc_b() {
 	rotate_right_carry(reg.b);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rrc_c() {
 	rotate_right_carry(reg.c);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rrc_d() {
 	rotate_right_carry(reg.d);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rrc_e() {
 	rotate_right_carry(reg.e);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rrc_h() {
 	rotate_right_carry(reg.h);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rrc_l() {
 	rotate_right_carry(reg.l);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rrc_p_hl() {
 	rotate_right_carry(memory[reg.hl]);
-	// ++pc;
+	// ++reg.pc;
 }
 
 // rotate left carry
 
 void Gameboy_Cpu::opc_rlc_a() {
 	rotate_left_carry(reg.a);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rlc_b() {
 	rotate_left_carry(reg.b);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rlc_c() {
 	rotate_left_carry(reg.c);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rlc_d() {
 	rotate_left_carry(reg.d);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rlc_e() {
 	rotate_left_carry(reg.e);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rlc_h() {
 	rotate_left_carry(reg.h);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rlc_l() {
 	rotate_left_carry(reg.l);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_rlc_p_hl() {
 	rotate_left_carry(memory[reg.hl]);
-	// ++pc;
+	// ++reg.pc;
 }
 
 // push 16bit onto stack
 
 void Gameboy_Cpu::opc_push_bc() {
 	push(reg.bc);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_push_de() {
 	push(reg.de);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_push_hl() {
 	push(reg.hl);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_push_af() {
 	push(reg.af);
-	// ++pc;
+	// ++reg.pc;
 }
 
 // pop 16bit from stack into register
 
 void Gameboy_Cpu::opc_pop_bc() {
 	pop(reg.bc);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_pop_de() {
 	pop(reg.de);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_pop_hl() {
 	pop(reg.hl);
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::opc_pop_af() {
 	pop(reg.af);
-	// ++pc;
+	// ++reg.pc;
 }
 
 // load at 0xFF00 + n
 
 // load A from 0xFF00 + n
 void Gameboy_Cpu::opc_ldh_a_p_n() {
-	reg.a = memory[0xFF00 | memory[pc+1]];
+	reg.a = memory[0xFF00 | memory[reg.pc+1]];
 	// pc += 2;
 }
 // save A at 0xFF00 + n
 void Gameboy_Cpu::opc_ldh_p_n_a() {
-	memory[0xFF00 | memory[pc+1]] = reg.a;
+	memory[0xFF00 | memory[reg.pc+1]] = reg.a;
 	// pc += 2;
 }
 // save A at 0xFF00 + C
@@ -2122,7 +2118,7 @@ void Gameboy_Cpu::opc_ldh_p_c_a() {
 // save A at nn
 void Gameboy_Cpu::opc_ld_p_nn_a() {
 	// get nn from memory
-	u16 nn = (memory[pc] << 8) | memory[pc+1];
+	u16 nn = (memory[reg.pc] << 8) | memory[reg.pc+1];
 	memory[nn] = reg.a;
 
 	// pc += 3;
@@ -2130,20 +2126,20 @@ void Gameboy_Cpu::opc_ld_p_nn_a() {
 // save SP at nn
 void Gameboy_Cpu::opc_ld_p_nn_sp() {
 	// get nn from memory
-	u16 nn = (memory[pc] << 8) | memory[pc+1];
-	memory[nn] = sp;
+	u16 nn = (memory[reg.pc] << 8) | memory[reg.pc+1];
+	memory[nn] = reg.sp;
 
 	// pc += 3;
 }
 // copy HL into SP
 void Gameboy_Cpu::opc_ld_sp_hl() {
-	sp = reg.hl;
-	// ++pc;
+	reg.sp = reg.hl;
+	// ++reg.pc;
 }
 // add signed n to SP, save result in HL
 void Gameboy_Cpu::opc_ldhl_sp_n() {
-	char n = memory[pc+1];
-	reg.hl = sp + n;
+	char n = memory[reg.pc+1];
+	reg.hl = reg.sp + n;
 	// pc += 2;
 }
 // clear carry flag
@@ -2163,46 +2159,46 @@ void Gameboy_Cpu::opc_scf() {
 	set_flag(CARRY);
 	reset_flag(SUBTRACT);
 	reset_flag(HALF_CARRY);
-	// ++pc;
+	// ++reg.pc;
 }
 // compliment (logical NOT) on A
 void Gameboy_Cpu::opc_cpl() {
 	set_flag(SUBTRACT);
 	set_flag(HALF_CARRY);
 	reg.a = ~reg.a;
-	// ++pc;
+	// ++reg.pc;
 }
 
 // relative jump by n
 
 void Gameboy_Cpu::opc_jr_n() {
-	relative_jump(memory[pc+1]);
+	relative_jump(memory[reg.pc+1]);
 	// pc += 2;
 }
 void Gameboy_Cpu::opc_jr_z_n() {
 	if (get_flag(ZERO)) {
-		relative_jump(memory[pc+1]);
+		relative_jump(memory[reg.pc+1]);
 		cycles += 4;
 	}
 	// pc += 2;
 }
 void Gameboy_Cpu::opc_jr_c_n() {
 	if (get_flag(CARRY)) {
-		relative_jump(memory[pc+1]);
+		relative_jump(memory[reg.pc+1]);
 		cycles += 4;
 	}
 	// pc += 2;
 }
 void Gameboy_Cpu::opc_jr_nz_n() {
 	if (!get_flag(ZERO)) {
-		relative_jump(memory[pc+1]);
+		relative_jump(memory[reg.pc+1]);
 		cycles += 4;
 	}
 	// pc += 2;
 }
 void Gameboy_Cpu::opc_jr_nc_n() {
 	if (!get_flag(CARRY)) {
-		relative_jump(memory[pc+1]);
+		relative_jump(memory[reg.pc+1]);
 		cycles += 4;
 	}
 	// pc += 2;
@@ -2210,19 +2206,19 @@ void Gameboy_Cpu::opc_jr_nc_n() {
 
 // no operation
 void Gameboy_Cpu::opc_nop() {
-	// ++pc;
+	// ++reg.pc;
 }
 
 // stop CPU
 void Gameboy_Cpu::opc_stop() {
 	running = false;
-	// ++pc;
+	// ++reg.pc;
 }
 
 // call extended opcode
 void Gameboy_Cpu::opc_ext() {
 	// Fetch opcode
-	u8 opcode_id = memory[pc+1];
+	u8 opcode_id = memory[reg.pc+1];
 
 	try {
 		Opcode opcode = extended_opcodes.at(opcode_id);
@@ -2233,9 +2229,9 @@ void Gameboy_Cpu::opc_ext() {
 		logger.log(" ++++ executing extended opcode #");
 		logger.log(std::to_string(count_opcodes-1));
 		logger.log(":\nPC      : ");
-		logger.log(logger.short_to_hex(pc));
+		logger.log(logger.short_to_hex(reg.pc));
 		logger.log("\nSP      : ");
-		logger.log(logger.short_to_hex(sp));
+		logger.log(logger.short_to_hex(reg.sp));
 		logger.log("\nID      : +");
 		logger.log(logger.char_to_hex(opcode_id));
 		logger.log("\nCYCLES  : ");
@@ -2254,7 +2250,7 @@ void Gameboy_Cpu::opc_ext() {
 	}
 	catch (out_of_range) {
 		logger.log("ERROR: invalid opcode at: 0x");
-		logger.log(logger.short_to_hex(pc));
+		logger.log(logger.short_to_hex(reg.pc));
 #ifdef DEBUG_BUILD
 		logger.log_line("  #" + std::to_string(count_opcodes));
 #endif
@@ -2325,7 +2321,7 @@ void Gameboy_Cpu::add(u8 &a, u8 b) {
 	// unset subtraction flag
 	reset_flag(SUBTRACT);
 
-	// ++pc;
+	// ++reg.pc;
 }
 void Gameboy_Cpu::add16(u16 &a, u16 b) {
 	unsigned int result = a + b;
@@ -2547,16 +2543,16 @@ void Gameboy_Cpu::compare(u8 a, u8 b) {
 
 void Gameboy_Cpu::call_subroutine(u16 address) {
 	// save position in stack
-	sp -= 2;
-	memory[sp] = pc >> 8;
-	memory[sp+1] = pc;
+	reg.sp -= 2;
+	memory[reg.sp] = reg.pc >> 8;
+	memory[reg.sp+1] = reg.pc;
 
-	pc = address;
+	reg.pc = address;
 }
 
 void Gameboy_Cpu::return_subroutine() {
-	pc = (memory[sp] << 8) | memory[sp+1];
-	sp += 2;
+	reg.pc = (memory[reg.sp] << 8) | memory[reg.sp+1];
+	reg.sp += 2;
 	//TODO: cinoop doesn't do this...check this
 	// pc += 3;
 }
@@ -2775,18 +2771,18 @@ void Gameboy_Cpu::rotate_left_carry(u8 &reg) {
 }
 
 void Gameboy_Cpu::push(u16 value) {
-	sp -= 2;
-	memory[sp] = value >> 8;
-	memory[sp+1] = value;
+	reg.sp -= 2;
+	memory[reg.sp] = value >> 8;
+	memory[reg.sp+1] = value;
 }
 
-void Gameboy_Cpu::pop(u16 &reg) {
-	reg = (memory[sp] << 8) | memory[sp+1];
-	sp += 2;
+void Gameboy_Cpu::pop(u16 &_reg) {
+	_reg = (memory[reg.sp] << 8) | memory[reg.sp+1];
+	reg.sp += 2;
 }
 
 void Gameboy_Cpu::relative_jump(char value) {
-	pc += value;
+	reg.pc += value;
 }
 
 Gameboy_Cpu::Gameboy_Cpu() {}

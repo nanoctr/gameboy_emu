@@ -228,6 +228,11 @@ u16 Gameboy_Debugger::string_to_short(string s) {
 
 void Gameboy_Debugger::print_memory(string p) {
 	u16 pos = string_to_short(p);
+	u8 data = cpu.memory[pos];
+	std::bitset<8> bits(data);
+
 	cout << "Memory at position " << p << ":" << endl;
+	cout << logger.char_to_hex(data) << "  |  ";
+	cout << bits << "  |  ";
 	cout << to_string(cpu.memory[pos]) << endl;
 }

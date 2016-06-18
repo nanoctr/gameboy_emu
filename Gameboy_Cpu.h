@@ -50,22 +50,6 @@ private:
 // Cpu Cycle counter
 	unsigned long cycles;
 
-/*
- *  memory map:
- *  0000 - 4000 -> ROM bank (cartridge)
- *  4000 - 8000 -> switchable ROM bank (cartridge)
- *  8000 - A000 -> video RAM
- *  A000 - C000 -> switchable RAM bank
- *  C000 - E000 -> internal RAM  - main RAM (i think...)
- *  E000 - FE00 -> echo of internal RAM
- *  FE00 - FEA0 -> sprite attribute memory (OAM)
- *  FEA0 - FF00 -> empty
- *  FF00 - FF4C -> I/O ports
- *  FF4C - FF80 -> empty
- *  FF80 - FFFE -> internal RAM
- *  FFFF -> interrupt enable register
- */
-	u8 memory[0xFFFF];
 
 	u8 video_memory[256][256];
 
@@ -746,6 +730,24 @@ private:
 	void pop(u16 &_reg); // pop stack at SP into reg
 	void relative_jump(char value); // relative jump by value
 
+#ifndef DEBUG_BUILD
+/*
+ *  memory map:
+ *  0000 - 4000 -> ROM bank (cartridge)
+ *  4000 - 8000 -> switchable ROM bank (cartridge)
+ *  8000 - A000 -> video RAM
+ *  A000 - C000 -> switchable RAM bank
+ *  C000 - E000 -> internal RAM  - main RAM (i think...)
+ *  E000 - FE00 -> echo of internal RAM
+ *  FE00 - FEA0 -> sprite attribute memory (OAM)
+ *  FEA0 - FF00 -> empty
+ *  FF00 - FF4C -> I/O ports
+ *  FF4C - FF80 -> empty
+ *  FF80 - FFFE -> internal RAM
+ *  FFFF -> interrupt enable register
+ */
+	u8 memory[0xFFFF];
+#endif
 
 public:
 	void emulate_cycle();
@@ -753,6 +755,24 @@ public:
 	void load_file(string location, u16 starting_point);
 	Gameboy_Cpu();
 	registers reg;
+#ifdef DEBUG_BUILD
+/*
+ *  memory map:
+ *  0000 - 4000 -> ROM bank (cartridge)
+ *  4000 - 8000 -> switchable ROM bank (cartridge)
+ *  8000 - A000 -> video RAM
+ *  A000 - C000 -> switchable RAM bank
+ *  C000 - E000 -> internal RAM  - main RAM (i think...)
+ *  E000 - FE00 -> echo of internal RAM
+ *  FE00 - FEA0 -> sprite attribute memory (OAM)
+ *  FEA0 - FF00 -> empty
+ *  FF00 - FF4C -> I/O ports
+ *  FF4C - FF80 -> empty
+ *  FF80 - FFFE -> internal RAM
+ *  FFFF -> interrupt enable register
+ */
+	u8 memory[0xFFFF];
+#endif
 };
 
 

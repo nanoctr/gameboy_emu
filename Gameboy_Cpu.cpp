@@ -96,7 +96,7 @@ void Gameboy_Cpu::emulate_cycle() {
 			Opcode opcode = opcodes.at(opcode_id);
 
 			// DEBUG BUILD -> log opcode ID, function and steps
-#ifdef DEBUG_BUILD
+/* #ifdef DEBUG_BUILD
 			logger.log_time();
 			logger.log(" ++++ executing opcode #");
 			logger.log(std::to_string(count_opcodes));
@@ -113,7 +113,7 @@ void Gameboy_Cpu::emulate_cycle() {
 			// fuck, no reflection...gotta revisit this some time later on
 			// -> print function name
 			++count_opcodes;
-#endif
+#endif*/
 
 			// Call opcode function
 			(this->*opcode.opcode_function)();
@@ -127,9 +127,12 @@ void Gameboy_Cpu::emulate_cycle() {
 		catch (out_of_range) {
 			logger.log("ERROR: invalid opcode at: 0x");
 			logger.log(logger.short_to_hex(reg.pc));
+			logger.log(" - ");
+			logger.log(logger.char_to_hex(memory[reg.pc]));
 #ifdef DEBUG_BUILD
 			logger.log_line("  #" + std::to_string(count_opcodes));
 #endif
+			running = false;
 		}
 	}
 }

@@ -36,6 +36,9 @@ Gameboy_Debugger::Gameboy_Debugger() {
 
 	watch_list[REG_PC] = true;
 	watch_list[REG_SP] = true;
+
+	// reg.pc = 0;
+	cpu.startup();
 }
 
 // Main execution loop
@@ -52,9 +55,11 @@ void Gameboy_Debugger::run() {
 		}
 
 		if (forever) {
+			++count_opcodes;
 			cpu.emulate_cycle();
 		}
 		else if (steps) {
+			++count_opcodes;
 			cpu.emulate_cycle();
 			--steps;
 		}
@@ -68,6 +73,7 @@ void Gameboy_Debugger::run() {
 }
 
 void Gameboy_Debugger::debug_outputs() {
+	cout << "Opcode #" << count_opcodes << endl;
 	cout << print_registers(watch_list);
 }
 
@@ -97,28 +103,38 @@ void Gameboy_Debugger::debug_interface() {
 	debug_outputs();
 
 	string input = "";
+	bool stay_debug = true;
 	smatch match;
-	getline(cin, input);
+	while (stay_debug) {
+		getline(cin, input);
 
-	switch (match_debugger_instr(input, match))
-	{
-		case DEBUGGER_STEP: steps = 1; break; // execute one step
-		case DEBUGGER_NUMBER: // execute $NUMBER steps
-			steps = string_to_short(match.str(1)); break;
-		case DEBUGGER_CONTINUE: // continue executing
-			forever = true; break;
-		case DEBUGGER_NEW_BREAKPOINT: // set new breakpoint
-			breakpoints.insert(string_to_short(match.str(1))); break;
-		case DEBUGGER_SAVE_BREAKPOINT: // set new breakpoint, store in file
-			save_breakpoint(match); break;
-		case DEBUGGER_PRINT_REGISTER: // print register value
-			print_register(reg_constants.at(match.str(1))); break;
-		case DEBUGGER_WATCH_REGISTER: // self-explaining
-			print_register(reg_constants.at(match.str(1)));
-			watch_list[reg_constants.at(match.str(1))] = true; break;
-		default:
-			logger.log_line("Invalid Debugger Instruction: " + input);
-			cout << "Invalid Debugger Instruction!"; break;
+		switch (match_debugger_instr(input, match))
+		{
+			case DEBUGGER_STEP:  // execute one step
+				stay_debug = false;
+				steps = 1; break;
+			case DEBUGGER_NUMBER:  // execute $NUMBER steps
+				stay_debug = false;
+				steps = string_to_short(match.str(1)); break;
+			case DEBUGGER_CONTINUE: // continue executing
+				stay_debug = false;
+				forever = true; break;
+			case DEBUGGER_NEW_BREAKPOINT: // set new breakpoint
+				breakpoints.insert(string_to_short(match.str(1))); break;
+			case DEBUGGER_SAVE_BREAKPOINT: // set new breakpoint, store in file
+				save_breakpoint(match); break;
+			case DEBUGGER_PRINT_REGISTER: // print register value
+				print_register(reg_constants.at(match.str(1))); break;
+			case DEBUGGER_WATCH_REGISTER: // self-explaining
+				print_register(reg_constants.at(match.str(1)));
+				watch_list[reg_constants.at(match.str(1))] = true; break;
+			case DEBUGGER_PRINT_MEMORY: // print memory value at position
+				print_memory(match.str(1)); break;
+			case DEBUGGER_PRINT_OUTPUT: // print all output stuff
+				debug_outputs(); break;
+			default:
+				logger.log_line("Invalid Debugger Instruction: " + input);
+		}
 	}
 }
 
@@ -161,6 +177,12 @@ u8 Gameboy_Debugger::match_debugger_instr(string input, smatch &match) {
 	else if (regex_search(input, match, match_print_register) && match.size() > 1) {
 		return DEBUGGER_PRINT_REGISTER;
 	} // print register value
+	else if (regex_search(input, match, match_print_memory) && match.size() > 1) {
+		return DEBUGGER_PRINT_MEMORY;
+	} // print value of memory at position
+	else if (input[0] == 'a') {
+		return DEBUGGER_PRINT_OUTPUT;
+	}
 
 	return 0;
 }
@@ -184,10 +206,11 @@ void Gameboy_Debugger::load_breakpoints() {
 void Gameboy_Debugger::load_watches() {
 	ifstream file(WATCHES_FILE);
 	string line;
+	smatch match;
 
 	while (getline(file, line)) {
-		if (regex_match(line, match_watches_data)) {
-			watch_list[reg_constants.at(line)] = true;
+		if (regex_search(line, match, match_watches_data) && match.size() > 1) {
+			watch_list[reg_constants.at(match.str(1))] = true;
 		}
 	}
 }
@@ -203,3 +226,8 @@ u16 Gameboy_Debugger::string_to_short(string s) {
 	return stoi(s, &sz);
 }
 
+void Gameboy_Debugger::print_memory(string p) {
+	u16 pos = string_to_short(p);
+	cout << "Memory at position " << p << ":" << endl;
+	cout << to_string(cpu.memory[pos]) << endl;
+}

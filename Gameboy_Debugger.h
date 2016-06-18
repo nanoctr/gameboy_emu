@@ -19,12 +19,14 @@ class Gameboy_Debugger {
 private:
 	const regex match_numbers = regex("^(\\d+)");
 	const regex match_breakpoint_data = regex("^0x[\\dabcdefABCDEF]{4}");
-	const regex match_watches_data = regex("^[abcdehl]$|(?:hl|bc|de|af|pc|sp)$");
+	const regex match_watches_data = regex("^([abcdehl]|(?:hl|bc|de|af|pc|sp))");
 	const regex match_new_breakpoint = regex("^b\\s0x([\\dabcdefABCDEF]{4})");
 	const regex match_save_breakpoint = regex("^bs\\s0x([\\dabcdefABCDEF]{4})");
 	const regex match_watch_register = regex("^w\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
 	const regex match_watch_save = regex("^ws\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
 	const regex match_print_register = regex("^p\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
+	const regex match_print_memory = regex("^m ([\\dabcdef]{4})");
+	//const regex match_print_output = regex("^a$");
 
 	// Debugger instructions
 	static const u8 DEBUGGER_STEP = 1;
@@ -35,6 +37,8 @@ private:
 	static const u8 DEBUGGER_WATCH_REGISTER = 6;
 	static const u8 DEBUGGER_SAFE_WATCH = 7;
 	static const u8 DEBUGGER_PRINT_REGISTER = 8;
+	static const u8 DEBUGGER_PRINT_MEMORY = 9;
+	static const u8 DEBUGGER_PRINT_OUTPUT = 10;
 
 
 	// Constants
@@ -67,6 +71,8 @@ private:
 	// Registers mirror
 	registers reg;
 
+	unsigned long count_opcodes = 1;
+
 
 	// Watch the corresponding index in debug_registers?
 	bool watch_list[9];
@@ -98,6 +104,7 @@ private:
 	void debug_interface();
 	string print_registers(bool list[9]);
 	string print_register(u8 value);
+	void print_memory(string p);
 
 	// debug instruction functions:
 	void save_breakpoint(smatch input);

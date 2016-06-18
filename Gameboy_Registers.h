@@ -56,7 +56,7 @@ struct registers {
 		};
 	};
 
-	u16 pc;
+	u16 pc = 0;
 	u16 sp;
 };
 

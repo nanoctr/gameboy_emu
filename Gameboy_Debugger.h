@@ -106,7 +106,7 @@ private:
 	void debug_outputs();
 	void debug_interface();
 	string print_registers(bool list[9]);
-	string print_register(u8 value);
+	void print_register(u8 value);
 	void print_memory(string p);
 
 	// debug instruction functions:

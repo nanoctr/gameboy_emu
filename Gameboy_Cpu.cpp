@@ -2225,7 +2225,7 @@ void Gameboy_Cpu::opc_ext() {
 		Opcode opcode = extended_opcodes.at(opcode_id);
 
 		// DEBUG BUILD -> log opcode ID, function and steps
-#ifdef DEBUG_BUILD
+/*#ifdef DEBUG_BUILD
 		logger.log_time();
 		logger.log(" ++++ executing extended opcode #");
 		logger.log(std::to_string(count_opcodes-1));
@@ -2241,7 +2241,7 @@ void Gameboy_Cpu::opc_ext() {
 
 		// fuck, no reflection...gotta revisit this some time later on
 		// -> print function name
-#endif
+#endif */
 
 		// Call opcode function
 		(this->*opcode.opcode_function)();

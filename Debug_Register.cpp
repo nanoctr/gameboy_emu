@@ -21,22 +21,30 @@ string Debug_Register::description() {
 	string result = "";
 	if (register_8bit != nullptr) {
 		std::bitset<8> bits_8(*register_8bit);
+		string bit8_string = bits_8.to_string();
+		bit8_string.insert(4, " ");
+
 		result.append(name_8bit);
 		result.append("    : 0x");
 		result.append(char_to_hex(*register_8bit));
 		result.append("    |  ");
-		result.append(bits_8.to_string());
+		result.append(bit8_string);
 		result.append(" ---- ----  |  ");
 		result.append(to_string(*register_8bit));
 		result.append("\n");
 	}
 	std::bitset<16> bits_16(*register_16bit);
+	string bit16_string = bits_16.to_string();
+	bit16_string.insert(4, " ");
+	bit16_string.insert(9, " ");
+	bit16_string.insert(14, " ");
+
 
 	result.append(name_16bit);
 	result.append("   : 0x");
 	result.append(short_to_hex(*register_16bit));
 	result.append("  |  ");
-	result.append(bits_16.to_string());
+	result.append(bit16_string);
 	result.append("  |  ");
 	result.append(to_string(*register_16bit));
 	result.append("\n");

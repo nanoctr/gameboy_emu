@@ -528,6 +528,9 @@ Gameboy_Debugger::Gameboy_Debugger() {
 	watch_list[REG_PC] = true;
 	watch_list[REG_SP] = true;
 
+	load_breakpoints();
+	load_watches();
+
 	// reg.pc = 0;
 	cpu.startup();
 }
@@ -566,24 +569,26 @@ void Gameboy_Debugger::run() {
 void Gameboy_Debugger::debug_outputs() {
 	u8 data = cpu.memory[reg.pc];
 	std::bitset<8> bits(data);
+	string bit_string = bits.to_string();
+	bit_string.insert(4, " ");
+	std::bitset<8>flag_bits(reg.f);
+	string flag_string = flag_bits.to_string();
+	flag_string.insert(4, " ");
 
 	cout << "Opcode #" << count_opcodes << endl;
 	cout << "Memory at PC: " << endl;
 	cout << logger.char_to_hex(data) << "  |  ";
-	cout << bits << "  |  ";
+	cout << bit_string << "  |  ";
 	cout << data << endl;
 	cout << "Opcode Function: " << opc_function_names.at(data);
 	cout << endl << endl;
+	cout << "Flags: " << flag_string << endl << endl;
 	cout << print_registers(watch_list);
+
 }
 
-string Gameboy_Debugger::print_register(u8 value) {
-	bool arr[REG_NUMBER];
-	for (bool & b : arr) {
-		b = false;
-	}
-	arr[value] = true;
-	return print_registers(arr);
+void Gameboy_Debugger::print_register(u8 value) {
+	cout << debug_registers[value].description() << endl;
 }
 
 string Gameboy_Debugger::print_registers(bool list[REG_NUMBER]) {
@@ -730,9 +735,11 @@ void Gameboy_Debugger::print_memory(string p) {
 	u16 pos = string_to_short(p);
 	u8 data = cpu.memory[pos];
 	std::bitset<8> bits(data);
+	string bit_string = bits.to_string();
+	bit_string.insert(4, " ");
 
 	cout << "Memory at position " << p << ":" << endl;
 	cout << logger.char_to_hex(data) << "  |  ";
-	cout << bits << "  |  ";
+	cout << bit_string << "  |  ";
 	cout << data << endl;
 }

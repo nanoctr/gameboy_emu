@@ -80,6 +80,9 @@ private:
 	bool diff = false;
 	registers old_reg;
 
+	static const unordered_map<u8, string> opc_function_names;
+	static const unordered_map<u8, string> ext_opc_function_names;
+
 	// Breakpoint list file location
 	const string BREAKPOINT_FILE = "/home/michi/ClionProjects/gameboy_emu/breakpoints.txt";
 	const string WATCHES_FILE = "/home/michi/ClionProjects/gameboy_emu/watches.txt";

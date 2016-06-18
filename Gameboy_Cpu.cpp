@@ -11,8 +11,6 @@ const int HALF_CARRY = 5;
 const int SUBTRACT = 6;
 const int ZERO = 7;
 
-
-
 void Gameboy_Cpu::startup() {
 	load_opcodes();
 	load_extended_opcodes();

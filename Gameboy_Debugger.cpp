@@ -710,10 +710,35 @@ void Gameboy_Debugger::debug_interface() {
 				print_memory_plus(match); break;
 			case DEBUGGER_PRINT_OUTPUT: // print all output stuff
 				debug_outputs(); break;
+			case DEBUGGER_REMOVE_BREAKPOINT:
+				breakpoints.erase(stoul(match.str(1), nullptr, 16)); break;
+			case DEBUGGER_PRINT_BREAKPOINTS:
+				print_breakpoints(); break;
 			default:
 				logger.log_line("Invalid Debugger Instruction: " + input);
 		}
 	}
+}
+
+void Gameboy_Debugger::print_breakpoints() {
+	cout << "Breakpoints:";
+	if (breakpoints.size() == 1) {
+		cout << endl << "0x" << logger.short_to_hex(*breakpoints.begin());
+	}
+	else {
+		u16 i = 0;
+		for (auto b : breakpoints) {
+			if ((i % 3) > 0) {
+				cout << ",  0x" << logger.short_to_hex(b);
+			}
+			else {
+				cout << endl << "0x" << logger.short_to_hex(b);
+			}
+			++i;
+		}
+	}
+
+	cout << endl;
 }
 
 // set new breakpoint, store in file
@@ -764,6 +789,12 @@ u8 Gameboy_Debugger::match_debugger_instr(string input, smatch &match) {
 	else if (input[0] == 'a') {
 		return DEBUGGER_PRINT_OUTPUT;
 	}
+	else if (regex_search(input, match, match_remove_breakpoint) && match.size() > 1) {
+		return DEBUGGER_REMOVE_BREAKPOINT;
+	} // delete breakpoint
+	else if (input == "pb") {
+		return DEBUGGER_PRINT_BREAKPOINTS;
+	} // print all breakpoints
 
 	return 0;
 }

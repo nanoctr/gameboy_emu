@@ -21,11 +21,13 @@ private:
 	const regex match_breakpoint_data = regex("^(?:0x)?([\\dabcdefABCDEF]{4})");
 	const regex match_watches_data = regex("^([abcdehl]|(?:hl|bc|de|af|pc|sp))");
 	const regex match_new_breakpoint = regex("^b\\s(?:0x)?([\\dabcdefABCDEF]{4})");
+	const regex match_remove_breakpoint = regex("^rb\\s(?:0x)?([\\dabcdefABCDEF]{4})");
 	const regex match_save_breakpoint = regex("^bs\\s(?:0x)?([\\dabcdefABCDEF]{4})");
 	const regex match_watch_register = regex("^w\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
 	const regex match_watch_save = regex("^ws\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
 	const regex match_print_register = regex("^p\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
 	const regex match_print_memory = regex("^m\\s((?:[\\dabcdef]{4})|(?:af|bc|de|hl|pc|sp))(?:\\s*\\+\\s*([\\d]+))?$");
+	//const regex match_print_breakpoints = regex("^pb$");
 	//const regex match_print_output = regex("^a$");
 
 	// Debugger instructions
@@ -40,6 +42,8 @@ private:
 	static const u8 DEBUGGER_PRINT_MEMORY = 9;
 	static const u8 DEBUGGER_PRINT_OUTPUT = 10;
 	static const u8 DEBUGGER_PRINT_MEMORY_PLUS = 11;
+	static const u8 DEBUGGER_REMOVE_BREAKPOINT = 12;
+	static const u8 DEBUGGER_PRINT_BREAKPOINTS = 13;
 
 
 	// Constants
@@ -115,6 +119,7 @@ private:
 	void print_memory_opcode(string s);
 	void print_memory_plus(smatch m);
 	string print_memory_addr(u16 addr);
+	void print_breakpoints();
 
 	// debug instruction functions:
 	void save_breakpoint(smatch input);

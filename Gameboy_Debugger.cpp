@@ -544,6 +544,7 @@ void Gameboy_Debugger::run() {
 
 		// breakpoint hit, stop execution, show debug interface, next loop when done
 		if (is_breakpoint(cpu.reg.pc)) {
+			cout << "Breakpoint hit!\n";
 			forever = false;
 			steps = 0;
 			reg = cpu.reg;
@@ -776,10 +777,11 @@ bool Gameboy_Debugger::is_breakpoint(u16 val) {
 void Gameboy_Debugger::load_breakpoints() {
 	ifstream file(BREAKPOINT_FILE);
 	string line;
+	smatch match;
 
 	while (getline(file, line)) {
-		if (regex_match(line, match_breakpoint_data)) {
-			breakpoints.insert(string_to_short(line));
+		if (regex_match(line, match, match_breakpoint_data)) {
+			breakpoints.insert(stoul(match.str(1), nullptr, 16));
 		}
 	}
 }

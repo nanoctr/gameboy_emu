@@ -18,10 +18,10 @@
 class Gameboy_Debugger {
 private:
 	const regex match_numbers = regex("^(\\d+)");
-	const regex match_breakpoint_data = regex("^0x[\\dabcdefABCDEF]{4}");
+	const regex match_breakpoint_data = regex("^(?:0x)?([\\dabcdefABCDEF]{4})");
 	const regex match_watches_data = regex("^([abcdehl]|(?:hl|bc|de|af|pc|sp))");
-	const regex match_new_breakpoint = regex("^b\\s0x([\\dabcdefABCDEF]{4})");
-	const regex match_save_breakpoint = regex("^bs\\s0x([\\dabcdefABCDEF]{4})");
+	const regex match_new_breakpoint = regex("^b\\s(?:0x)?([\\dabcdefABCDEF]{4})");
+	const regex match_save_breakpoint = regex("^bs\\s(?:0x)?([\\dabcdefABCDEF]{4})");
 	const regex match_watch_register = regex("^w\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
 	const regex match_watch_save = regex("^ws\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
 	const regex match_print_register = regex("^p\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");

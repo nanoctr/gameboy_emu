@@ -571,9 +571,6 @@ void Gameboy_Debugger::debug_outputs() {
 	std::bitset<8> bits(data);
 	string bit_string = bits.to_string();
 	bit_string.insert(4, " ");
-	std::bitset<8>flag_bits(reg.f);
-	string flag_string = flag_bits.to_string();
-	flag_string.insert(4, " ");
 
 	cout << "Opcode #" << count_opcodes << endl;
 	cout << "Memory at PC: " << endl;
@@ -582,7 +579,13 @@ void Gameboy_Debugger::debug_outputs() {
 	cout << data << endl;
 	cout << "Opcode Function: " << opc_function_names.at(data);
 	cout << endl << endl;
-	cout << "Flags: " << flag_string << endl << endl;
+	cout << "Flags: " << endl;
+	cout << "Zero       Subtract   HalfCarry  Carry\n";
+	cout << ((reg.f >> 7) & 0x01) << "          ";
+	cout << ((reg.f >> 6) & 0x01) << "          ";
+	cout << ((reg.f >> 5) & 0x01) << "          ";
+	cout << ((reg.f >> 4) & 0x01) << "          " << endl << endl;
+
 	cout << print_registers(watch_list);
 
 }

@@ -78,6 +78,8 @@ private:
 
 	unsigned long count_opcodes = 1;
 
+	bool skip_breakpoint = false;
+
 	u8 ext = false;
 
 

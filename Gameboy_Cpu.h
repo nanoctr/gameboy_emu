@@ -682,6 +682,10 @@ private:
 	void opc_jr_nz_n(); //0x20 - if ZERO is NOT set
 	void opc_jr_nc_n(); //0x30 - if CARRY is NOT set
 
+	//TODO:
+	void opc_reti(); //0xD9
+	void opc_di(); //0xF3
+
 	// no operation
 	void opc_nop(); //0x00
 	// STOP CPU

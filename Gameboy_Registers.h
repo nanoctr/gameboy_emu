@@ -57,7 +57,7 @@ struct registers {
 	};
 
 	u16 pc = 0;
-	u16 sp;
+	u16 sp = 0xFFFE;
 };
 
 

@@ -537,19 +537,34 @@ Gameboy_Debugger::Gameboy_Debugger() {
 
 // Main execution loop
 void Gameboy_Debugger::run() {
+	bool bla = false;
 	while(true)
 	{
+		if (!bla) {
+			// TODO: FOR THE LOVE OF GOD CHANGE THIS YOU RETARD
+			if (cpu.reg.pc >= 0x00fe) {
+				cpu.load_file("/home/michi/ClionProjects/gameboy_emu/tetris.gb", 0);
+				cpu.reg.pc = 0;
+				bla = true;
+			}
+		}
 		//if (cpu.memory[cpu.reg.pc] == 0xCB) ext = 2;
 		//else --ext;
 
 		// breakpoint hit, stop execution, show debug interface, next loop when done
 		if (is_breakpoint(cpu.reg.pc)) {
-			cout << "Breakpoint hit!\n";
-			forever = false;
-			steps = 0;
-			reg = cpu.reg;
-			debug_interface();
-			continue;
+			if (skip_breakpoint) {
+				skip_breakpoint = false;
+			}
+			else {
+				cout << "Breakpoint hit!\n";
+				skip_breakpoint = true;
+				forever = false;
+				steps = 0;
+				reg = cpu.reg;
+				debug_interface();
+				continue;
+			}
 		}
 
 		if (forever) {
@@ -603,7 +618,7 @@ void Gameboy_Debugger::print_memory_opcode(string s) {
 		addr = *debug_registers[reg_constants.at(s)].register_16bit;
 	}
 	catch (out_of_range) {
-		addr = string_to_short(s);
+		addr = stoul(s, nullptr, 16);
 	}
 	cout << print_memory_addr(addr);
 }
@@ -744,7 +759,7 @@ void Gameboy_Debugger::print_breakpoints() {
 // set new breakpoint, store in file
 void Gameboy_Debugger::save_breakpoint(smatch input) {
 	string s = input.str(1);
-	breakpoints.insert(string_to_short(s));
+	breakpoints.insert(stoul(s, nullptr, 16));
 
 	ofstream file;
 	file.open(BREAKPOINT_FILE, ios_base::app);

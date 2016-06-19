@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Gameboy_Cpu.h"
+#include "Gameboy_Display.h"
 #include "Gameboy_Debugger.h"
 #include <string>
 #include <stdlib.h>
@@ -10,7 +11,7 @@ Gameboy_Logger logger = Gameboy_Logger("/tmp/gameboy_cpu.log");
 
 void debug();
 
-int main() {
+int main(int argc, char **argv) {
 #ifdef DEBUG_BUILD
 	logger.log_line("\n\n--------------------");
 	logger.log_line("DEBUG BUILD ENABLED");
@@ -31,6 +32,10 @@ int main() {
 	}
 #endif
 
+	// TODO: DEBUG STUFF, REMOVE THIS
+	//Gameboy_Display display = Gameboy_Display();
+	//display.test_screen(argc, argv);
+	//display.test_screen();
 	if (debugger) {
 		Gameboy_Debugger emulator;
 		emulator.run();

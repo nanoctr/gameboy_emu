@@ -54,11 +54,11 @@ void Gameboy_Cpu::load_file(string location, u16 starting_point) {
 	u8 skip = 0;
 #endif
 
-	for (u16 i = 0; i < filelen; i++) {
+	for (u16 i = 0; i < filelen; ++i) {
 		memory[i + starting_point] = buffer[i];
 
-#ifdef DEBUG_BUILD
-		if (skip) {
+/*#ifdef DEBUG_BUILD
+		if (skip > 0) {
 			--skip;
 		}
 		else {
@@ -75,7 +75,7 @@ void Gameboy_Cpu::load_file(string location, u16 starting_point) {
 				logger.log_line("  #" + std::to_string(count_opcodes));
 			}
 		}
-#endif
+#endif*/
 
 	}
 	// maybe not needed, compiler may optimize it away when unused
@@ -135,10 +135,13 @@ void Gameboy_Cpu::emulate_cycle() {
 	}
 }
 
+void Gameboy_Cpu::opc_di() {}
+
 
 // populate opcodes hashmaps
 void Gameboy_Cpu::load_opcodes() {
 	opcodes = {
+			{0xF3, Opcode(&Gameboy_Cpu::opc_di, 4, 1)},
 			{0xCB, Opcode(&Gameboy_Cpu::opc_ext, 4, 1)},
 			{0x3E, Opcode(&Gameboy_Cpu::opc_ld_a_n, 8, 2)},
 			{0x06, Opcode(&Gameboy_Cpu::opc_ld_b_n, 8, 2)},
@@ -238,7 +241,7 @@ void Gameboy_Cpu::load_opcodes() {
 			{0x34, Opcode(&Gameboy_Cpu::opc_inc_p_hl, 12, 1)},
 			{0x3D, Opcode(&Gameboy_Cpu::opc_dec_a, 4, 1)},
 			{0x05, Opcode(&Gameboy_Cpu::opc_dec_b, 4, 1)},
-			{0x0C, Opcode(&Gameboy_Cpu::opc_dec_c, 4, 1)},
+			{0x0D, Opcode(&Gameboy_Cpu::opc_dec_c, 4, 1)},
 			{0x15, Opcode(&Gameboy_Cpu::opc_dec_d, 4, 1)},
 			{0x1D, Opcode(&Gameboy_Cpu::opc_dec_e, 4, 1)},
 			{0x25, Opcode(&Gameboy_Cpu::opc_dec_h, 4, 1)},
@@ -373,6 +376,9 @@ void Gameboy_Cpu::load_opcodes() {
 			{0x30, Opcode(&Gameboy_Cpu::opc_jr_nc_n, 8, 2)},
 			{0x00, Opcode(&Gameboy_Cpu::opc_nop, 4, 1)},
 			{0x10, Opcode(&Gameboy_Cpu::opc_stop, 4, 1)},
+			{0x0F, Opcode(&Gameboy_Cpu::opc_rrc_a, 8, 1)},
+			{0x07, Opcode(&Gameboy_Cpu::opc_rlc_a, 8, 1)},
+			{0x33, Opcode(&Gameboy_Cpu::opc_inc_sp, 8, 1)}
 	};
 }
 void Gameboy_Cpu::load_extended_opcodes() {
@@ -2215,6 +2221,9 @@ void Gameboy_Cpu::opc_stop() {
 	running = false;
 	// ++reg.pc;
 }
+
+//TODO
+void Gameboy_Cpu::opc_reti() {}
 
 // call extended opcode
 void Gameboy_Cpu::opc_ext() {

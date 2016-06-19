@@ -539,8 +539,8 @@ Gameboy_Debugger::Gameboy_Debugger() {
 void Gameboy_Debugger::run() {
 	while(true)
 	{
-		if (cpu.memory[cpu.reg.pc] == 0xCB) ext = 2;
-		else --ext;
+		//if (cpu.memory[cpu.reg.pc] == 0xCB) ext = 2;
+		//else --ext;
 
 		// breakpoint hit, stop execution, show debug interface, next loop when done
 		if (is_breakpoint(cpu.reg.pc)) {
@@ -569,15 +569,16 @@ void Gameboy_Debugger::run() {
 	}
 }
 
-string Gameboy_Debugger::print_opc_function(u8 opc) {
+string Gameboy_Debugger::print_opc_function(u16 addr) {
 	string result;
-	if (ext == 1) {
-		result = ext_opc_function_names.at(opc);
+	if (cpu.memory[addr-1] == 0xCB) {
+		result = ext_opc_function_names.at(cpu.memory[addr]);
 	}
 	else {
-		result = opc_function_names.at(opc);
+		result = opc_function_names.at(cpu.memory[addr]);
 	}
 	result += "\n";
+
 	return result;
 }
 
@@ -595,6 +596,20 @@ string Gameboy_Debugger::print_memory(u16 addr) {
 	return result;
 }
 
+void Gameboy_Debugger::print_memory_opcode(string s) {
+	u16 addr;
+	try {
+		addr = *debug_registers[reg_constants.at(s)].register_16bit;
+	}
+	catch (out_of_range) {
+		u16 addr = string_to_short(s);
+	}
+
+	cout << "Memory at " << logger.short_to_hex(addr) << ":\n";
+	cout << print_memory(addr);
+	cout << "Opcode Function: " << print_opc_function(addr) << endl;
+}
+
 
 
 void Gameboy_Debugger::debug_outputs() {
@@ -604,7 +619,7 @@ void Gameboy_Debugger::debug_outputs() {
 	cout << print_memory(reg.pc);
 
 	//cout << "Opcode Function: " << opc_function_names.at(cpu.memory[reg.pc]);
-	cout << "Opcode Function: " << print_opc_function(cpu.memory[reg.pc]);
+	cout << "Opcode Function: " << print_opc_function(reg.pc);
 	cout << endl << endl;
 
 
@@ -616,7 +631,6 @@ void Gameboy_Debugger::debug_outputs() {
 	cout << ((reg.f >> 4) & 0x01) << "          " << endl << endl;
 
 	cout << print_registers(watch_list);
-
 }
 
 void Gameboy_Debugger::print_register(u8 value) {
@@ -666,7 +680,8 @@ void Gameboy_Debugger::debug_interface() {
 				print_register(reg_constants.at(match.str(1)));
 				watch_list[reg_constants.at(match.str(1))] = true; break;
 			case DEBUGGER_PRINT_MEMORY: // print memory value at position
-				print_memory(string_to_short(match.str(1))); break;
+				print_memory_opcode(match.str(1)); break;
+				break;
 			case DEBUGGER_PRINT_OUTPUT: // print all output stuff
 				debug_outputs(); break;
 			default:

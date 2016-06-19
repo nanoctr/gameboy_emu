@@ -25,7 +25,7 @@ private:
 	const regex match_watch_register = regex("^w\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
 	const regex match_watch_save = regex("^ws\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
 	const regex match_print_register = regex("^p\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
-	const regex match_print_memory = regex("^m ([\\dabcdef]{4})");
+	const regex match_print_memory = regex("^m\\s((?:[\\dabcdef]{4})|(?:af|bc|de|hl|pc|sp))$");
 	//const regex match_print_output = regex("^a$");
 
 	// Debugger instructions
@@ -110,7 +110,8 @@ private:
 	string print_registers(bool list[9]);
 	void print_register(u8 value);
 	string print_memory(u16 addr);
-	string print_opc_function(u8 opc);
+	string print_opc_function(u16 addr);
+	void print_memory_opcode(string s);
 
 	// debug instruction functions:
 	void save_breakpoint(smatch input);

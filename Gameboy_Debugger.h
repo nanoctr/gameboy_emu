@@ -25,7 +25,7 @@ private:
 	const regex match_watch_register = regex("^w\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
 	const regex match_watch_save = regex("^ws\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
 	const regex match_print_register = regex("^p\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
-	const regex match_print_memory = regex("^m\\s((?:[\\dabcdef]{4})|(?:af|bc|de|hl|pc|sp))$");
+	const regex match_print_memory = regex("^m\\s((?:[\\dabcdef]{4})|(?:af|bc|de|hl|pc|sp))(?:\\s*\\+\\s*([\\d]+))?$");
 	//const regex match_print_output = regex("^a$");
 
 	// Debugger instructions
@@ -39,6 +39,7 @@ private:
 	static const u8 DEBUGGER_PRINT_REGISTER = 8;
 	static const u8 DEBUGGER_PRINT_MEMORY = 9;
 	static const u8 DEBUGGER_PRINT_OUTPUT = 10;
+	static const u8 DEBUGGER_PRINT_MEMORY_PLUS = 11;
 
 
 	// Constants
@@ -112,6 +113,8 @@ private:
 	string print_memory(u16 addr);
 	string print_opc_function(u16 addr);
 	void print_memory_opcode(string s);
+	void print_memory_plus(smatch m);
+	string print_memory_addr(u16 addr);
 
 	// debug instruction functions:
 	void save_breakpoint(smatch input);

@@ -602,12 +602,36 @@ void Gameboy_Debugger::print_memory_opcode(string s) {
 		addr = *debug_registers[reg_constants.at(s)].register_16bit;
 	}
 	catch (out_of_range) {
-		u16 addr = string_to_short(s);
+		addr = string_to_short(s);
+	}
+	cout << print_memory_addr(addr);
+}
+
+string Gameboy_Debugger::print_memory_addr(u16 addr) {
+	string result = "Memory at " + logger.short_to_hex(addr);
+	result += ":\n";
+	result += print_memory(addr);
+	result += "Opcode Function: " + print_opc_function(addr);
+	result += "\n";
+
+	return result;
+}
+
+
+
+void Gameboy_Debugger::print_memory_plus(smatch m) {
+	u16 number = string_to_short(m.str(2));
+	u16 addr;
+	try {
+		addr = *debug_registers[reg_constants.at(m.str(1))].register_16bit;
+	}
+	catch (out_of_range) {
+		addr = string_to_short(m.str(1));
 	}
 
-	cout << "Memory at " << logger.short_to_hex(addr) << ":\n";
-	cout << print_memory(addr);
-	cout << "Opcode Function: " << print_opc_function(addr) << endl;
+	for (u8 i = 0; i <= number; ++i) {
+		cout << print_memory_addr(addr + i);
+	}
 }
 
 
@@ -681,7 +705,8 @@ void Gameboy_Debugger::debug_interface() {
 				watch_list[reg_constants.at(match.str(1))] = true; break;
 			case DEBUGGER_PRINT_MEMORY: // print memory value at position
 				print_memory_opcode(match.str(1)); break;
-				break;
+			case DEBUGGER_PRINT_MEMORY_PLUS: // print memory + NUMBER following
+				print_memory_plus(match); break;
 			case DEBUGGER_PRINT_OUTPUT: // print all output stuff
 				debug_outputs(); break;
 			default:
@@ -729,9 +754,12 @@ u8 Gameboy_Debugger::match_debugger_instr(string input, smatch &match) {
 	else if (regex_search(input, match, match_print_register) && match.size() > 1) {
 		return DEBUGGER_PRINT_REGISTER;
 	} // print register value
-	else if (regex_search(input, match, match_print_memory) && match.size() > 1) {
-		return DEBUGGER_PRINT_MEMORY;
+	else if (regex_search(input, match, match_print_memory) && match[2].matched) {
+		return DEBUGGER_PRINT_MEMORY_PLUS;
 	} // print value of memory at position
+	else if(regex_search(input, match, match_print_memory) && match.size() > 1) {
+		return DEBUGGER_PRINT_MEMORY;
+	}
 	else if (input[0] == 'a') {
 		return DEBUGGER_PRINT_OUTPUT;
 	}

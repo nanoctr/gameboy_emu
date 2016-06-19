@@ -539,6 +539,9 @@ Gameboy_Debugger::Gameboy_Debugger() {
 void Gameboy_Debugger::run() {
 	while(true)
 	{
+		if (cpu.memory[cpu.reg.pc] == 0xCB) ext = 2;
+		else --ext;
+
 		// breakpoint hit, stop execution, show debug interface, next loop when done
 		if (is_breakpoint(cpu.reg.pc)) {
 			forever = false;
@@ -566,19 +569,45 @@ void Gameboy_Debugger::run() {
 	}
 }
 
-void Gameboy_Debugger::debug_outputs() {
-	u8 data = cpu.memory[reg.pc];
+string Gameboy_Debugger::print_opc_function(u8 opc) {
+	string result;
+	if (ext == 1) {
+		result = ext_opc_function_names.at(opc);
+	}
+	else {
+		result = opc_function_names.at(opc);
+	}
+	result += "\n";
+	return result;
+}
+
+string Gameboy_Debugger::print_memory(u16 addr) {
+	string result = "";
+	u8 data = cpu.memory[addr];
 	std::bitset<8> bits(data);
 	string bit_string = bits.to_string();
 	bit_string.insert(4, " ");
 
+	result.append(logger.char_to_hex(data) + "  |  ");
+	result.append(bit_string + "  |  ");
+	result.append(to_string(data) + "\n");
+
+	return result;
+}
+
+
+
+void Gameboy_Debugger::debug_outputs() {
+
 	cout << "Opcode #" << count_opcodes << endl;
 	cout << "Memory at PC: " << endl;
-	cout << logger.char_to_hex(data) << "  |  ";
-	cout << bit_string << "  |  ";
-	cout << data << endl;
-	cout << "Opcode Function: " << opc_function_names.at(data);
+	cout << print_memory(reg.pc);
+
+	//cout << "Opcode Function: " << opc_function_names.at(cpu.memory[reg.pc]);
+	cout << "Opcode Function: " << print_opc_function(cpu.memory[reg.pc]);
 	cout << endl << endl;
+
+
 	cout << "Flags: " << endl;
 	cout << "Zero       Subtract   HalfCarry  Carry\n";
 	cout << ((reg.f >> 7) & 0x01) << "          ";
@@ -637,7 +666,7 @@ void Gameboy_Debugger::debug_interface() {
 				print_register(reg_constants.at(match.str(1)));
 				watch_list[reg_constants.at(match.str(1))] = true; break;
 			case DEBUGGER_PRINT_MEMORY: // print memory value at position
-				print_memory(match.str(1)); break;
+				print_memory(string_to_short(match.str(1))); break;
 			case DEBUGGER_PRINT_OUTPUT: // print all output stuff
 				debug_outputs(); break;
 			default:
@@ -732,17 +761,4 @@ int Gameboy_Debugger::string_to_int(string s) {
 u16 Gameboy_Debugger::string_to_short(string s) {
 	string::size_type sz;
 	return stoi(s, &sz);
-}
-
-void Gameboy_Debugger::print_memory(string p) {
-	u16 pos = string_to_short(p);
-	u8 data = cpu.memory[pos];
-	std::bitset<8> bits(data);
-	string bit_string = bits.to_string();
-	bit_string.insert(4, " ");
-
-	cout << "Memory at position " << p << ":" << endl;
-	cout << logger.char_to_hex(data) << "  |  ";
-	cout << bit_string << "  |  ";
-	cout << data << endl;
 }

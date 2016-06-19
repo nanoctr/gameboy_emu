@@ -73,6 +73,8 @@ private:
 
 	unsigned long count_opcodes = 1;
 
+	u8 ext = false;
+
 
 	// Watch the corresponding index in debug_registers?
 	bool watch_list[9];
@@ -107,7 +109,8 @@ private:
 	void debug_interface();
 	string print_registers(bool list[9]);
 	void print_register(u8 value);
-	void print_memory(string p);
+	string print_memory(u16 addr);
+	string print_opc_function(u8 opc);
 
 	// debug instruction functions:
 	void save_breakpoint(smatch input);

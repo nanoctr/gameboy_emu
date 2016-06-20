@@ -65,13 +65,15 @@ void Gameboy_Display::render_buffer() {
 }
 
 void Gameboy_Display::update_tiles(u8 (&vram)[0x2000], u16 addr) {
+	u16 tile = addr >> 4; // == addr / 16, 16 bits for each tile
+
 	for (int y = addr; y < 8; y += 2) {
 		for (int x = 0; x < 8; ++x) {
 			if (vram[y] & (0x80 >> x)) {
-				tiles[5][y][x] = 1;
+				tiles[tile][y][x] = 1;
 			}
 			if (vram[y + 1] & (0x80 >> x)) {
-				tiles[5][y][x] += 2;
+				tiles[tile][y][x] += 2;
 			}
 		}
 	}

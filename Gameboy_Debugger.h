@@ -84,6 +84,8 @@ private:
 
 	u8 ext = false;
 
+	Gameboy_Display display;
+
 
 	// Watch the corresponding index in debug_registers?
 	bool watch_list[9];

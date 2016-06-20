@@ -6,6 +6,7 @@
 #define GAMEBOY_EMU_GAMEBOY_MEMORY_H
 
 #include "Gameboy_Logger.h"
+#include "Gameboy_Display.h"
 
 using u8 = unsigned char;
 using u16 = unsigned short;
@@ -34,7 +35,9 @@ public:
 	 */
 	u8 horrible_hack = 0;
 
-	Gameboy_Memory();
+	Gameboy_Display display;
+
+	Gameboy_Memory(Gameboy_Display displ);
 	u8& read_byte(u16 addr);
 	u8& operator[] (u16 addr);
 	//u16 read_short(u16 addr);

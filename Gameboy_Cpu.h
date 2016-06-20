@@ -13,6 +13,7 @@
 #include "Gameboy_Logger.h"
 #include "Gameboy_Registers.h"
 #include "Gameboy_Memory.h"
+#include "Gameboy_Display.h"
 
 typedef unsigned long u64;
 
@@ -49,7 +50,10 @@ private:
 	std::unordered_map<u8, Opcode> extended_opcodes;
 
 // Cpu Cycle counter
-	unsigned long cycles;
+	unsigned long m_cycles;
+	unsigned long t_cycles;
+	u8 m_opc_cycles;
+	u8 t_opc_cycles;
 
 
 	u8 video_memory[256][256];
@@ -57,6 +61,7 @@ private:
 	bool running = true; // used for CPU interrupts
 
 	Gameboy_Logger logger = Gameboy_Logger("/tmp/gameboy_cpu.log");
+	Gameboy_Display display;
 
 	// populate opcodes hashmaps
 	void load_opcodes();
@@ -756,7 +761,7 @@ private:
 
 public:
 	void emulate_cycle();
-	void startup();
+	void startup(Gameboy_Display &displ);
 	void load_file(string location, u16 starting_point);
 	Gameboy_Cpu();
 	registers reg;
@@ -776,7 +781,7 @@ public:
  *  FF80 - FFFE -> internal RAM
  *  FFFF -> interrupt enable register
  */
-	Gameboy_Memory memory = Gameboy_Memory();
+	Gameboy_Memory memory = Gameboy_Memory(display);
 #endif
 };
 

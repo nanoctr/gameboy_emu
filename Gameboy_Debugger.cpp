@@ -531,8 +531,10 @@ Gameboy_Debugger::Gameboy_Debugger() {
 	load_breakpoints();
 	load_watches();
 
+	display = Gameboy_Display();
+
 	// reg.pc = 0;
-	cpu.startup();
+	cpu.startup(display);
 }
 
 // Main execution loop

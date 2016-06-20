@@ -11,7 +11,9 @@ const int HALF_CARRY = 5;
 const int SUBTRACT = 6;
 const int ZERO = 7;
 
-void Gameboy_Cpu::startup() {
+void Gameboy_Cpu::startup(Gameboy_Display &displ) {
+	display = displ;
+
 	load_opcodes();
 	load_extended_opcodes();
 
@@ -84,31 +86,16 @@ void Gameboy_Cpu::emulate_cycle() {
 		try {
 			Opcode opcode = opcodes.at(opcode_id);
 
-			// DEBUG BUILD -> log opcode ID, function and steps
-/* #ifdef DEBUG_BUILD
-			logger.log_time();
-			logger.log(" ++++ executing opcode #");
-			logger.log(std::to_string(count_opcodes));
-			logger.log(":\nPC      : ");
-			logger.log(logger.short_to_hex(reg.pc));
-			logger.log("\nSP      : ");
-			logger.log(logger.short_to_hex(reg.sp));
-			logger.log("\nID      : ");
-			logger.log(logger.char_to_hex(opcode_id));
-			logger.log("\nCYCLES  : ");
-			logger.log(std::to_string(opcode.cycles));
-			logger.log_line("\n----");
-
-			// fuck, no reflection...gotta revisit this some time later on
-			// -> print function name
-			++count_opcodes;
-#endif*/
-
 			// Call opcode function
 			(this->*opcode.opcode_function)();
 
 			// increment CPU steps
-			cycles += opcode.cycles;
+			m_cycles += opcode.cycles;
+			t_cycles += opcode.cycles * 4;
+			m_opc_cycles = opcode.cycles;
+			t_opc_cycles = opcode.cycles * 4;
+
+			display.gpu_step(t_opc_cycles);
 
 			// increment PC
 			reg.pc += opcode.length;
@@ -1438,25 +1425,25 @@ void Gameboy_Cpu::opc_call_nn() {
 void Gameboy_Cpu::opc_call_nz_nn() {
 	if (!get_flag(ZERO)) {
 		call_subroutine((memory[reg.pc+2] << 8) | memory[reg.pc+1]);
-		cycles += 12;
+		// m_cycles += 12;
 	}
 }
 void Gameboy_Cpu::opc_call_nc_nn() {
 	if (!get_flag(CARRY)) {
 		call_subroutine((memory[reg.pc+2] << 8) | memory[reg.pc+1]);
-		cycles += 12;
+		// m_cycles += 12;
 	}
 }
 void Gameboy_Cpu::opc_call_z_nn() {
 	if (get_flag(ZERO)) {
 		call_subroutine((memory[reg.pc+2] << 8) | memory[reg.pc+1]);
-		cycles += 12;
+		// m_cycles += 12;
 	}
 }
 void Gameboy_Cpu::opc_call_c_nn() {
 	if (get_flag(CARRY)) {
 		call_subroutine((memory[reg.pc+2] << 8) | memory[reg.pc+1]);
-		cycles += 12;
+		// m_cycles += 12;
 	}
 }
 
@@ -1468,25 +1455,25 @@ void Gameboy_Cpu::opc_ret() {
 void Gameboy_Cpu::opc_ret_nz() {
 	if (!get_flag(ZERO)) {
 		return_subroutine();
-		cycles += 12;
+		// m_cycles += 12;
 	}
 }
 void Gameboy_Cpu::opc_ret_nc() {
 	if (!get_flag(CARRY)) {
 		return_subroutine();
-		cycles += 12;
+		// m_cycles += 12;
 	}
 }
 void Gameboy_Cpu::opc_ret_z() {
 	if (get_flag(ZERO)) {
 		return_subroutine();
-		cycles += 12;
+		// m_cycles += 12;
 	}
 }
 void Gameboy_Cpu::opc_ret_n() {
 	if (get_flag(CARRY)) {
 		return_subroutine();
-		cycles += 12;
+		// m_cycles += 12;
 	}
 }
 
@@ -1498,25 +1485,25 @@ void Gameboy_Cpu::opc_jump_nn() {
 void Gameboy_Cpu::opc_jump_nz_nn() {
 	if (!get_flag(ZERO)) {
 		reg.pc = (memory[reg.pc+2] << 8) | memory[reg.pc+1];
-		cycles += 4;
+		// m_cycles += 4;
 	}
 }
 void Gameboy_Cpu::opc_jump_nc_nn() {
 	if (!get_flag(CARRY)) {
 		reg.pc = (memory[reg.pc+2] << 8) | memory[reg.pc+1];
-		cycles += 4;
+		// m_cycles += 4;
 	}
 }
 void Gameboy_Cpu::opc_jump_z_nn() {
 	if (get_flag(ZERO)) {
 		reg.pc = (memory[reg.pc+2] << 8) | memory[reg.pc+1];
-		cycles += 4;
+		// m_cycles += 4;
 	}
 }
 void Gameboy_Cpu::opc_jump_c_nn() {
 	if (get_flag(CARRY)) {
 		reg.pc = (memory[reg.pc+2] << 8) | memory[reg.pc+1];
-		cycles += 4;
+		// m_cycles += 4;
 	}
 }
 void Gameboy_Cpu::opc_jump_hl() {
@@ -2176,28 +2163,28 @@ void Gameboy_Cpu::opc_jr_n() {
 void Gameboy_Cpu::opc_jr_z_n() {
 	if (get_flag(ZERO)) {
 		relative_jump(memory[reg.pc+1]);
-		cycles += 4;
+		// m_cycles += 4;
 	}
 	// pc += 2;
 }
 void Gameboy_Cpu::opc_jr_c_n() {
 	if (get_flag(CARRY)) {
 		relative_jump(memory[reg.pc+1]);
-		cycles += 4;
+		// m_cycles += 4;
 	}
 	// pc += 2;
 }
 void Gameboy_Cpu::opc_jr_nz_n() {
 	if (!get_flag(ZERO)) {
 		relative_jump(memory[reg.pc+1]);
-		cycles += 4;
+		// m_cycles += 4;
 	}
 	// pc += 2;
 }
 void Gameboy_Cpu::opc_jr_nc_n() {
 	if (!get_flag(CARRY)) {
 		relative_jump(memory[reg.pc+1]);
-		cycles += 4;
+		// m_cycles += 4;
 	}
 	// pc += 2;
 }
@@ -2236,7 +2223,7 @@ void Gameboy_Cpu::opc_ext() {
 		logger.log("\nID      : +");
 		logger.log(logger.char_to_hex(opcode_id));
 		logger.log("\nCYCLES  : ");
-		logger.log(std::to_string(opcode.cycles));
+		logger.log(std::to_string(opcode.m_cycles));
 		logger.log_line("\n----");
 
 		// fuck, no reflection...gotta revisit this some time later on
@@ -2247,7 +2234,7 @@ void Gameboy_Cpu::opc_ext() {
 		(this->*opcode.opcode_function)();
 
 		// increment CPU steps
-		cycles += opcode.cycles;
+		// m_cycles += opcode.cycles;
 	}
 	catch (out_of_range) {
 		logger.log("ERROR: invalid opcode at: 0x");

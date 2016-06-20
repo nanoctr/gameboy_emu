@@ -540,14 +540,15 @@ void Gameboy_Debugger::run() {
 	bool bla = false;
 	while(true)
 	{
-		if (!bla) {
-			// TODO: FOR THE LOVE OF GOD CHANGE THIS YOU RETARD
-			if (cpu.reg.pc >= 0x00fe) {
-				cpu.load_file("/home/michi/ClionProjects/gameboy_emu/tetris.gb", 0);
-				cpu.reg.pc = 0;
-				bla = true;
-			}
-		}
+		debug_outputs();
+		//if (!bla) {
+		//	// TODO: FOR THE LOVE OF GOD CHANGE THIS YOU RETARD
+		//	if (cpu.reg.pc >= 0x00fe) {
+		//		cpu.load_file("/home/michi/ClionProjects/gameboy_emu/tetris.gb", 0);
+		//		cpu.reg.pc = 0;
+		//		bla = true;
+		//	}
+		//}
 		//if (cpu.memory[cpu.reg.pc] == 0xCB) ext = 2;
 		//else --ext;
 
@@ -810,6 +811,9 @@ u8 Gameboy_Debugger::match_debugger_instr(string input, smatch &match) {
 	else if (input == "pb") {
 		return DEBUGGER_PRINT_BREAKPOINTS;
 	} // print all breakpoints
+	else if (input == "ld") {
+		return DEBUGGER_LOAD_GAME;
+	} // load a game
 
 	return 0;
 }

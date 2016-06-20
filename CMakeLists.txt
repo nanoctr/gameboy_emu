@@ -16,7 +16,7 @@ endif(NOT OPENGL_FOUND)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -lncurses -lglut")
 
-set(SOURCE_FILES main.cpp Gameboy_Cpu.cpp Gameboy_Cpu.h Gameboy_Logger.cpp Gameboy_Logger.h Gameboy_Debugger.cpp Gameboy_Debugger.h Gameboy_Registers.h Debug_Register.h Debug_Register.cpp Gameboy_Display.h Gameboy_Display.cpp)
+set(SOURCE_FILES main.cpp Gameboy_Cpu.cpp Gameboy_Cpu.h Gameboy_Logger.cpp Gameboy_Logger.h Gameboy_Debugger.cpp Gameboy_Debugger.h Gameboy_Registers.h Debug_Register.h Debug_Register.cpp Gameboy_Display.h Gameboy_Display.cpp Gameboy_Memory.cpp Gameboy_Memory.h)
 add_executable(gameboy_emu ${SOURCE_FILES})
 
 target_link_libraries(gameboy_emu ${OPENGL_LIBRARIES})

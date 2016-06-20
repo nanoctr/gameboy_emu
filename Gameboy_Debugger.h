@@ -27,6 +27,7 @@ private:
 	const regex match_watch_save = regex("^ws\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
 	const regex match_print_register = regex("^p\\s([abcdehl]$|(?:hl|bc|de|af|pc|sp))$");
 	const regex match_print_memory = regex("^m\\s((?:[\\dabcdef]{4})|(?:af|bc|de|hl|pc|sp))(?:\\s*\\+\\s*([\\d]+))?$");
+	//const regex match_load_game = regex ("^ld$");
 	//const regex match_print_breakpoints = regex("^pb$");
 	//const regex match_print_output = regex("^a$");
 
@@ -44,6 +45,7 @@ private:
 	static const u8 DEBUGGER_PRINT_MEMORY_PLUS = 11;
 	static const u8 DEBUGGER_REMOVE_BREAKPOINT = 12;
 	static const u8 DEBUGGER_PRINT_BREAKPOINTS = 13;
+	static const u8 DEBUGGER_LOAD_GAME = 14;
 
 
 	// Constants

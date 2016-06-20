@@ -24,11 +24,6 @@ void Gameboy_Cpu::startup() {
 	// PC starts at 0
 	reg.pc = 0x0000;
 
-	// Set whole memory to 0
-	for (auto &b: memory) {
-		b = 0;
-	}
-
 	load_file("/home/michi/ClionProjects/gameboy_emu/DMG_ROM.bin", 0);
 }
 
@@ -38,7 +33,7 @@ void Gameboy_Cpu::load_file(string location, u16 starting_point) {
 
 	// NOTE: This code is stolen from...dunno, that Chip-8 tutorial
 	FILE *fileptr;
-	int filelen;
+	unsigned long filelen;
 
 	fileptr = fopen(location.c_str(), "rb");
 	fseek(fileptr, 0, SEEK_END);
@@ -49,10 +44,6 @@ void Gameboy_Cpu::load_file(string location, u16 starting_point) {
 
 	fread(buffer, filelen, 1, fileptr);
 	fclose(fileptr);
-
-#ifdef DEBUG_BUILD
-	u8 skip = 0;
-#endif
 
 	for (u16 i = 0; i < filelen; ++i) {
 		memory[i + starting_point] = buffer[i];

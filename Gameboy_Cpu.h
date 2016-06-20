@@ -12,6 +12,7 @@
 #include <vector>
 #include "Gameboy_Logger.h"
 #include "Gameboy_Registers.h"
+#include "Gameboy_Memory.h"
 
 typedef unsigned long u64;
 
@@ -750,7 +751,7 @@ private:
  *  FF80 - FFFE -> internal RAM
  *  FFFF -> interrupt enable register
  */
-	u8 memory[0xFFFF];
+	Gameboy_Memory memory = Gameboy_Memory();
 #endif
 
 public:
@@ -775,7 +776,7 @@ public:
  *  FF80 - FFFE -> internal RAM
  *  FFFF -> interrupt enable register
  */
-	u8 memory[0xFFFF];
+	Gameboy_Memory memory = Gameboy_Memory();
 #endif
 };
 

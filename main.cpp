@@ -32,10 +32,6 @@ int main(int argc, char **argv) {
 	}
 #endif
 
-	// TODO: DEBUG STUFF, REMOVE THIS
-	//Gameboy_Display display = Gameboy_Display();
-	//display.test_screen(argc, argv);
-	//display.test_screen();
 	if (debugger) {
 		Gameboy_Debugger emulator;
 		emulator.run();

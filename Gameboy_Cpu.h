@@ -763,7 +763,7 @@ public:
 	void emulate_cycle();
 	void startup(Gameboy_Display &displ);
 	void load_file(string location, u16 starting_point);
-	Gameboy_Cpu();
+	Gameboy_Cpu(Gameboy_Memory &mem);
 	registers reg;
 #ifdef DEBUG_BUILD
 /*
@@ -781,7 +781,7 @@ public:
  *  FF80 - FFFE -> internal RAM
  *  FFFF -> interrupt enable register
  */
-	Gameboy_Memory memory = Gameboy_Memory(display);
+	Gameboy_Memory memory;
 #endif
 };
 

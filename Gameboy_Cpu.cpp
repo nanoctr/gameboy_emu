@@ -2773,4 +2773,7 @@ void Gameboy_Cpu::relative_jump(char value) {
 	reg.pc += value;
 }
 
-Gameboy_Cpu::Gameboy_Cpu() {}
+Gameboy_Cpu::Gameboy_Cpu(Gameboy_Memory &mem) {
+	display = Gameboy_Display();
+	memory = mem;
+}

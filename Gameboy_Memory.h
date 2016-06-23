@@ -11,6 +11,7 @@
 using u8 = unsigned char;
 using u16 = unsigned short;
 
+
 class Gameboy_Memory {
 private:
 	Gameboy_Logger logger = Gameboy_Logger("/tmp/gameboy_memory.log");
@@ -37,7 +38,7 @@ public:
 
 	Gameboy_Display display;
 
-	Gameboy_Memory(Gameboy_Display displ);
+	Gameboy_Memory(Gameboy_Display &displ);
 	u8& read_byte(u16 addr);
 	u8& operator[] (u16 addr);
 	//u16 read_short(u16 addr);

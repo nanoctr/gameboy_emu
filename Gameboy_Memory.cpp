@@ -4,7 +4,7 @@
 
 #include "Gameboy_Memory.h"
 
-Gameboy_Memory::Gameboy_Memory(Gameboy_Display displ) {
+Gameboy_Memory::Gameboy_Memory(Gameboy_Display &displ) {
 	display = displ;
 
 	for (auto & i : cartridge_fixed_rom) {

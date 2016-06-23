@@ -5,16 +5,18 @@
 #ifndef CHIP8_EMULATOR_GAMEBOY_DISPLAY_H
 #define CHIP8_EMULATOR_GAMEBOY_DISPLAY_H
 
+#include "Gameboy_Cpu.h"
 
 using u8 = unsigned char;
 using u16 = unsigned short;
 
+//struct Colour {
+//	u8 r, g, b;
+//};
+
+class Gameboy_Cpu;
+
 class Gameboy_Display {
-	//struct Colour {
-	//	u8 r;
-	//	u8 g;
-	//	u8 b;
-	//};
 private:
 	//const Colour colours[4] = {
 	//		{255, 255, 255},
@@ -30,6 +32,8 @@ private:
 
 	u8 screen[SCREEN_HEIGHT][SCREEN_WIDTH][3];
 
+	u8 palette[4] = {255, 192, 96, 0};
+
 	u8 tiles[384][8][8];
 
 	u8 mode;
@@ -40,6 +44,17 @@ private:
 	u16 scroll_x;
 	u16 scroll_y;
 
+	// LCD control register
+	u8 lcdc;
+	// u8 LCDC_ENABLE_DISPLAY = 7;
+	u8 LCDC_ENABLE_BACKGROUND = 0;
+	u8 LCDC_TILEMAP_SELECT = 3;
+
+	u8 get_lcdc(u8 pos);
+	void set_lcdc(u8 pos);
+	void reset_lcdc(u8 pos);
+
+	// Gameboy_Cpu *cpu;
 
 	// display func
 	static void display();
@@ -47,6 +62,7 @@ private:
 	void render_line();
 	// render framebuffer
 	void render_buffer();
+	void draw_background();
 
 
 
@@ -57,6 +73,7 @@ public:
 	// update tiles from VRAM (passed)
 	void update_tiles(u8 (&vram)[0x2000], u16 addr);
 	void gpu_step(u8 t_cycles);
+	//Gameboy_Display(Gameboy_Cpu *gb_cpu);
 	Gameboy_Display();
 };
 

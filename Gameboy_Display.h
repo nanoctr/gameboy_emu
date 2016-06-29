@@ -65,6 +65,8 @@ private:
 	// render framebuffer
 	void render_buffer();
 	void draw_background();
+	void setup_texture();
+	void update_texture();
 
 
 

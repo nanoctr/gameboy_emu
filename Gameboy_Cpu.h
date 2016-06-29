@@ -14,9 +14,12 @@
 #include "Gameboy_Registers.h"
 #include "Gameboy_Memory.h"
 #include "Gameboy_Display.h"
+#include <memory>
 
 typedef unsigned long u64;
 
+class Gameboy_Display;
+class Gameboy_Memory;
 
 class Gameboy_Cpu {
 private:
@@ -61,7 +64,7 @@ private:
 	bool running = true; // used for CPU interrupts
 
 	Gameboy_Logger logger = Gameboy_Logger("/tmp/gameboy_cpu.log");
-	Gameboy_Display display;
+
 
 	// populate opcodes hashmaps
 	void load_opcodes();
@@ -756,15 +759,20 @@ private:
  *  FF80 - FFFE -> internal RAM
  *  FFFF -> interrupt enable register
  */
-	Gameboy_Memory memory = Gameboy_Memory();
+	Gameboy_Memory *memory;
 #endif
 
 public:
+
 	void emulate_cycle();
-	void startup(Gameboy_Display &displ);
+	void startup();
 	void load_file(string location, u16 starting_point);
-	Gameboy_Cpu(Gameboy_Memory &mem);
+	Gameboy_Cpu();
+
 	registers reg;
+	// TODO: move this to private, create setter
+	shared_ptr<Gameboy_Display> display;
+	shared_ptr<Gameboy_Memory> memory;
 #ifdef DEBUG_BUILD
 /*
  *  memory map:
@@ -781,7 +789,6 @@ public:
  *  FF80 - FFFE -> internal RAM
  *  FFFF -> interrupt enable register
  */
-	Gameboy_Memory memory;
 #endif
 };
 

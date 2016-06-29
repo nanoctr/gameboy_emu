@@ -4,9 +4,7 @@
 
 #include "Gameboy_Memory.h"
 
-Gameboy_Memory::Gameboy_Memory(Gameboy_Display &displ) {
-	display = displ;
-
+Gameboy_Memory::Gameboy_Memory() {
 	for (auto & i : cartridge_fixed_rom) {
 		i = 0;
 	}
@@ -54,7 +52,7 @@ u8& Gameboy_Memory::read_byte(u16 addr) {
 	}
 	if ((addr >= 0x8000) && (addr <= 0x9FFF)) {
 		if (addr <= 0x97FF) {
-			display.update_tiles(vram, (addr - 0x8000));
+			display-> update_tiles(vram, (addr - 0x8000));
 		}
 		return vram[addr - 0x8000];
 	}

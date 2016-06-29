@@ -6,6 +6,7 @@
 #define CHIP8_EMULATOR_GAMEBOY_DISPLAY_H
 
 #include "Gameboy_Cpu.h"
+//#include "Gameboy_Memory.h"
 
 using u8 = unsigned char;
 using u16 = unsigned short;
@@ -15,6 +16,7 @@ using u16 = unsigned short;
 //};
 
 class Gameboy_Cpu;
+class Gameboy_Memory;
 
 class Gameboy_Display {
 private:
@@ -75,6 +77,9 @@ public:
 	void gpu_step(u8 t_cycles);
 	//Gameboy_Display(Gameboy_Cpu *gb_cpu);
 	Gameboy_Display();
+
+	// TODO: move this to private, make setter
+	shared_ptr<Gameboy_Memory> memory;
 };
 
 

@@ -531,10 +531,17 @@ Gameboy_Debugger::Gameboy_Debugger() {
 	load_breakpoints();
 	load_watches();
 
-	display = Gameboy_Display();
+	cpu = Gameboy_Cpu();
+	auto mem = shared_ptr<Gameboy_Memory>(new Gameboy_Memory());
+	auto displ = shared_ptr<Gameboy_Display>(new Gameboy_Display());
+
+	cpu.memory = mem;
+	cpu.display = displ;
+	mem-> display = displ;
+	displ-> memory = mem;
 
 	// reg.pc = 0;
-	cpu.startup(display);
+	cpu.startup();
 }
 
 // Main execution loop
@@ -590,11 +597,11 @@ void Gameboy_Debugger::run() {
 
 string Gameboy_Debugger::print_opc_function(u16 addr) {
 	string result;
-	if (cpu.memory[addr-1] == 0xCB) {
-		result = ext_opc_function_names.at(cpu.memory[addr]);
+	if ((*cpu.memory)[addr-1] == 0xCB) {
+		result = ext_opc_function_names.at((*cpu.memory)[addr]);
 	}
 	else {
-		result = opc_function_names.at(cpu.memory[addr]);
+		result = opc_function_names.at((*cpu.memory)[addr]);
 	}
 	result += "\n";
 
@@ -603,7 +610,7 @@ string Gameboy_Debugger::print_opc_function(u16 addr) {
 
 string Gameboy_Debugger::print_memory(u16 addr) {
 	string result = "";
-	u8 data = cpu.memory[addr];
+	u8 data = (*cpu.memory)[addr];
 	std::bitset<8> bits(data);
 	string bit_string = bits.to_string();
 	bit_string.insert(4, " ");

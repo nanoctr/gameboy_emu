@@ -6,11 +6,13 @@
 #define GAMEBOY_EMU_GAMEBOY_MEMORY_H
 
 #include "Gameboy_Logger.h"
+#include <memory>
 #include "Gameboy_Display.h"
 
 using u8 = unsigned char;
 using u16 = unsigned short;
 
+class Gameboy_Display;
 
 class Gameboy_Memory {
 private:
@@ -29,16 +31,17 @@ public:
 	u8 enable_interrupt;
 	/*
 	 *  Jesus Christ this is shameful. What have I done.
-	 *  This is really awful. really. the [] operator returns a reference
+	 *  Really, this is awful. The [] operator returns a reference
 	 *   to this in case the read_byte function fails.
 	 *  Effectively defeating one of the best parts of a reference:
 	 *  It never being NULL. Congratulations, retard.
 	 */
 	u8 horrible_hack = 0;
 
-	Gameboy_Display display;
+	// internal linking
+	shared_ptr<Gameboy_Display> display;
 
-	Gameboy_Memory(Gameboy_Display &displ);
+	Gameboy_Memory();
 	u8& read_byte(u16 addr);
 	u8& operator[] (u16 addr);
 	//u16 read_short(u16 addr);

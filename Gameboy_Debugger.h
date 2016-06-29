@@ -12,6 +12,7 @@
 #include "Debug_Register.h"
 #include "Gameboy_Logger.h"
 #include "Gameboy_Cpu.h"
+#include <memory>
 
 
 
@@ -84,7 +85,7 @@ private:
 
 	u8 ext = false;
 
-	Gameboy_Display display;
+	// Gameboy_Display display;
 
 
 	// Watch the corresponding index in debug_registers?

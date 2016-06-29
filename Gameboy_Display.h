@@ -6,7 +6,6 @@
 #define GAMEBOY_DISPLAY_H
 
 #include <memory>
-#include "Gameboy_Debugger.h"
 
 using namespace std;
 
@@ -74,7 +73,7 @@ private:
 
 
 public:
-	void test_screen(int argc, char **argv);
+	void test_screen(int argc, char **argv, Gameboy_Debugger * debugger);
 	void test_screen();
 
 	// update tiles from VRAM (passed)
@@ -85,8 +84,7 @@ public:
 
 	// TODO: move this to private, make setter
 	shared_ptr<Gameboy_Memory> memory;
-	static Gameboy_Debugger *debugger;
-};
 
+};
 
 #endif //CHIP8_EMULATOR_GAMEBOY_DISPLAY_H

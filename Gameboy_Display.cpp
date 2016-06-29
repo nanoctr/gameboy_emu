@@ -9,9 +9,10 @@
 #include "Gameboy_Debugger.h"
 
 
-static void run_runner() {
-	Gameboy_Display::debugger-> run();
-}
+//Gameboy_Debugger Gameboy_Display::*debugger;
+//static void run_runner() {
+//	Gameboy_Display::debugger-> run();
+//}
 
 // int i = 0;
 
@@ -145,14 +146,13 @@ void Gameboy_Display::reset_lcdc(u8 pos) {
 
 
 
-void Gameboy_Display::test_screen(int argc, char **argv) {
+void Gameboy_Display::test_screen(int argc, char **argv, Gameboy_Debugger * debugger) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowSize(display_width, display_height);
 	glutInitWindowPosition(320, 320);
 	glutCreateWindow("Gameboy");
-
-	glutDisplayFunc(run_runner);
+	glutDisplayFunc(debugger->draw_callback);
 	//glutIdleFunc(display);
 
 	setup_texture();

@@ -21,6 +21,7 @@ constexpr u8 Gameboy_Debugger::REG_BC = 10;
 constexpr u8 Gameboy_Debugger::REG_DE = 11;
 constexpr u8 Gameboy_Debugger::REG_HL = 12;
 
+
 // list of all function names
 
 const unordered_map<u8, string> Gameboy_Debugger::opc_function_names = {
@@ -512,6 +513,8 @@ const unordered_map<u8, string> Gameboy_Debugger::ext_opc_function_names = {
 		{0x06, "rlc_p_hl"},
 };
 
+Gameboy_Debugger* Gameboy_Debugger::current_instance;
+
 Gameboy_Debugger::Gameboy_Debugger() {
 	debug_registers[REG_PC] = Debug_Register(nullptr, &reg.pc, "", "PC");
 	debug_registers[REG_SP] = Debug_Register(nullptr, &reg.sp, "", "SP");
@@ -530,6 +533,8 @@ Gameboy_Debugger::Gameboy_Debugger() {
 	watch_list[REG_PC] = true;
 	watch_list[REG_SP] = true;
 
+	Gameboy_Debugger::current_instance = this;
+
 	load_breakpoints();
 	load_watches();
 
@@ -541,12 +546,16 @@ Gameboy_Debugger::Gameboy_Debugger() {
 	cpu.display = displ;
 	mem-> display = displ;
 	displ-> memory = mem;
-	Gameboy_Display::debugger = this;
+	// Gameboy_Display::debugger = this;
 
 	// reg.pc = 0;
 	cpu.startup();
 
-	displ-> test_screen(0, nullptr);
+	displ-> test_screen(0, nullptr, this);
+}
+
+void Gameboy_Debugger::draw_callback() {
+	current_instance-> run();
 }
 
 // Main execution loop

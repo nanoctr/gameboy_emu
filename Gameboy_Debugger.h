@@ -12,6 +12,7 @@
 #include "Debug_Register.h"
 #include "Gameboy_Logger.h"
 #include <memory>
+#include <GL/glut.h>
 #include "Gameboy_Registers.h"
 
 #include "Gameboy_Cpu.h"
@@ -138,6 +139,10 @@ private:
 public:
 	Gameboy_Debugger();
 	void run();
+	static Gameboy_Debugger *current_instance;
+
+	static void draw_callback();
 };
+
 
 #endif //GAMEBOY_EMU_GAMEBOY_DEBUGGER_H

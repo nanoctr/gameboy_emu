@@ -3,6 +3,8 @@
 //
 
 #include "Gameboy_Debugger.h"
+#include "Gameboy_Memory.h"
+#include "Gameboy_Display.h"
 
 //const u8 Gameboy_Debugger::REG_NUMBER = 13;
 constexpr u8 Gameboy_Debugger::REG_PC = 0;
@@ -539,9 +541,12 @@ Gameboy_Debugger::Gameboy_Debugger() {
 	cpu.display = displ;
 	mem-> display = displ;
 	displ-> memory = mem;
+	Gameboy_Display::debugger = this;
 
 	// reg.pc = 0;
 	cpu.startup();
+
+	displ-> test_screen(0, nullptr);
 }
 
 // Main execution loop

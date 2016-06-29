@@ -2,11 +2,13 @@
 // Created by michi on 19.06.16.
 //
 
-#ifndef CHIP8_EMULATOR_GAMEBOY_DISPLAY_H
-#define CHIP8_EMULATOR_GAMEBOY_DISPLAY_H
+#ifndef GAMEBOY_DISPLAY_H
+#define GAMEBOY_DISPLAY_H
 
-#include "Gameboy_Cpu.h"
-//#include "Gameboy_Memory.h"
+#include <memory>
+#include "Gameboy_Debugger.h"
+
+using namespace std;
 
 using u8 = unsigned char;
 using u16 = unsigned short;
@@ -17,6 +19,7 @@ using u16 = unsigned short;
 
 class Gameboy_Cpu;
 class Gameboy_Memory;
+class Gameboy_Debugger;
 
 class Gameboy_Display {
 private:
@@ -82,6 +85,7 @@ public:
 
 	// TODO: move this to private, make setter
 	shared_ptr<Gameboy_Memory> memory;
+	static Gameboy_Debugger *debugger;
 };
 
 

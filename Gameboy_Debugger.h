@@ -5,16 +5,20 @@
 #define GAMEBOY_EMU_GAMEBOY_DEBUGGER_H
 
 #include <iostream>
-#include "Gameboy_Cpu.h"
 #include <regex>
 #include <unordered_set>
+#include <unordered_map>
 #include <string>
 #include "Debug_Register.h"
 #include "Gameboy_Logger.h"
-#include "Gameboy_Cpu.h"
 #include <memory>
+#include "Gameboy_Registers.h"
 
+#include "Gameboy_Cpu.h"
 
+using namespace std;
+
+class Gameboy_Cpu;
 
 class Gameboy_Debugger {
 private:

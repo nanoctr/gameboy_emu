@@ -12,8 +12,6 @@
 #include <vector>
 #include "Gameboy_Logger.h"
 #include "Gameboy_Registers.h"
-#include "Gameboy_Memory.h"
-#include "Gameboy_Display.h"
 #include <memory>
 
 typedef unsigned long u64;

@@ -4,8 +4,16 @@
 
 #include "Gameboy_Display.h"
 #include <GL/glut.h>
+#include "Gameboy_Cpu.h"
+#include "Gameboy_Memory.h"
+#include "Gameboy_Debugger.h"
 
-int i = 0;
+
+static void run_runner() {
+	Gameboy_Display::debugger-> run();
+}
+
+// int i = 0;
 
 void Gameboy_Display::gpu_step(u8 t_cycles) {
 	clock += t_cycles;
@@ -143,7 +151,8 @@ void Gameboy_Display::test_screen(int argc, char **argv) {
 	glutInitWindowSize(display_width, display_height);
 	glutInitWindowPosition(320, 320);
 	glutCreateWindow("Gameboy");
-	//glutDisplayFunc();
+
+	glutDisplayFunc(run_runner);
 	//glutIdleFunc(display);
 
 	setup_texture();
@@ -186,7 +195,7 @@ void Gameboy_Display::update_texture() {
 }
 
 void Gameboy_Display::display() {
-	GL_COLOR_BUFFER_BIT;
+
 }
 
 
@@ -198,5 +207,4 @@ Gameboy_Display::Gameboy_Display(/*Gameboy_Cpu *gb_cpu*/) {
 	mode = 0;
 	clock = 0;
 	line = 0;
-	test_screen(0, nullptr);
-}
+};

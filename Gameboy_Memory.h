@@ -7,7 +7,6 @@
 
 #include "Gameboy_Logger.h"
 #include <memory>
-#include "Gameboy_Display.h"
 
 using u8 = unsigned char;
 using u16 = unsigned short;

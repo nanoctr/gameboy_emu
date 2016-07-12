@@ -16,7 +16,7 @@
 
 typedef unsigned long u64;
 
-class Gameboy_Display;
+class Gameboy_Gpu;
 class Gameboy_Memory;
 
 class Gameboy_Cpu {
@@ -769,7 +769,7 @@ public:
 
 	registers reg;
 	// TODO: move this to private, create setter
-	shared_ptr<Gameboy_Display> display;
+	shared_ptr<Gameboy_Gpu> display;
 	shared_ptr<Gameboy_Memory> memory;
 #ifdef DEBUG_BUILD
 /*

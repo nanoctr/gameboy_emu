@@ -4,7 +4,7 @@
 
 #include "Gameboy_Debugger.h"
 #include "Gameboy_Memory.h"
-#include "Gameboy_Display.h"
+#include "Gameboy_Gpu.h"
 
 //const u8 Gameboy_Debugger::REG_NUMBER = 13;
 constexpr u8 Gameboy_Debugger::REG_PC = 0;
@@ -540,18 +540,16 @@ Gameboy_Debugger::Gameboy_Debugger() {
 
 	cpu = Gameboy_Cpu();
 	auto mem = shared_ptr<Gameboy_Memory>(new Gameboy_Memory());
-	auto displ = shared_ptr<Gameboy_Display>(new Gameboy_Display());
+	auto displ = shared_ptr<Gameboy_Gpu>(new Gameboy_Gpu());
 
 	cpu.memory = mem;
 	cpu.display = displ;
 	mem-> display = displ;
 	displ-> memory = mem;
-	// Gameboy_Display::debugger = this;
+	// Gameboy_Gpu::debugger = this;
 
 	// reg.pc = 0;
 	cpu.startup();
-
-	displ-> test_screen(0, nullptr, this);
 }
 
 void Gameboy_Debugger::draw_callback() {
@@ -583,7 +581,7 @@ void Gameboy_Debugger::run() {
 			else {
 				cout << "Breakpoint hit!\n";
 				skip_breakpoint = true;
-				forever = false;
+				execute_forever = false;
 				steps = 0;
 				reg = cpu.reg;
 				debug_interface();
@@ -591,7 +589,7 @@ void Gameboy_Debugger::run() {
 			}
 		}
 
-		if (forever) {
+		if (execute_forever) {
 			++count_opcodes;
 			cpu.emulate_cycle();
 		}
@@ -601,7 +599,7 @@ void Gameboy_Debugger::run() {
 			--steps;
 		}
 
-		// No 'forever' execution or end of steps to execute -> open debug interface
+		// No 'execute_forever' execution or end of steps to execute -> open debug interface
 		else {
 			reg = cpu.reg;
 			debug_interface();
@@ -733,7 +731,7 @@ void Gameboy_Debugger::debug_interface() {
 				steps = string_to_short(match.str(1)); break;
 			case DEBUGGER_CONTINUE: // continue executing
 				stay_debug = false;
-				forever = true; break;
+				execute_forever = true; break;
 			case DEBUGGER_NEW_BREAKPOINT: // set new breakpoint
 				breakpoints.insert(string_to_short(match.str(1))); break;
 			case DEBUGGER_SAVE_BREAKPOINT: // set new breakpoint, store in file

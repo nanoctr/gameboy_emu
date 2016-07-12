@@ -1,9 +1,10 @@
 #include <iostream>
 #include "Gameboy_Cpu.h"
-#include "Gameboy_Display.h"
+#include "Gameboy_Gpu.h"
 #include "Gameboy_Debugger.h"
 #include <string>
 #include <stdlib.h>
+#include <QApplication>
 
 using namespace std;
 
@@ -12,6 +13,7 @@ Gameboy_Logger logger = Gameboy_Logger("/tmp/gameboy_cpu.log");
 void debug();
 
 int main(int argc, char **argv) {
+
 #ifdef DEBUG_BUILD
 	logger.log_line("\n\n--------------------");
 	logger.log_line("DEBUG BUILD ENABLED");
@@ -45,7 +47,7 @@ int main(int argc, char **argv) {
 	//	}
 
 
-	return 0;
+	return app.exec();
 }
 
 

@@ -5,7 +5,7 @@
 #include <iostream>
 #include "Gameboy_Cpu.h"
 #include "Gameboy_Memory.h"
-#include "Gameboy_Display.h"
+#include "Gameboy_Gpu.h"
 
 
 const int CARRY = 4;

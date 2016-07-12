@@ -11,7 +11,7 @@
 using u8 = unsigned char;
 using u16 = unsigned short;
 
-class Gameboy_Display;
+class Gameboy_Gpu;
 
 class Gameboy_Memory {
 private:
@@ -38,7 +38,7 @@ public:
 	u8 horrible_hack = 0;
 
 	// internal linking
-	shared_ptr<Gameboy_Display> display;
+	shared_ptr<Gameboy_Gpu> display;
 
 	Gameboy_Memory();
 	u8& read_byte(u16 addr);

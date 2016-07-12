@@ -2,21 +2,20 @@
 // Created by michi on 19.06.16.
 //
 
-#include "Gameboy_Display.h"
-#include <GL/glut.h>
+#include "Gameboy_Gpu.h"
 #include "Gameboy_Cpu.h"
 #include "Gameboy_Memory.h"
 #include "Gameboy_Debugger.h"
 
 
-//Gameboy_Debugger Gameboy_Display::*debugger;
+//Gameboy_Debugger Gameboy_Gpu::*debugger;
 //static void run_runner() {
-//	Gameboy_Display::debugger-> run();
+//	Gameboy_Gpu::debugger-> run();
 //}
 
 // int i = 0;
 
-void Gameboy_Display::gpu_step(u8 t_cycles) {
+void Gameboy_Gpu::gpu_step(u8 t_cycles) {
 	clock += t_cycles;
 
 	switch (mode)
@@ -67,12 +66,12 @@ void Gameboy_Display::gpu_step(u8 t_cycles) {
 	}
 }
 
-void Gameboy_Display::render_line() {
+void Gameboy_Gpu::render_line() {
 	// god knows what this code does. just stick with it.
 	u16 map_offset = (get_lcdc(LCDC_TILEMAP_SELECT)) ? 0x1C00 : 0x1800;
 	map_offset += (((line + scroll_y) & 0xFF) >> 3) << 5;
 
-	// why do i have to bitshift? don't get it :/
+	// some weird bitshifting magic going on here. division or whatever.
 	u8 x_offset = scroll_x >> 3;
 	u16 x = scroll_x & 7;
 	u16 y = (line + scroll_y) & 7;
@@ -104,20 +103,17 @@ void Gameboy_Display::render_line() {
 	}
 }
 
-void Gameboy_Display::draw_background() {
+void Gameboy_Gpu::draw_background() {
 }
 
 
-void Gameboy_Display::render_buffer() {
-	glClear(GL_COLOR_BUFFER_BIT);
-	update_texture();
-	glutSwapBuffers();
+void Gameboy_Gpu::render_buffer() {
 }
 
 // TODO: optimize this: it updates the whole tile, even though the CPU can only
 // 	 write 1 byte at a time. Judging by the value, you should be able to find out
 //   which row to update
-void Gameboy_Display::update_tiles(u8 (&vram)[0x2000], u16 addr) {
+void Gameboy_Gpu::update_tiles(u8 (&vram)[0x2000], u16 addr) {
 	u16 tile = addr / 16; // 16 bits for each tile
 
 	// Copy tile data at $addr to the tiles[] array
@@ -134,77 +130,30 @@ void Gameboy_Display::update_tiles(u8 (&vram)[0x2000], u16 addr) {
 }
 
 
-u8 Gameboy_Display::get_lcdc(u8 pos) {
+u8 Gameboy_Gpu::get_lcdc(u8 pos) {
 	return (lcdc & (0x1 << pos));
 }
-void Gameboy_Display::set_lcdc(u8 pos) {
+void Gameboy_Gpu::set_lcdc(u8 pos) {
 	lcdc |= (0x1 << pos);
 }
-void Gameboy_Display::reset_lcdc(u8 pos) {
+void Gameboy_Gpu::reset_lcdc(u8 pos) {
 	lcdc &= ~(0x1 << pos);
 }
 
 
 
-void Gameboy_Display::test_screen(int argc, char **argv, Gameboy_Debugger * debugger) {
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-	glutInitWindowSize(display_width, display_height);
-	glutInitWindowPosition(320, 320);
-	glutCreateWindow("Gameboy");
-	glutDisplayFunc(debugger->draw_callback);
-	//glutIdleFunc(display);
 
-	setup_texture();
-
-	glutMainLoop();
-}
-
-void Gameboy_Display::setup_texture() {
-	for (int y = 0; y < SCREEN_HEIGHT; ++y) {
-		for (int x = 0; x < SCREEN_WIDTH; ++x) {
-			screen[y][x][0] = screen[y][x][1] = screen[y][x][2] = 0;
-		}
-	}
-
-	// Generate a new texture
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE,
-				 (GLvoid*)screen);
-	// Set it up with parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-
-	// Enable textures
-	glEnable(GL_TEXTURE_2D);
-}
-
-void Gameboy_Display::update_texture() {
-
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT,
-					GL_RGB, GL_UNSIGNED_BYTE, (GLvoid*)screen);
-
-	glBegin( GL_QUADS );
-	glTexCoord2d(0.0, 0.0);		glVertex2d(0.0,			  0.0);
-	glTexCoord2d(1.0, 0.0); 	glVertex2d(display_width, 0.0);
-	glTexCoord2d(1.0, 1.0); 	glVertex2d(display_width, display_height);
-	glTexCoord2d(0.0, 1.0); 	glVertex2d(0.0,			  display_height);
-	glEnd();
-
-}
-
-void Gameboy_Display::display() {
-
-}
-
-
-void Gameboy_Display::test_screen() { }
-
-
-Gameboy_Display::Gameboy_Display(/*Gameboy_Cpu *gb_cpu*/) {
+Gameboy_Gpu::Gameboy_Gpu() {
 	//cpu = gb_cpu;
 	mode = 0;
 	clock = 0;
 	line = 0;
+
+	QImage my_image(160, 160, QImage::Format_RGB888);
+	my_image.fill(0);
+
+	QLabel my_label;
+	my_label.setPixmap(QPixmap::fromImage(my_image));
+
+	my_label.show();
 };

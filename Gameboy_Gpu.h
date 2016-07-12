@@ -6,6 +6,8 @@
 #define GAMEBOY_DISPLAY_H
 
 #include <memory>
+#include <QApplication>
+#include <QLabel>
 
 using namespace std;
 
@@ -20,7 +22,7 @@ class Gameboy_Cpu;
 class Gameboy_Memory;
 class Gameboy_Debugger;
 
-class Gameboy_Display {
+class Gameboy_Gpu {
 private:
 	//const Colour colours[4] = {
 	//		{255, 255, 255},
@@ -60,27 +62,25 @@ private:
 
 	// Gameboy_Cpu *cpu;
 
-	// display func
-	static void display();
 	// render a scanline and write to framebuffer
 	void render_line();
 	// render framebuffer
 	void render_buffer();
 	void draw_background();
-	void setup_texture();
-	void update_texture();
+
+	// Qt stuff
+
+
 
 
 
 public:
-	void test_screen(int argc, char **argv, Gameboy_Debugger * debugger);
-	void test_screen();
 
 	// update tiles from VRAM (passed)
 	void update_tiles(u8 (&vram)[0x2000], u16 addr);
 	void gpu_step(u8 t_cycles);
-	//Gameboy_Display(Gameboy_Cpu *gb_cpu);
-	Gameboy_Display();
+	//Gameboy_Gpu(Gameboy_Cpu *gb_cpu);
+	Gameboy_Gpu();
 
 	// TODO: move this to private, make setter
 	shared_ptr<Gameboy_Memory> memory;

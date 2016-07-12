@@ -3,7 +3,7 @@
 //
 
 #include "Gameboy_Memory.h"
-#include "Gameboy_Display.h"
+#include "Gameboy_Gpu.h"
 
 Gameboy_Memory::Gameboy_Memory() {
 	for (auto & i : cartridge_fixed_rom) {

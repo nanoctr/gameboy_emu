@@ -90,7 +90,7 @@ private:
 
 	u8 ext = false;
 
-	// Gameboy_Display display;
+	// Gameboy_Gpu display;
 
 
 	// Watch the corresponding index in debug_registers?
@@ -114,7 +114,7 @@ private:
 	// execute $cycles opcodes or until breakpoint / EOP
 	u16 steps = 0;
 	// execute opcodes until breakpoint / EOP
-	bool forever = false;
+	bool execute_forever = false;
 
 	int string_to_int(string s);
 	u16 string_to_short(string s);

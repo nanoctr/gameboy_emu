@@ -15,6 +15,9 @@
 
 // int i = 0;
 
+using u8 = unsigned char;
+using u16 = unsigned short;
+
 void Gameboy_Gpu::gpu_step(u8 t_cycles) {
 	clock += t_cycles;
 
@@ -92,7 +95,9 @@ void Gameboy_Gpu::render_line() {
 
 			scanline_row[i] = colour;
 
-			screen[line][i][0] = palette[colour];
+			screen[line][i][0] = screen[line][i][1] =
+			screen[line][i][2] = palette[colour];
+
 
 		}
 	}

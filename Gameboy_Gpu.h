@@ -37,6 +37,9 @@ private:
 	u16 display_height = SCREEN_HEIGHT * MODIFIER;
 
 	u8 screen[SCREEN_HEIGHT][SCREEN_WIDTH][3];
+	static const u8 SCREEN_RED = 0;
+	static const u8 SCREEN_BLUE = 1;
+	static const u8 SCREEN_GREEN = 2;
 
 	u8 palette[4] = {255, 192, 96, 0};
 

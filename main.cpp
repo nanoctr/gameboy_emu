@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
 	//	}
 
 
-	return app.exec();
+	return 0;
 }
 
 
